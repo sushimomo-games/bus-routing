@@ -13,11 +13,13 @@ public partial class BusStopPlacement : Control
     private PreviewBusStop _previewBusStop;
     private Area2D _previewPlacementArea;
     private bool _isValidPlacement = false;
+    public bool IsValidPlacement => _isValidPlacement;
     private Camera2D _camera;
     private ErrorMessage _errorMessage;
 
     public override void _Ready()
     {
+        LevelState.BusStopPlacement = this;
         _previewBusStopScene = GD.Load<PackedScene>(PreviewBusStopScene);
         _busStopScene = GD.Load<PackedScene>(BusStopScene);
         _roadEdgeScene = GD.Load<PackedScene>(RoadEdgeScene);

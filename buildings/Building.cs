@@ -33,9 +33,16 @@ public abstract partial class Building : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        _targetColor = ReachableBusStop != null 
-            ? _originalColor * HighlightFactor 
-            : _originalColor;
+        bool isHighlightConditionMet = ReachableBusStop != null && LevelState.BusStopPlacement.IsValidPlacement == true;
+        
+        if (isHighlightConditionMet)
+        {
+            _targetColor = _originalColor * HighlightFactor;
+        }
+        else
+        {
+            _targetColor = _originalColor;
+        }
 
         _buildingSprite.Modulate = _buildingSprite.Modulate.Lerp(
             _targetColor, (float)(delta * _lerpSpeed)

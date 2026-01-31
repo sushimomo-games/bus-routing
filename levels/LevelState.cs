@@ -11,6 +11,11 @@ using System;
 public partial class LevelState : Node
 {
     public static Node CurrentLevel { get; set; }
+
+    /// <summary>
+    /// The bus stop placement UI component for the current level.
+    /// </summary>
+    public static BusStopPlacement BusStopPlacement { get; set; }
     public static List<Route> AllRoutes { get; set; } = [];
     public static List<House> AllHouses { get; set; } = [];
     public static List<Destination> AllDestinations { get; set; } = [];
