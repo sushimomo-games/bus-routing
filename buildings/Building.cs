@@ -33,9 +33,21 @@ public abstract partial class Building : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        bool isHighlightConditionMet = ReachableBusStop != null && LevelState.BusStopPlacement.IsValidPlacement == true;
+        bool shouldHighlight = false;
         
-        if (isHighlightConditionMet)
+        if (ReachableBusStop != null)
+        {
+            if (ReachableBusStop is BusStop)
+            {
+                shouldHighlight = true;
+            }
+            else if (ReachableBusStop is PreviewBusStop)
+            {
+                shouldHighlight = LevelState.BusStopPlacement?.IsValidPlacement == true;
+            }
+        }
+        
+        if (shouldHighlight)
         {
             _targetColor = _originalColor * HighlightFactor;
         }
