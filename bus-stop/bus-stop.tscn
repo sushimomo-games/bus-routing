@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://blx7ra67cgl0e" path="res://ui/route-creation/RouteCreationHandler.tscn" id="4_e0gyx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0n3gx"]
+radius = 11.0
 
 [node name="BusStop" type="Node2D"]
 z_index = 1

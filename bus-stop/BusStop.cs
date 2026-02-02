@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 
 public partial class BusStop : RoadNode
 {
@@ -8,7 +6,14 @@ public partial class BusStop : RoadNode
 
     public override void _Ready()
     {
-        base._Ready(); // Unsure if I need this. Look into it later.
+        base._Ready();
         LevelState.AllBusStops.Add(this);
+    }
+
+    public override void _ExitTree()
+    {
+        LevelState.AllBusStops.Remove(this);
+        LevelState.AllRoadNodes.Remove(this);
+        LevelState.Budget -= Cost.BusStopRemoval;
     }
 }
