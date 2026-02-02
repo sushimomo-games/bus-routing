@@ -1,14 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5dqou2q7scf7"]
+[gd_scene load_steps=6 format=3 uid="uid://c5dqou2q7scf7"]
 
 [ext_resource type="Script" uid="uid://htt2571rjh6r" path="res://bus-stop/preview/PreviewBusStop.cs" id="1_p0ic7"]
 [ext_resource type="Texture2D" uid="uid://btvj3err7vmtr" path="res://assets/bus-stop.png" id="2_p0ic7"]
-[ext_resource type="Texture2D" uid="uid://ckneaxqxvrrsq" path="res://assets/circle.png" id="3_p0ic7"]
+[ext_resource type="PackedScene" uid="uid://jxdx0w5h5cxi" path="res://bus-stop/walk_radius.tscn" id="3_p0ic7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_63k7h"]
 radius = 7.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_bhde8"]
-radius = 56.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p0ic7"]
 
@@ -31,19 +28,7 @@ collision_mask = 4
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RoadDetector"]
 shape = SubResource("CircleShape2D_63k7h")
 
-[node name="WalkRadius" type="Area2D" parent="."]
-editor_description = "This area determines whether or not people will want to walk to a bus stop instance. It also determines how far bus stops can be away from each other."
-collision_layer = 2
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WalkRadius"]
-shape = SubResource("CircleShape2D_bhde8")
-
-[node name="WalkRadiusSprite" type="Sprite2D" parent="WalkRadius"]
-modulate = Color(0.35686275, 1, 1, 0.3529412)
-position = Vector2(1.9073486e-06, 1.9073486e-06)
-scale = Vector2(0.86067706, 0.86067706)
-texture = ExtResource("3_p0ic7")
+[node name="WalkRadius" parent="." instance=ExtResource("3_p0ic7")]
 
 [node name="IntersectionDetector" type="Area2D" parent="."]
 collision_layer = 16
