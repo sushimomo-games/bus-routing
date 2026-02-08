@@ -3,7 +3,7 @@
 /// </summary>
 public static class Cost
 {
-    public const uint InitialBudget = 5;
+    public const uint InitialBudget = 15;
     public const uint BusStopPlacement = 5;
     public const uint BusStopRemoval = 2;
 }

@@ -35,6 +35,8 @@ ui_text_delete={
 2d_physics/layer_3="Road"
 2d_physics/layer_4="RoadNode"
 2d_physics/layer_5="PreviewBusStopIntersectionDetector"
+2d_physics/layer_6="BusStop"
+2d_physics/layer_7="WalkRadius"
 
 [rendering]
 

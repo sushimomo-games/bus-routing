@@ -29,6 +29,7 @@ collision_mask = 4
 shape = SubResource("CircleShape2D_63k7h")
 
 [node name="WalkRadius" parent="." instance=ExtResource("3_p0ic7")]
+collision_mask = 32
 
 [node name="IntersectionDetector" type="Area2D" parent="."]
 collision_layer = 16

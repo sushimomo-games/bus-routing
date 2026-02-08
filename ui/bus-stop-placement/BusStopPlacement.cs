@@ -17,6 +17,8 @@ public partial class BusStopPlacement : Control
     private Camera2D _camera;
     private ErrorMessage _errorMessage;
 
+    private System.Collections.Generic.List<BusStop> _highlightedStops = new();
+
     public override void _Ready()
     {
         LevelState.BusStopPlacement = this;
@@ -40,6 +42,37 @@ public partial class BusStopPlacement : Control
 
             var color = _isValidPlacement ? Colors.LightGreen : Colors.Red;
             _previewBusStop.Modulate = color;
+
+            UpdateHighlightedBusStops();
+        }
+    }
+
+    /// <summary>
+    /// Highlights bus stops within the walk radius of the preview bus stop.
+    /// This gives visual feedback to the player about if their bus stop placement
+    /// is able to be used for transfers (i.e. are people willing to walk from
+    /// one stop to another?).
+    /// </summary>
+    private void UpdateHighlightedBusStops()
+    {
+        foreach (var stop in _highlightedStops)
+        {
+            if (IsInstanceValid(stop))
+            {
+                stop.Modulate = Colors.White;
+            }
+        }
+        _highlightedStops.Clear();
+
+        var walkRadius = _previewBusStop.WalkRadius;
+        foreach (var area in walkRadius.GetOverlappingAreas())
+        {
+            if (area.GetParent() is BusStop busStop)
+            {
+                busStop.Modulate = Colors.LightGreen;
+                _highlightedStops.Add(busStop);
+                GD.Print($"Highlighting bus stop at {busStop.GlobalPosition}");
+            }
         }
     }
 
@@ -83,6 +116,15 @@ public partial class BusStopPlacement : Control
     {
         if (_previewBusStop != null)
         {
+            foreach (var stop in _highlightedStops)
+            {
+                if (IsInstanceValid(stop))
+                {
+                    stop.Modulate = Colors.White;
+                }
+            }
+            _highlightedStops.Clear();
+
             _previewBusStop.QueueFree();
             _previewBusStop = null;
             _previewPlacementArea = null;
