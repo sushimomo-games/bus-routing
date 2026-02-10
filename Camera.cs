@@ -22,7 +22,7 @@ public partial class Camera : Camera2D
         {
             Vector2 dragDelta = mouseMotionEvent.Relative;
             
-            Position -= dragDelta * Zoom; // Adjust movement speed based on zoom level
+            Position -= dragDelta / Zoom; // Division by Zoom adjusts movement speed based on zoom level
         }
 
         if (@event.IsMouseWheelUp())
