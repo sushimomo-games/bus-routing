@@ -7,11 +7,11 @@ public partial class RouteList : ItemList
 {
     public override void _UnhandledInput(InputEvent @event)
     {
-        // Check if a route is selected and the delete key is pressed
         if (SelectedRoute != null && @event.IsActionPressed("ui_text_delete")) // "ui_cancel" is usually the Escape or Delete key
         {
+            var colorInfo = new KeyValuePair<string, Color>(SelectedRoute.ColorName, SelectedRoute.Color);
             DeleteRoute(SelectedRoute);
-            LevelState.ReturnRouteColor(new KeyValuePair<string, Color>(SelectedRoute.ColorName, SelectedRoute.Color));
+            LevelState.ReturnRouteColor(colorInfo);
             AcceptEvent(); 
         }
     }
