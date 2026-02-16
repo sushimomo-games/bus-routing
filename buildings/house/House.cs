@@ -5,9 +5,8 @@ using System.Linq;
 public partial class House : Building
 {
     private Sprite2D _checkSprite;
-    private bool _isChecked;
-
     protected override Color HighlightFactor => new(1.4f, 1.4f, 1.4f, 1.0f);
+    private bool _isChecked;
 
     public bool IsChecked
     {
@@ -17,6 +16,14 @@ public partial class House : Building
             _isChecked = value;
             _checkSprite.Visible = value;
         }
+    }
+
+    private float _busUsageProbability = 0.0f;
+    
+    public float BusUsageProbability
+    {
+        get => _busUsageProbability;
+        set => _busUsageProbability = Mathf.Clamp(value, 0.0f, 1.0f);
     }
 
     public override void _Ready()

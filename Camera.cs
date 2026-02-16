@@ -51,9 +51,10 @@ public partial class Camera : Camera2D
         if (results.Count > 0)
         {
             var result = results[0];
-            Area2D hoveredHouse = (Area2D)result["collider"];
+            Area2D hoveredHouseArea = (Area2D)result["collider"];
+            House hoveredHouse = hoveredHouseArea.GetParent<House>();
             
-            GD.Print($"Hovering over: {hoveredHouse.Name}. Collision layer: " + hoveredHouse.CollisionLayer);
+            GD.Print($"Bus usage probability: {hoveredHouse.BusUsageProbability}");
             // Update UI here :D 💯
         }
     }
