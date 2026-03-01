@@ -7,6 +7,8 @@ public partial class House : Building
     private Sprite2D _checkSprite;
     protected override Color HighlightFactor => new(1.4f, 1.4f, 1.4f, 1.0f);
     private bool _isChecked;
+    private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);
+    private Control _infoPopup;
 
     public bool IsChecked
     {
@@ -31,6 +33,15 @@ public partial class House : Building
         base._Ready(); // Calls _Ready() of the base class, Building.
         _checkSprite = GetNode<Sprite2D>("Check");
         LevelState.AllHouses.Add(this);
+        SetProcess(false); // Disable _Process by default
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_infoPopup != null)
+        {
+            _infoPopup.GlobalPosition = GetViewport().GetMousePosition() + new Vector2(15, 15);
+        }
     }
 
     public void UpdateCheckStatus()
@@ -54,6 +65,29 @@ public partial class House : Building
         }
 
         IsChecked = CanReachAnyDestination(startStop, validDestinationStops);
+    }
+
+    private void _on_area_2d_mouse_entered()
+    {
+        if (_infoPopup == null)
+        {
+            _infoPopup = _infoPopupScene.Instantiate<Control>();
+            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("EditorUI"); 
+            canvasLayer.AddChild(_infoPopup);
+            _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}";
+            _infoPopup.Modulate = Modulate;
+            SetProcess(true);
+        }
+    }
+
+    private void _on_area_2d_mouse_exited()
+    {
+        if (_infoPopup != null)
+        {
+            _infoPopup.QueueFree();
+            _infoPopup = null;
+            SetProcess(false);
+        }
     }
 
     /// <summary>

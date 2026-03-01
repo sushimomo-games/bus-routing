@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://c2lauycuruhka"]
+
+[node name="InfoPopup" type="Control"]
+z_index = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -942.0
+offset_bottom = -573.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 239.0
+offset_bottom = 51.0
+color = Color(1, 1, 1, 0.8627451)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+text = "Test"

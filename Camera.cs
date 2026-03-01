@@ -34,28 +34,4 @@ public partial class Camera : Camera2D
             Zoom = new Vector2(Math.Min(5f, Zoom.X + 0.1f), Math.Min(5f, Zoom.Y + 0.1f));
         }
     }
-
-    public override void _Process(double delta)
-    {
-        var spaceState = GetWorld2D().DirectSpaceState;
-
-        var query = new PhysicsPointQueryParameters2D
-        {
-            Position = GetGlobalMousePosition(),
-            CollideWithAreas = true,
-            CollisionMask = CollisionLayer.House
-        };
-
-        var results = spaceState.IntersectPoint(query);
-
-        if (results.Count > 0)
-        {
-            var result = results[0];
-            Area2D hoveredHouseArea = (Area2D)result["collider"];
-            House hoveredHouse = hoveredHouseArea.GetParent<House>();
-            
-            GD.Print($"Bus usage probability: {hoveredHouse.BusUsageProbability}");
-            // Update UI here :D 💯
-        }
-    }
 }
