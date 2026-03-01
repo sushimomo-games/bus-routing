@@ -17,6 +17,14 @@ public partial class House : Building
         {
             _isChecked = value;
             _checkSprite.Visible = value;
+            if (value && _busUsageProbability < 0.05f)
+            {
+                _busUsageProbability = 0.05f;
+            }
+            else if (!value)
+            {
+                _busUsageProbability = 0.0f;
+            }
         }
     }
 
@@ -30,10 +38,10 @@ public partial class House : Building
 
     public override void _Ready()
     {
-        base._Ready(); // Calls _Ready() of the base class, Building.
+        base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
         _checkSprite = GetNode<Sprite2D>("Check");
         LevelState.AllHouses.Add(this);
-        SetProcess(false); // Disable _Process by default
+        SetProcess(false);
     }
 
     public override void _Process(double delta)
