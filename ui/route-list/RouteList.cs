@@ -38,8 +38,9 @@ public partial class RouteList : ItemList
     {
         if (index >= 0 && index < LevelState.AllRoutes.Count)
         {
-            EditorState.SelectedRoute = LevelState.AllRoutes[index];
-            GD.Print($"Selected route for editing: {EditorState.SelectedRoute.ColorName}");
+            SelectedRoute = LevelState.AllRoutes[index];
+            GD.Print($"Selected route for editing: {SelectedRoute.ColorName}");
+            GD.Print($"Time to complete: {SelectedRoute.TimeToComplete} minutes");
         }
     }
 
@@ -48,10 +49,10 @@ public partial class RouteList : ItemList
         // Deselect in the UI
         DeselectAll();
         // Clear the selected route from the state
-        if (EditorState.SelectedRoute != null)
+        if (SelectedRoute != null)
         {
-            GD.Print($"Deselected route: {EditorState.SelectedRoute.ColorName}");
-            EditorState.SelectedRoute = null;
+            GD.Print($"Deselected route: {SelectedRoute.ColorName}");
+            SelectedRoute = null;
         }
     }
 }

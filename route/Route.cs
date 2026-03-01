@@ -20,6 +20,26 @@ public partial class Route : Node
         private set => _ID = value;
     }
 
+    private float _timeToComplete;
+
+    /// <summary>
+    /// The estimated minutes it takes to complete the route,
+    /// calculated as the sum of distances
+    /// between consecutive nodes. 
+    /// </summary>
+    public float TimeToComplete
+    {
+        get
+        {
+            float total = 0f;
+            for (int i = 0; i < Path.Count - 1; i++)
+            {
+                total += Path[i].GlobalPosition.DistanceTo(Path[i + 1].GlobalPosition);
+            }
+            return total;
+        }
+    }
+
     /// <summary>
     /// List of bus stops and intersection nodes that make up the route.
     /// </summary>
@@ -103,11 +123,6 @@ public partial class Route : Node
         return Path.Contains(node);
     }
 
-    public void Cleanup()
-    {
-        
-    }
-
     /// <summary>
     /// Automatically assigns a unique ID initializes the path list, and
     /// assigns a color.
@@ -130,4 +145,6 @@ public partial class Route : Node
             Color = Colors.White;
         }
     }
+
+
 }
