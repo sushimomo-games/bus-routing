@@ -44,15 +44,21 @@ public partial class RouteList : ItemList
         }
     }
 
-    private new void DeselectAll()
+    public override void _Input(InputEvent @event)
     {
-        // Deselect in the UI
-        DeselectAll();
-        // Clear the selected route from the state
-        if (SelectedRoute != null)
+        if (@event.IsLeftMouseClick())
         {
-            GD.Print($"Deselected route: {SelectedRoute.ColorName}");
-            SelectedRoute = null;
+            // Check if the click was outside the item list to deselect the current route
+            var mouseEvent = (InputEventMouseButton)@event;
+            Rect2 itemListRect = GetGlobalRect();
+            if (!itemListRect.HasPoint(mouseEvent.GlobalPosition))
+            {
+                DeselectAll();
+                if (SelectedRoute != null)
+                {
+                    SelectedRoute = null;
+                }
+            }
         }
     }
 }
