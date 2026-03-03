@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://btim145fqqpsw"]
+
+[ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
+
+[node name="InfoWindow" type="Control"]
+layout_mode = 3
+anchor_right = 0.102000006
+anchor_bottom = 0.13900001
+offset_right = -0.50400543
+offset_bottom = -0.072006226
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q88rp")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 94.0
+offset_bottom = 70.0
+color = Color(0.74509805, 0.74509805, 0.74509805, 0.78431374)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 17.0
+offset_right = 41.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+text = "Test"

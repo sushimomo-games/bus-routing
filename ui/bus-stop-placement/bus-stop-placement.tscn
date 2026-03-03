@@ -69,6 +69,7 @@ text = "Bus Lines"
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_21wtw")
+allow_reselect = true
 script = ExtResource("2_a4c7p")
 
 [node name="ErrorMessage" parent="." instance=ExtResource("5_femp0")]

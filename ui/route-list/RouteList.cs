@@ -5,6 +5,10 @@ using static EditorState;
 
 public partial class RouteList : ItemList
 {
+    private Dictionary<uint, Control> _openWindows = new();
+
+    private PackedScene InfoWindowScene = GD.Load<PackedScene>(Path.InfoWindowScene);
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (SelectedRoute != null && @event.IsActionPressed("ui_text_delete")) // "ui_cancel" is usually the Escape or Delete key
@@ -39,8 +43,23 @@ public partial class RouteList : ItemList
         if (index >= 0 && index < LevelState.AllRoutes.Count)
         {
             SelectedRoute = LevelState.AllRoutes[index];
-            GD.Print($"Selected route for editing: {SelectedRoute.ColorName}");
             GD.Print($"Time to complete: {SelectedRoute.TimeToComplete} minutes");
+
+            if (_openWindows.TryGetValue(SelectedRoute.ID, out var existing))
+            {
+                // This logic is mostly to test if this if statement is working but should be changedd
+                existing.QueueFree();
+                _openWindows.Remove(SelectedRoute.ID);
+            }
+            else
+            {
+                var window = InfoWindowScene.Instantiate<Control>();
+                window.Position = new Vector2(100, 100);
+                var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("EditorUI"); 
+                canvasLayer.AddChild(window);
+                _openWindows[SelectedRoute.ID] = window;
+            }
+
         }
     }
 
