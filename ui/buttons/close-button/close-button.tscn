@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsvxlbhmpidvk"]
+
+[ext_resource type="Script" uid="uid://c241j566xrb21" path="res://ui/buttons/close-button/CloseButton.cs" id="1_3rwto"]
+
+[node name="CloseButton" type="Button"]
+offset_right = 17.0
+offset_bottom = 31.0
+text = "x"
+script = ExtResource("1_3rwto")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
