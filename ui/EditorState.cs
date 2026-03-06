@@ -70,4 +70,10 @@ public partial class EditorState : Node
     public static Route SelectedRoute { get; set; }
 
     public static bool IsEditingFromStart { get; set; }
+
+    /// <summary>
+    /// Keeps track of all open windows, keyed by their ID. Prevents multiple
+    /// of the same window from being opened.
+    /// </summary>
+    public static Dictionary<uint, InfoWindow> OpenWindows { get; } = new();
 }

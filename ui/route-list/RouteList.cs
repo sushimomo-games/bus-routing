@@ -5,8 +5,6 @@ using static EditorState;
 
 public partial class RouteList : ItemList
 {
-    private Dictionary<uint, InfoWindow> _openWindows = new();
-
     private PackedScene InfoWindowScene = GD.Load<PackedScene>(Path.InfoWindowScene);
 
     public override void _UnhandledInput(InputEvent @event)
@@ -43,12 +41,15 @@ public partial class RouteList : ItemList
         if (index >= 0 && index < LevelState.AllRoutes.Count)
         {
             SelectedRoute = LevelState.AllRoutes[index];
-            GD.Print($"Time to complete: {SelectedRoute.TimeToComplete} minutes");
+
+            if (OpenWindows.ContainsKey(SelectedRoute.ID))
+                return;
 
             var window = InfoWindowScene.Instantiate<InfoWindow>();
+            window.Route = SelectedRoute;
             var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("EditorUI"); 
             canvasLayer.AddChild(window);
-            _openWindows[SelectedRoute.ID] = window;
+            OpenWindows[SelectedRoute.ID] = window;
         }
     }
 
