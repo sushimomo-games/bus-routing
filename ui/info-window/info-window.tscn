@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://btim145fqqpsw"]
+[gd_scene load_steps=4 format=3 uid="uid://btim145fqqpsw"]
 
 [ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
+[ext_resource type="Script" uid="uid://bxhr1pecyx0d6" path="res://ui/info-window/InfoText.cs" id="2_lgt8q"]
 [ext_resource type="PackedScene" uid="uid://dsvxlbhmpidvk" path="res://ui/buttons/close-button/close-button.tscn" id="2_tcp5j"]
 
 [node name="InfoWindow" type="Control"]
@@ -22,10 +23,11 @@ offset_bottom = 40.0
 layout_mode = 2
 color = Color(0.74509805, 0.74509805, 0.74509805, 0.78431374)
 
-[node name="Label" type="Label" parent="PanelContainer"]
+[node name="InfoText" type="Label" parent="PanelContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
+script = ExtResource("2_lgt8q")
 
 [node name="CloseButton" parent="." instance=ExtResource("2_tcp5j")]
 layout_mode = 0
