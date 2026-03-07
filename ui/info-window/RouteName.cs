@@ -2,10 +2,10 @@ using Godot;
 using System;
 using static EditorState;
 
-public partial class InfoText : Label
+public partial class RouteName : Label
 {
     public override void _Ready()
     {
-        Text = $"{SelectedRoute.TimeToComplete} minutes";
+        Text = $"{SelectedRoute.ColorName} Line";
     }
 }

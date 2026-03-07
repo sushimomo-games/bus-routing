@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://btim145fqqpsw"]
+[gd_scene load_steps=6 format=3 uid="uid://btim145fqqpsw"]
 
 [ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
 [ext_resource type="Script" uid="uid://bxhr1pecyx0d6" path="res://ui/info-window/InfoText.cs" id="2_lgt8q"]
 [ext_resource type="PackedScene" uid="uid://dsvxlbhmpidvk" path="res://ui/buttons/close-button/close-button.tscn" id="2_tcp5j"]
+[ext_resource type="Script" uid="uid://bbqtd6br6c02d" path="res://ui/info-window/RouteName.cs" id="3_xu4vf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgt8q"]
 bg_color = Color(0.74509805, 0.74509805, 0.74509805, 0.78431374)
@@ -31,6 +32,16 @@ color = Color(0.6509804, 0.6509804, 0.6509804, 0.78431374)
 [node name="CloseButton" parent="VBoxContainer/TopBarRect" instance=ExtResource("2_tcp5j")]
 layout_mode = 0
 offset_right = 24.0
+
+[node name="RouteName" type="Label" parent="VBoxContainer/TopBarRect"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 5.0
+offset_right = 69.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+text = "Test"
+script = ExtResource("3_xu4vf")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
