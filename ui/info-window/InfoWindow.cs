@@ -20,21 +20,27 @@ public partial class InfoWindow : Control
     /// </summary>
     private Vector2 _dragOffset = Vector2.Zero;
 
+    private ColorRect _topBarRect;
+
     public override void _Ready()
     {
         Position = new Vector2(100, 100);
+        _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
     }
 
     public override void _Input(InputEvent @event)
     {
         // Handle dragging the info window around the screen.
-        if (@event is InputEventMouseButton mouseButton)
+        if (@event is InputEventMouseButton mouseButton && mouseButton.ButtonIndex == MouseButton.Left)
         {
-            if (mouseButton.ButtonIndex == MouseButton.Left)
+            if (mouseButton.Pressed && _topBarRect.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
             {
-                _isDragging = mouseButton.Pressed;
-                if (_isDragging)
-                    _dragOffset = GetGlobalMousePosition() - GlobalPosition;
+                _isDragging = true;
+                _dragOffset = GetGlobalMousePosition() - GlobalPosition;
+            }
+            else
+            {
+                _isDragging = false;
             }
         }
         else if (@event is InputEventMouseMotion && _isDragging)
