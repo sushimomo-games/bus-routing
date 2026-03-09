@@ -6,6 +6,6 @@ public partial class InfoText : Label
 {
     public override void _Ready()
     {
-        Text = $"{SelectedRoute.TimeToComplete} minutes";
+        Text = $"{SelectedRoute.TimeToComplete:F2} minutes";
     }
 }

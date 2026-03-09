@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://btim145fqqpsw"]
+[gd_scene load_steps=7 format=3 uid="uid://btim145fqqpsw"]
 
 [ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
 [ext_resource type="Script" uid="uid://bxhr1pecyx0d6" path="res://ui/info-window/InfoText.cs" id="2_lgt8q"]
 [ext_resource type="PackedScene" uid="uid://dsvxlbhmpidvk" path="res://ui/buttons/close-button/close-button.tscn" id="2_tcp5j"]
 [ext_resource type="Script" uid="uid://bbqtd6br6c02d" path="res://ui/info-window/RouteName.cs" id="3_xu4vf"]
+
+[sub_resource type="Theme" id="Theme_xu4vf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgt8q"]
 bg_color = Color(0.74509805, 0.74509805, 0.74509805, 0.78431374)
@@ -20,8 +22,8 @@ script = ExtResource("1_q88rp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_right = 33.0
-offset_bottom = 57.0
+offset_right = 152.0
+offset_bottom = 85.0
 theme_override_constants/separation = 0
 
 [node name="TopBarRect" type="ColorRect" parent="VBoxContainer"]
@@ -42,6 +44,29 @@ offset_bottom = 28.0
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
 script = ExtResource("3_xu4vf")
+
+[node name="ButtonsRect" type="ColorRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.74509805, 0.74509805, 0.74509805, 0.78431374)
+
+[node name="EditButton" type="Button" parent="VBoxContainer/ButtonsRect"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 3.0
+offset_right = 86.0
+offset_bottom = 34.0
+theme = SubResource("Theme_xu4vf")
+text = "Edit stops"
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer/ButtonsRect"]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 3.0
+offset_right = 149.0
+offset_bottom = 34.0
+text = "Delete"
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
