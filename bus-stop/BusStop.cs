@@ -7,6 +7,7 @@ public partial class BusStop : RoadNode
     [Export] public Godot.Collections.Array<RoadEdge> ConnectedEdges = [];
     public Area2D BusStopArea => GetNode<Area2D>("BusStopArea");
     public Area2D WalkRadius => GetNode<Area2D>("WalkRadius");
+    private Sprite2D _walkRadiusSprite => WalkRadius.GetNode<Sprite2D>("WalkRadiusSprite");
 
     public override void _Ready()
     {
@@ -25,6 +26,17 @@ public partial class BusStop : RoadNode
             .OfType<BusStop>()
             .Where(stop => stop != this)
             .ToList();
+    }
+
+    // Signals
+    private void _on_bus_stop_area_mouse_entered()
+    {
+        _walkRadiusSprite.Visible = true;
+    }
+
+    private void _on_bus_stop_area_mouse_exited()
+    {
+        _walkRadiusSprite.Visible = false;
     }
 
     public override void _ExitTree()

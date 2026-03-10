@@ -45,5 +45,7 @@ shape = SubResource("CircleShape2D_6mx4d")
 debug_color = Color(1, 0.7666667, 0, 0.41960785)
 
 [connection signal="input_event" from="Deletor" to="Deletor" method="_on_input_event"]
+[connection signal="mouse_entered" from="BusStopArea" to="." method="_on_bus_stop_area_mouse_entered"]
+[connection signal="mouse_exited" from="BusStopArea" to="." method="_on_bus_stop_area_mouse_exited"]
 
 [editable path="WalkRadius"]
