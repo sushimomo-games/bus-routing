@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using static EditorState;
+using static LevelState;
 
 public partial class InfoWindow : Control
 {
@@ -21,11 +22,15 @@ public partial class InfoWindow : Control
     private Vector2 _dragOffset = Vector2.Zero;
 
     private ColorRect _topBarRect;
+    private Button _deleteButton;
+    private ItemList _routeList;
 
     public override void _Ready()
     {
         Position = new Vector2(100, 100);
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
+        _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
+        _routeList = GetTree().CurrentScene.GetNode<ItemList>(Path.RouteListNode);
     }
 
     public override void _Input(InputEvent @event)
@@ -47,6 +52,13 @@ public partial class InfoWindow : Control
         {
             GlobalPosition = GetGlobalMousePosition() - _dragOffset;
         }
+    }
+
+    private void _on_delete_button_pressed()
+    {
+        _routeList.RemoveItem(AllRoutes.IndexOf(Route));
+        Route.Delete();
+        QueueFree();
     }
 
     public override void _ExitTree()

@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using static LevelState;
 
 /// <summary>
 /// Represents a route consisting of a sequence of bus stops and its visual
@@ -146,5 +147,17 @@ public partial class Route : Node
         }
     }
 
-
+    /// <summary>
+    /// Frees visual representation of Route and the Route itself.
+    /// This is needed because _ExitTree does not work when QueueFreeing the
+    /// node.
+    /// </summary>
+    public void Delete()
+    {
+        LevelState.AllRoutes.Remove(this);
+        LevelState.ReturnRouteColor(new KeyValuePair<string, Color>(ColorName, Color));
+        Visual?.QueueFree();
+        UpdateAllHouseStatuses(); 
+        QueueFree();
+    }
 }
