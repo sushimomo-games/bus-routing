@@ -78,4 +78,5 @@ theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
 script = ExtResource("2_lgt8q")
 
+[connection signal="pressed" from="VBoxContainer/ButtonsRect/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonsRect/DeleteButton" to="." method="_on_delete_button_pressed"]

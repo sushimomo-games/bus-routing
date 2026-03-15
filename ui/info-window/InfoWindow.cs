@@ -42,6 +42,7 @@ public partial class InfoWindow : Control
             {
                 _isDragging = true;
                 _dragOffset = GetGlobalMousePosition() - GlobalPosition;
+                GetViewport().SetInputAsHandled(); // Prevent the click from interacting with other UI elements.
             }
             else
             {
@@ -59,6 +60,10 @@ public partial class InfoWindow : Control
         _routeList.RemoveItem(AllRoutes.IndexOf(Route));
         Route.Delete();
         QueueFree();
+    }
+
+    private void _on_edit_button_pressed()
+    {
     }
 
     public override void _ExitTree()
