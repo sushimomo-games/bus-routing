@@ -7,7 +7,7 @@ using static LevelState;
 using static RouteCreationStep;
 using static Path;
 
-public partial class RouteCreationHandler : Area2D
+public partial class RoadNodeArea : Area2D
 {
     /// <summary>
     /// This exists so that we do not need to add a Route to LevelState until

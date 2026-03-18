@@ -10,6 +10,9 @@ using System;
 /// </summary>
 public partial class LevelState : Node
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static Node CurrentLevel { get; set; }
 
     /// <summary>

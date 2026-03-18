@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://btvj3err7vmtr" path="res://assets/bus-stop.png" id="2_e0gyx"]
 [ext_resource type="PackedScene" uid="uid://jxdx0w5h5cxi" path="res://bus-stop/walk_radius.tscn" id="3_6mx4d"]
 [ext_resource type="Script" uid="uid://ffmnen4viup1" path="res://bus-stop/BusStopDeletor.cs" id="4_6mx4d"]
-[ext_resource type="PackedScene" uid="uid://blx7ra67cgl0e" path="res://ui/route-creation/RouteCreationHandler.tscn" id="4_e0gyx"]
+[ext_resource type="PackedScene" uid="uid://o6lvivmce3jd" path="res://road/road-node/road-node-area.tscn" id="4_6rec7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0n3gx"]
 radius = 11.0
@@ -25,7 +25,7 @@ collision_mask = 32
 [node name="WalkRadiusSprite" parent="WalkRadius" index="1"]
 visible = false
 
-[node name="RouteCreationHandler" parent="." instance=ExtResource("4_e0gyx")]
+[node name="RoadNodeArea" parent="." instance=ExtResource("4_6rec7")]
 
 [node name="Deletor" type="Area2D" parent="."]
 editor_description = "This node will delete the bus stop upon right click."
