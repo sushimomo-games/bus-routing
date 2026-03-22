@@ -26,22 +26,11 @@ public enum RouteCreationStep
 /// </summary>
 public partial class EditorState : Node
 {
-    /// <summary>
-    /// The temporary line segment that follows the cursor during route creation.
-    /// </summary>
-    public static Line2D RoutePreviewLine { get; set; }
-
     private static RouteCreationStep? _currentRouteCreationStep = RouteCreationStep.NotCreating;
     public static RouteCreationStep? CurrentRouteCreationStep 
     { 
         get => _currentRouteCreationStep; 
         set => _currentRouteCreationStep = value; 
-    }
-
-    private static void RemovePreviewLine()
-    {
-        RoutePreviewLine?.QueueFree();
-        RoutePreviewLine = null;
     }
 
     private static EditorTool _activeTool = EditorTool.None;
@@ -57,14 +46,13 @@ public partial class EditorState : Node
             }
             else
             {
-                RemovePreviewLine();
                 CurrentRouteCreationStep = null;
             }
         }
     }
 
     /// <summary>
-    /// The route currently selected in the editor for editing or inspection.
+    /// The route currently selected in the editor for inspection or inspection.
     /// </summary>
     public static Route SelectedRoute { get; set; }
 

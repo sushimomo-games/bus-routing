@@ -2,10 +2,10 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 using static EditorState;
-using static LineFactory;
 using static LevelState;
 using static RouteCreationStep;
 using static Path;
+using static RouteEditor;
 
 public partial class RoadNodeArea : Area2D
 {
@@ -26,15 +26,15 @@ public partial class RoadNodeArea : Area2D
 
     private void DrawPreviewLine()
     {
-        if (RoutePreviewLine == null)
+        if (MouseTrackingLine == null)
             return;
 
-        if (RoutePreviewLine.GetPointCount() < 2)
-            RoutePreviewLine.AddPoint(GetGlobalMousePosition());
+        if (MouseTrackingLine.GetPointCount() < 2)
+            MouseTrackingLine.AddPoint(GetGlobalMousePosition());
         else
-            RoutePreviewLine.SetPointPosition
+            MouseTrackingLine.SetPointPosition
             (
-                RoutePreviewLine.GetPointCount() - 1, GetGlobalMousePosition()
+                MouseTrackingLine.GetPointCount() - 1, GetGlobalMousePosition()
             );
     }
 
@@ -75,7 +75,6 @@ public partial class RoadNodeArea : Area2D
 
             if (selectedRoadNode is BusStop && CurrentRouteCreationStep == NotCreating)
             {
-                // StartRouteCreation(selectedRoadNode);
                 RouteEditor.StartRouteCreation(selectedRoadNode);
             }
         }
@@ -83,7 +82,7 @@ public partial class RoadNodeArea : Area2D
         {
             if (CurrentRouteCreationStep == AddingSubsequentStops || CurrentRouteCreationStep == EditingRoute)
             {
-                RouteEditor.ContinueRoute(selectedRoadNode);
+                RouteEditor.ContinueRouteCreation(selectedRoadNode);
             }
         }
     }
@@ -93,22 +92,22 @@ public partial class RoadNodeArea : Area2D
     /// </summary>
     /// <param name="route">The route to edit.</param>
     /// <param name="clickedNode">The node that was clicked </param>
-    private void StartRouteEdit(Route route, RoadNode clickedNode)
-    {
-        GD.Print($"Starting to edit route: {route.ColorName}");
-        CurrentRouteCreationStep = EditingRoute;
-        _routeBackup = [.. route.Path];
+    // private void StartRouteEdit(Route route, RoadNode clickedNode)
+    // {
+    //     GD.Print($"Starting to edit route: {route.ColorName}");
+    //     CurrentRouteCreationStep = EditingRoute;
+    //     _routeBackup = [.. route.Path];
 
-        if (route.Path.First() == clickedNode)
-        {
-            IsEditingFromStart = true;
-        }
+    //     if (route.Path.First() == clickedNode)
+    //     {
+    //         IsEditingFromStart = true;
+    //     }
 
-        // Setup the preview line
-        RoutePreviewLine = CreateLineAt(clickedNode.GlobalPosition);
-        RoutePreviewLine.DefaultColor = route.Color;
-        CurrentLevel.AddChild(RoutePreviewLine);
-    }
+    //     // Setup the preview line
+    //     RoutePreviewLine = CreateLineAt(clickedNode.GlobalPosition);
+    //     RoutePreviewLine.DefaultColor = route.Color;
+    //     CurrentLevel.AddChild(RoutePreviewLine);
+    // }
 
     private void FinalizeRouteEdit()
     {

@@ -59,7 +59,7 @@ public partial class Route : Node
     /// <summary>
     /// The visual representation of this route.
     /// </summary>
-    public RouteVisual Visual { get; set; }
+    public RouteVisual Visual { get; private set; }
 
     /// <summary>
     /// Appends a new node to the end of the route's path and visual line.
@@ -145,6 +145,9 @@ public partial class Route : Node
             ColorName = "Default";
             Color = Colors.White;
         }
+
+        Visual = new RouteVisual(this);
+        AddChild(Visual);
     }
 
     /// <summary>

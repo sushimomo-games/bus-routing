@@ -9,7 +9,12 @@ using static RouteCreationStep;
 
 public partial class RouteEditor : Node
 {
-    // public static List<RoadNode> SelectedRoadNodes { get; set; } = [];
+    /// <summary>
+    /// The temporary line segment that follows the player's cursor during
+    /// route creation.
+    /// </summary>
+    private static Line2D _mouseTrackingLine { get; set; }
+    public static Line2D MouseTrackingLine => _mouseTrackingLine;
 
     /// <summary>
     /// This exists so that we do not need to add a Route to LevelState until
@@ -19,57 +24,59 @@ public partial class RouteEditor : Node
 
     public static void StartRouteCreation(RoadNode startNode)
     {
-        GD.Print("Route creation started at: " + startNode.Name);
-        CurrentRouteCreationStep = RouteCreationStep.AddingSubsequentStops;
+        CurrentRouteCreationStep = AddingSubsequentStops;
         _routeInProgress = new Route();
+        CurrentLevel.AddChild(_routeInProgress);
         _routeInProgress.AppendNode(startNode);
 
-        _routeInProgress.Visual = new RouteVisual(_routeInProgress);
-        CurrentLevel.AddChild(_routeInProgress.Visual);
-
-        RoutePreviewLine = CreateLineAt(startNode.GlobalPosition);
-        RoutePreviewLine.DefaultColor = _routeInProgress.Color;
-        CurrentLevel.AddChild(RoutePreviewLine);
+        _mouseTrackingLine = CreateLineAt(startNode.GlobalPosition);
+        _mouseTrackingLine.DefaultColor = _routeInProgress.Color;
+        CurrentLevel.AddChild(_mouseTrackingLine);
     }
 
-    public static void ContinueRoute(RoadNode nextNode)
+    public static void ContinueRouteCreation(RoadNode nextNode)
     {
-        GD.Print("Continuing route to: " + nextNode.Name);
         _routeInProgress.AppendNode(nextNode);
-        RoutePreviewLine.SetPointPosition(RoutePreviewLine.GetPointCount() - 1, nextNode.GlobalPosition);
-        RoutePreviewLine.AddPoint(nextNode.GlobalPosition);
+        _mouseTrackingLine.SetPointPosition(_mouseTrackingLine.GetPointCount() - 1, nextNode.GlobalPosition);
+        _mouseTrackingLine.AddPoint(nextNode.GlobalPosition);
     }
 
     public static void FinalizeRouteCreation()
     {
         RoadNode lastNode = _routeInProgress.Path[^1];
+        ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
 
-        if (_routeInProgress.Path.Count < 2 || lastNode is not BusStop)
+        if (_routeInProgress.Path.Count < 2)
         {
-            CurrentLevel.GetNode<ErrorMessage>(Path.ErrorMessageNode).DisplayMessage("Route must start and end at a bus stop");
+            errorMessage.DisplayMessage("Route must have at least 2 stops");
+        }
+        if (lastNode is not BusStop)
+        {
+            errorMessage.DisplayMessage("Route must start and end at a bus stop");
             ReturnRouteColor(new KeyValuePair<string, Color>(_routeInProgress.ColorName, _routeInProgress.Color));
-            _routeInProgress.Visual?.QueueFree();
+            _routeInProgress.QueueFree();
         }
         else
         {
             LevelState.AllRoutes.Add(_routeInProgress);
-            var routeList = CurrentLevel.GetNode<ItemList>(Path.RouteListNode);
+            var routeList = CurrentLevel.GetNode<ItemList>(RouteListNode);
             routeList.AddItem(_routeInProgress.ColorName + " line");
-            LevelState.UpdateAllHouseStatuses();
-            LevelState.RefreshAllRouteVisuals();
+            UpdateAllHouseStatuses();
+            RefreshAllRouteVisuals();
         }
-        foreach (var route in LevelState.AllRoutes)
-        {
-            GD.Print($"Route {route.ColorName}: {string.Join(" -> ", route.Path.Select(n => n.Name))}");
-        }
+
         ResetState();
     }
 
+    /// <summary>
+    /// Resets all static state related to route creation and editing. Should
+    /// be be called after a route creation or edit process is completed.
+    /// </summary>
     private static void ResetState()
     {
         _routeInProgress = null;
-        RoutePreviewLine?.QueueFree();
-        RoutePreviewLine = null;
+        _mouseTrackingLine?.QueueFree();
+        _mouseTrackingLine = null;
         CurrentRouteCreationStep = NotCreating;
         IsEditingFromStart = false;
     }
