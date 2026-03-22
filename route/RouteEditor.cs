@@ -22,6 +22,25 @@ public partial class RouteEditor : Node
     /// </summary>
     private static Route _routeInProgress;
 
+    /// <summary>
+    /// Draws the Line2D segment that follows the player's cursor during
+    /// route creation/editing.
+    /// </summary>
+    /// <param name="mousePosition">The position of the mouse cursor.</param>
+    public static void DrawMouseTrackingLine(Vector2 mousePosition)
+    {
+        if (MouseTrackingLine == null)
+            return;
+
+        if (MouseTrackingLine.GetPointCount() < 2)
+            MouseTrackingLine.AddPoint(mousePosition);
+        else
+            MouseTrackingLine.SetPointPosition
+            (
+                MouseTrackingLine.GetPointCount() - 1, mousePosition
+            );
+    }
+
     public static void StartRouteCreation(RoadNode startNode)
     {
         CurrentRouteCreationStep = AddingSubsequentStops;
