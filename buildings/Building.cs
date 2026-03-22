@@ -43,7 +43,7 @@ public abstract partial class Building : Node2D
             }
             else if (ReachableBusStop is PreviewBusStop)
             {
-                shouldHighlight = LevelState.BusStopPlacement?.IsValidPlacement == true;
+                shouldHighlight = LevelState.LevelUI?.IsValidPlacement == true;
             }
         }
         

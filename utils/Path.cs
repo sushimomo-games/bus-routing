@@ -13,6 +13,6 @@ public static class Path
     public const string RoadEdgeScene = "res://road/edge/road-edge.tscn";
 
     // Nodes
-    public const string ErrorMessageNode = "EditorUI/UserInterface/ErrorMessage";
-    public const string RouteListNode = "EditorUI/UserInterface/BusLinesContainer/RouteList";
+    public const string ErrorMessageNode = "CanvasLayer/LevelUI/ErrorMessage";
+    public const string RouteListNode = "CanvasLayer/LevelUI/BusLinesContainer/RouteList";
 }

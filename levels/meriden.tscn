@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://c555l6jijlp43" path="res://levels/LevelInitializer.cs" id="1_udqdq"]
 [ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
 [ext_resource type="Shader" uid="uid://ybjfv0lje8x6" path="res://assets/shadow-shader.gdshader" id="2_8iv2f"]
-[ext_resource type="PackedScene" uid="uid://7sg83f1kmn6m" path="res://destination/destination.tscn" id="2_q4dte"]
-[ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://house/house.tscn" id="3_udqdq"]
+[ext_resource type="PackedScene" uid="uid://7sg83f1kmn6m" path="res://buildings/destination/destination.tscn" id="2_q4dte"]
+[ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://buildings/house/house.tscn" id="3_udqdq"]
 [ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="6_q4dte"]
-[ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/bus-stop-placement.tscn" id="8_8iv2f"]
+[ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/level-ui.tscn" id="8_8iv2f"]
 [ext_resource type="Texture2D" uid="uid://c4tx6cege7xq5" path="res://assets/gradient.tres" id="9_cbuuc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8iv2f"]
@@ -66,9 +66,9 @@ Neighbors = [NodePath("../RoadNode2"), NodePath("../IntersectionNode")]
 position = Vector2(167, 396)
 Neighbors = [NodePath("../RoadNode4"), NodePath("../RoadNode")]
 
-[node name="EditorUI" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="UserInterface" parent="EditorUI" instance=ExtResource("8_8iv2f")]
+[node name="LevelUI" parent="CanvasLayer" instance=ExtResource("8_8iv2f")]
 metadata/_edit_lock_ = true
 
 [node name="Houses" type="Node" parent="."]

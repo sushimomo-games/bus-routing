@@ -4,7 +4,7 @@ using System.Linq;
 using static LevelState;
 using static Path;
 
-public partial class BusStopPlacement : Control
+public partial class LevelUI : Control
 {
     private PackedScene _previewBusStopScene;
     private PackedScene _busStopScene;
@@ -21,7 +21,7 @@ public partial class BusStopPlacement : Control
 
     public override void _Ready()
     {
-        LevelState.BusStopPlacement = this;
+        LevelState.LevelUI = this;
         _previewBusStopScene = GD.Load<PackedScene>(PreviewBusStopScene);
         _busStopScene = GD.Load<PackedScene>(BusStopScene);
         _roadEdgeScene = GD.Load<PackedScene>(RoadEdgeScene);

@@ -1,13 +1,13 @@
 [gd_scene load_steps=7 format=3 uid="uid://dc2wfu8lyap4i"]
 
-[ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/bus-stop-placement/BusStopPlacement.cs" id="1_jkcl6"]
-[ext_resource type="Script" uid="uid://bgix2u8pqxx7u" path="res://ui/route-list/RouteList.cs" id="2_a4c7p"]
-[ext_resource type="Theme" uid="uid://bbd7hepk2p0vf" path="res://assets/ui-theme.tres" id="3_21wtw"]
-[ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="3_i8due"]
-[ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_femp0"]
-[ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/bus-stop-placement/BudgetLabel.cs" id="6_0oslf"]
+[ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/bus-stop-placement/LevelUI.cs" id="1_1jth6"]
+[ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
+[ext_resource type="Theme" uid="uid://bbd7hepk2p0vf" path="res://assets/ui-theme.tres" id="3_r2dcs"]
+[ext_resource type="Script" uid="uid://bgix2u8pqxx7u" path="res://ui/route-list/RouteList.cs" id="4_dkux8"]
+[ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
+[ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/bus-stop-placement/BudgetLabel.cs" id="6_07au4"]
 
-[node name="BusStopPlacement" type="Control"]
+[node name="LevelUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,9 +15,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("1_jkcl6")
+script = ExtResource("1_1jth6")
 
-[node name="AddStop" parent="." instance=ExtResource("3_i8due")]
+[node name="AddStop" parent="." instance=ExtResource("2_2q8no")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -35,7 +35,7 @@ anchor_top = 0.025
 anchor_right = 0.987
 anchor_bottom = 0.602
 grow_horizontal = 0
-theme = ExtResource("3_21wtw")
+theme = ExtResource("3_r2dcs")
 
 [node name="BusLinesHeader" type="Control" parent="BusLinesContainer"]
 layout_mode = 2
@@ -68,11 +68,11 @@ text = "Bus Lines"
 [node name="RouteList" type="ItemList" parent="BusLinesContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme = ExtResource("3_21wtw")
+theme = ExtResource("3_r2dcs")
 allow_reselect = true
-script = ExtResource("2_a4c7p")
+script = ExtResource("4_dkux8")
 
-[node name="ErrorMessage" parent="." instance=ExtResource("5_femp0")]
+[node name="ErrorMessage" parent="." instance=ExtResource("5_ftjap")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -92,6 +92,6 @@ offset_top = -27.0
 offset_right = 48.0
 offset_bottom = -4.0
 grow_vertical = 0
-script = ExtResource("6_0oslf")
+script = ExtResource("6_07au4")
 
 [connection signal="item_selected" from="BusLinesContainer/RouteList" to="BusLinesContainer/RouteList" method="_on_item_selected"]

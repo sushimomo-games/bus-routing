@@ -80,7 +80,7 @@ public partial class House : Building
         if (_infoPopup == null)
         {
             _infoPopup = _infoPopupScene.Instantiate<Control>();
-            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("EditorUI"); 
+            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer"); 
             canvasLayer.AddChild(_infoPopup);
             _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}";
             _infoPopup.Modulate = Modulate;
