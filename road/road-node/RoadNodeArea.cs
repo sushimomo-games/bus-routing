@@ -24,26 +24,12 @@ public partial class RoadNodeArea : Area2D
         );
     }
 
-    private void DrawPreviewLine()
-    {
-        if (MouseTrackingLine == null)
-            return;
-
-        if (MouseTrackingLine.GetPointCount() < 2)
-            MouseTrackingLine.AddPoint(GetGlobalMousePosition());
-        else
-            MouseTrackingLine.SetPointPosition
-            (
-                MouseTrackingLine.GetPointCount() - 1, GetGlobalMousePosition()
-            );
-    }
-
     public override void _Process(double delta)
     {
         if (CurrentRouteCreationStep == AddingSubsequentStops
          || CurrentRouteCreationStep == EditingRoute)
         {
-            DrawPreviewLine();
+            DrawMouseTrackingLine(GetGlobalMousePosition());
         }
     }
 
