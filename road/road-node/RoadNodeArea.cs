@@ -24,15 +24,6 @@ public partial class RoadNodeArea : Area2D
         );
     }
 
-    public override void _Process(double delta)
-    {
-        if (CurrentRouteCreationStep == AddingSubsequentStops
-         || CurrentRouteCreationStep == EditingRoute)
-        {
-            DrawMouseTrackingLine(GetGlobalMousePosition());
-        }
-    }
-
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsLeftMouseRelease()

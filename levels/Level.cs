@@ -1,12 +1,16 @@
 using Godot;
 using System;
 using static LevelState;
+using static RouteEditor;
+using static RouteCreationStep;
+using static EditorState;
 
 /// <summary>
 /// This script is to be attached to the root of each level.
+/// Handles level initialization and general level management tasks.
 /// See also <seealso cref="LevelState"/> for level state management.
 /// </summary>
-public partial class LevelInitializer : Node2D
+public partial class Level : Node2D
 {
     public override void _Ready()
     {
@@ -17,6 +21,16 @@ public partial class LevelInitializer : Node2D
 
         Budget = Cost.InitialBudget;
     }
+
+    public override void _Process(double delta)
+    {
+        if (CurrentRouteCreationStep == AddingSubsequentStops
+         || CurrentRouteCreationStep == EditingRoute)
+        {
+            DrawMouseTrackingLine(GetGlobalMousePosition());
+        }
+    }
+
 
     private void DrawRoadEdges()
     {

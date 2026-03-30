@@ -47,7 +47,7 @@ public partial class RouteList : ItemList
 
             var window = InfoWindowScene.Instantiate<InfoWindow>();
             window.Route = SelectedRoute;
-            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("EditorUI"); 
+            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer"); 
             canvasLayer.AddChild(window);
             OpenWindows[SelectedRoute.ID] = window;
         }

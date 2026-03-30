@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://b57fjtbl22yus"]
 
-[ext_resource type="Script" uid="uid://c555l6jijlp43" path="res://levels/LevelInitializer.cs" id="1_udqdq"]
+[ext_resource type="Script" uid="uid://c1omwi6nrcts5" path="res://levels/Level.cs" id="1_8iv2f"]
 [ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
 [ext_resource type="Shader" uid="uid://ybjfv0lje8x6" path="res://assets/shadow-shader.gdshader" id="2_8iv2f"]
 [ext_resource type="PackedScene" uid="uid://7sg83f1kmn6m" path="res://buildings/destination/destination.tscn" id="2_q4dte"]
@@ -17,7 +17,7 @@ shader_parameter/max_dist = 20.00000095
 shader_parameter/gradientTexture = ExtResource("9_cbuuc")
 
 [node name="Meriden" type="Node2D"]
-script = ExtResource("1_udqdq")
+script = ExtResource("1_8iv2f")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(426.86, 166)
