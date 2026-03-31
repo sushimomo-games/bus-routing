@@ -46,25 +46,25 @@ default_color = Color(0.61200005, 0.6642, 0.72, 1)
 
 [node name="IntersectionNodes" type="Node" parent="."]
 
-[node name="RoadNode" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+[node name="IntersectionNode1" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
 position = Vector2(164, 176)
-Neighbors = [NodePath("../RoadNode2"), NodePath("../IntersectionNode")]
+Neighbors = [NodePath("../IntersectionNode2"), NodePath("../RoadNode5")]
 
-[node name="RoadNode2" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+[node name="IntersectionNode2" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
 position = Vector2(376, 170)
-Neighbors = [NodePath("../RoadNode"), NodePath("../RoadNode3"), NodePath("../RoadNode4")]
+Neighbors = [NodePath("../IntersectionNode1"), NodePath("../RoadNode3"), NodePath("../RoadNode4")]
 
-[node name="RoadNode3" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+[node name="IntersectionNode3" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
 position = Vector2(519, 168)
-Neighbors = [NodePath("../RoadNode2")]
+Neighbors = [NodePath("../IntersectionNode2")]
 
-[node name="RoadNode4" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+[node name="IntersectionNode4" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
 position = Vector2(382, 387)
-Neighbors = [NodePath("../RoadNode2"), NodePath("../IntersectionNode")]
+Neighbors = [NodePath("../IntersectionNode2"), NodePath("../RoadNode5")]
 
-[node name="IntersectionNode" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+[node name="IntersectionNode5" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
 position = Vector2(167, 396)
-Neighbors = [NodePath("../RoadNode4"), NodePath("../RoadNode")]
+Neighbors = [NodePath("../IntersectionNode4"), NodePath("../RoadNode1")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
