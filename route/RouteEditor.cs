@@ -55,7 +55,9 @@ public partial class RouteEditor : Node
 
     public static void ContinueRouteCreation(RoadNode nextNode)
     {
-        _routeInProgress.AppendNode(nextNode);
+        GD.Print("tracking mouse");
+        if (_routeInProgress.Path.Last() != nextNode)
+            _routeInProgress.AppendNode(nextNode);
         _mouseTrackingLine.SetPointPosition(_mouseTrackingLine.GetPointCount() - 1, nextNode.GlobalPosition);
         _mouseTrackingLine.AddPoint(nextNode.GlobalPosition);
     }
