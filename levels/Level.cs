@@ -25,7 +25,7 @@ public partial class Level : Node2D
     public override void _Process(double delta)
     {
         if (CurrentRouteCreationStep == AddingSubsequentStops
-         || CurrentRouteCreationStep == EditingRoute)
+         || CurrentRouteCreationStep == ContinuingEdit)
         {
             DrawMouseTrackingLine(GetGlobalMousePosition());
         }

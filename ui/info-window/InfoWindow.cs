@@ -64,6 +64,9 @@ public partial class InfoWindow : Control
 
     private void _on_edit_button_pressed()
     {
+        CurrentRouteCreationStep = RouteCreationStep.BeginningEdit;
+        SelectedRoute = Route;
+        GD.Print($"Clicked edit button. Current step: {CurrentRouteCreationStep}. Selected route: {SelectedRoute.ColorName}");
     }
 
     public override void _ExitTree()

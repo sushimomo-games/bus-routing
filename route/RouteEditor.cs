@@ -55,7 +55,6 @@ public partial class RouteEditor : Node
 
     public static void ContinueRouteCreation(RoadNode nextNode)
     {
-        GD.Print("tracking mouse");
         if (_routeInProgress.Path.Last() != nextNode)
             _routeInProgress.AppendNode(nextNode);
         _mouseTrackingLine.SetPointPosition(_mouseTrackingLine.GetPointCount() - 1, nextNode.GlobalPosition);
@@ -85,7 +84,53 @@ public partial class RouteEditor : Node
             UpdateAllHouseStatuses();
             RefreshAllRouteVisuals();
         }
+        GD.Print("Final route: " + string.Join(", ", _routeInProgress.Path.Select(node => node.Name)));
+        ResetState();
+    }
 
+    /// <summary>
+    /// Begins editing an existing route from the specified start node.
+    /// </summary>
+    /// <param name="route">The route to edit.</param>
+    /// <param name="clickedNode">The node that was clicked </param>
+    public static void StartRouteEdit(Route route, RoadNode clickedNode)
+    {
+        GD.Print($"Starting to edit route: {route.ColorName}");
+        _routeInProgress = new Route();
+        foreach (RoadNode node in route.Path)
+        {
+            _routeInProgress.AppendNode(node);
+        }
+
+        if (route.Path.First() == clickedNode)
+        {
+            IsEditingFromStart = true;
+        }
+
+        // Setup the preview line
+        _mouseTrackingLine = CreateLineAt(clickedNode.GlobalPosition);
+        _mouseTrackingLine.DefaultColor = route.Color;
+        CurrentLevel.AddChild(_mouseTrackingLine);
+    }
+
+    public static void FinalizeRouteEdit()
+    {
+        var editedRoute = SelectedRoute;
+        // var firstNode = editedRoute.Path.First();
+        // var lastNode = editedRoute.Path.Last();
+
+        // if (editedRoute.Path.Count < 2 || firstNode is not BusStop || lastNode is not BusStop)
+        // {
+        //     editedRoute.SetPath(_routeInProgress.Path); // Revert to backup
+        // }
+        // else
+        {
+            GD.Print($"Route edit successful. New path: {string.Join(", ", _routeInProgress.Path.Select(node => node.Name))}");
+            SelectedRoute.SetPath(_routeInProgress.Path);
+            UpdateAllHouseStatuses();
+        }
+        LevelState.RefreshAllRouteVisuals();
+        _routeInProgress = null;
         ResetState();
     }
 

@@ -55,19 +55,19 @@ public partial class RouteList : ItemList
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsLeftMouseClick())
-        {
-            // Check if the click was outside the item list to deselect the current route
-            var mouseEvent = (InputEventMouseButton)@event;
-            Rect2 itemListRect = GetGlobalRect();
-            if (!itemListRect.HasPoint(mouseEvent.GlobalPosition))
-            {
-                DeselectAll();
-                if (SelectedRoute != null)
-                {
-                    SelectedRoute = null;
-                }
-            }
-        }
+        // if (@event.IsLeftMouseClick())
+        // {
+        //     // Check if the click was outside the item list to deselect the current route
+        //     var mouseEvent = (InputEventMouseButton)@event;
+        //     Rect2 itemListRect = GetGlobalRect();
+        //     if (!itemListRect.HasPoint(mouseEvent.GlobalPosition))
+        //     {
+        //         DeselectAll();
+        //         if (SelectedRoute != null)
+        //         {
+        //             SelectedRoute = null;
+        //         }
+        //     }
+        // }
     }
 }

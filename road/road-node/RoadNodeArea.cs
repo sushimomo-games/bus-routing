@@ -26,11 +26,11 @@ public partial class RoadNodeArea : Area2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsLeftMouseRelease()
-        && (CurrentRouteCreationStep == AddingSubsequentStops || CurrentRouteCreationStep == EditingRoute))
-        {
-            RouteEditor.FinalizeRouteCreation();
-        }
+        if (@event.IsLeftMouseRelease())
+            if (CurrentRouteCreationStep == AddingSubsequentStops)
+                RouteEditor.FinalizeRouteCreation();
+            else if (CurrentRouteCreationStep == ContinuingEdit)
+                RouteEditor.FinalizeRouteEdit();
     }
 
     private void _on_input_event(Node viewport, InputEvent @event, long shapeIdx)
@@ -39,71 +39,30 @@ public partial class RoadNodeArea : Area2D
 
         if (@event.IsLeftMouseClick())
         {
-        //     if (SelectedRoute != null)
-        //     {
-        //         if (SelectedRoute.Path.First() == clickedRoadNode
-        //          || SelectedRoute.Path.Last() == clickedRoadNode)
-        //         {
-        //             IsEditingFromStart = SelectedRoute.Path.First() == clickedRoadNode;
-        //             StartRouteEdit(SelectedRoute, clickedRoadNode);
-        //             return;
-        //         }
-        //     }
-
             if (selectedRoadNode is BusStop && CurrentRouteCreationStep == NotCreating)
             {
                 RouteEditor.StartRouteCreation(selectedRoadNode);
             }
+            if (CurrentRouteCreationStep == BeginningEdit)
+            {
+                GD.Print($"Clicked on node: {selectedRoadNode.Name} during route edit. {SelectedRoute.ColorName}");
+                if (SelectedRoute.Path.First() == selectedRoadNode
+                 || SelectedRoute.Path.Last() == selectedRoadNode)
+                {
+                    IsEditingFromStart = SelectedRoute.Path.First() == selectedRoadNode;
+                    RouteEditor.StartRouteEdit(SelectedRoute, selectedRoadNode);
+                    GD.Print($"Starting edit for: {SelectedRoute.ColorName}");
+                    CurrentRouteCreationStep = ContinuingEdit;
+                    return;
+                }
+            }
         }
         else if (@event is InputEventMouseMotion)
         {
-            if (CurrentRouteCreationStep == AddingSubsequentStops || CurrentRouteCreationStep == EditingRoute)
+            if (CurrentRouteCreationStep == AddingSubsequentStops || CurrentRouteCreationStep == ContinuingEdit)
             {
                 RouteEditor.ContinueRouteCreation(selectedRoadNode);
             }
         }
-    }
-
-    /// <summary>
-    /// Begins editing an existing route from the specified start node.
-    /// </summary>
-    /// <param name="route">The route to edit.</param>
-    /// <param name="clickedNode">The node that was clicked </param>
-    // private void StartRouteEdit(Route route, RoadNode clickedNode)
-    // {
-    //     GD.Print($"Starting to edit route: {route.ColorName}");
-    //     CurrentRouteCreationStep = EditingRoute;
-    //     _routeBackup = [.. route.Path];
-
-    //     if (route.Path.First() == clickedNode)
-    //     {
-    //         IsEditingFromStart = true;
-    //     }
-
-    //     // Setup the preview line
-    //     RoutePreviewLine = CreateLineAt(clickedNode.GlobalPosition);
-    //     RoutePreviewLine.DefaultColor = route.Color;
-    //     CurrentLevel.AddChild(RoutePreviewLine);
-    // }
-
-    private void FinalizeRouteEdit()
-    {
-        var editedRoute = SelectedRoute;
-        var firstNode = editedRoute.Path.First();
-        var lastNode = editedRoute.Path.Last();
-
-        if (editedRoute.Path.Count < 2 || firstNode is not BusStop || lastNode is not BusStop)
-        {
-            GD.Print("Reverting to: " + string.Join(" -> ", _routeBackup.Select(n => n.Name)));
-            editedRoute.SetPath(_routeBackup); // Revert to backup
-        }
-        else
-        {
-            GD.Print("Route edit successful.");
-            UpdateAllHouseStatuses();
-        }
-        LevelState.RefreshAllRouteVisuals();
-        _routeBackup = null;
-        // ResetState();
     }
 }

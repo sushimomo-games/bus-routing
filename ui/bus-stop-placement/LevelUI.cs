@@ -71,7 +71,6 @@ public partial class LevelUI : Control
             {
                 busStop.Modulate = Colors.LightGreen;
                 _highlightedStops.Add(busStop);
-                GD.Print($"Highlighting bus stop at {busStop.GlobalPosition}");
             }
         }
     }

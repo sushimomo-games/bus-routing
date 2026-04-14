@@ -18,7 +18,8 @@ public enum RouteCreationStep
     NotCreating,
     AddingFirstStop,
     AddingSubsequentStops,
-    EditingRoute
+    BeginningEdit,
+    ContinuingEdit
 }
 
 /// <summary>
@@ -52,7 +53,7 @@ public partial class EditorState : Node
     }
 
     /// <summary>
-    /// The route currently selected in the editor for inspection or inspection.
+    /// The route currently selected in the editor for inspection.
     /// </summary>
     public static Route SelectedRoute { get; set; }
 
