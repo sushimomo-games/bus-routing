@@ -116,14 +116,19 @@ public partial class RouteEditor : Node
     public static void FinalizeRouteEdit()
     {
         var editedRoute = SelectedRoute;
-        // var firstNode = editedRoute.Path.First();
-        // var lastNode = editedRoute.Path.Last();
+        var firstNode = _routeInProgress.Path.First();
+        var lastNode = _routeInProgress.Path.Last();
+        ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
 
-        // if (editedRoute.Path.Count < 2 || firstNode is not BusStop || lastNode is not BusStop)
-        // {
-        //     editedRoute.SetPath(_routeInProgress.Path); // Revert to backup
-        // }
-        // else
+        if (_routeInProgress.Path.Count < 2)
+        {
+            errorMessage.DisplayMessage("Route must have at least 2 stops");
+        }
+        else if (firstNode is not BusStop || lastNode is not BusStop)
+        {
+            errorMessage.DisplayMessage("Route must start and end at a bus stop");
+        }
+        else
         {
             GD.Print($"Route edit successful. New path: {string.Join(", ", _routeInProgress.Path.Select(node => node.Name))}");
             SelectedRoute.SetPath(_routeInProgress.Path);
