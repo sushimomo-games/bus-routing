@@ -24,13 +24,18 @@ public partial class InfoWindow : Control
     private ColorRect _topBarRect;
     private Button _deleteButton;
     private ItemList _routeList;
+    private Label _infoText;
 
     public override void _Ready()
     {
         Position = new Vector2(100, 100);
+
+        _routeList = GetTree().CurrentScene.GetNode<ItemList>(Path.RouteListNode);
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
-        _routeList = GetTree().CurrentScene.GetNode<ItemList>(Path.RouteListNode);
+        _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
+
+        _infoText.Text = $"Time to complete: {Route.TimeToComplete:F2} minutes";
     }
 
     public override void _Input(InputEvent @event)
