@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LevelState;
@@ -62,6 +63,11 @@ public partial class Route : Node
     public RouteVisual Visual { get; private set; }
 
     /// <summary>
+    /// Fired when the route's path has been changed.
+    /// </summary>
+    public event Action OnPathChanged;
+
+    /// <summary>
     /// Appends a new node to the end of the route's path and visual line.
     /// </summary>
     /// <param name="node">The Node2D to add to the path.</param>
@@ -71,6 +77,7 @@ public partial class Route : Node
 
         Path.Add(node);
         Visual?.AppendPoint(node.GlobalPosition);
+        OnPathChanged?.Invoke();
     }
 
     /// <summary>
@@ -83,6 +90,7 @@ public partial class Route : Node
 
         Path.Insert(0, node);
         Visual?.PrependPoint(node.GlobalPosition);
+        OnPathChanged?.Invoke();
     }
 
     /// <summary>
@@ -105,6 +113,7 @@ public partial class Route : Node
     {
         Path.Clear();
         Visual?.ClearPoints();
+        OnPathChanged?.Invoke();
     }
 
     /// <summary>
@@ -112,11 +121,14 @@ public partial class Route : Node
     /// </summary>
     public void SetPath(List<RoadNode> newPath)
     {
-        ClearPath();
+        Path.Clear();
+        Visual?.ClearPoints();
         foreach (var node in newPath)
         {
-            AppendNode(node);
+            Path.Add(node);
+            Visual?.AppendPoint(node.GlobalPosition);
         }
+        OnPathChanged?.Invoke();
     }
     
     public bool ContainsNode(RoadNode node)

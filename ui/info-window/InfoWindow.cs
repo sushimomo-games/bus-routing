@@ -35,6 +35,16 @@ public partial class InfoWindow : Control
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
 
+        // Subscribe to event
+        if (Route != null)
+        {
+            Route.OnPathChanged += UpdateInfoText;
+        }
+        UpdateInfoText();
+    }
+
+    private void UpdateInfoText()
+    {
         _infoText.Text = $"Time to complete: {Route.TimeToComplete:F2} minutes";
     }
 
@@ -70,12 +80,16 @@ public partial class InfoWindow : Control
     private void _on_edit_button_pressed()
     {
         CurrentRouteCreationStep = RouteCreationStep.BeginningEdit;
-        SelectedRoute = Route;
-        GD.Print($"Clicked edit button. Current step: {CurrentRouteCreationStep}. Selected route: {SelectedRoute.ColorName}");
     }
 
     public override void _ExitTree()
     {
         OpenWindows.Remove(Route.ID);
+
+        // Unsubscribe from the event to prevent memory leaks
+        if (Route != null)
+        {
+            Route.OnPathChanged -= UpdateInfoText;
+        }
     }
 }

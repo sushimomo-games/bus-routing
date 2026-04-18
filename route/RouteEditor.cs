@@ -130,7 +130,7 @@ public partial class RouteEditor : Node
         }
         else
         {
-            GD.Print($"Route edit successful. New path: {string.Join(", ", _routeInProgress.Path.Select(node => node.Name))}");
+            GD.Print($"Route edit successful. New path: {string.Join(", ", _routeInProgress.Path.Select(node => node.Name))}.");
             SelectedRoute.SetPath(_routeInProgress.Path);
             UpdateAllHouseStatuses();
         }

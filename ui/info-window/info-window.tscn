@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://btim145fqqpsw"]
+[gd_scene load_steps=6 format=3 uid="uid://btim145fqqpsw"]
 
 [ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
-[ext_resource type="Script" uid="uid://bxhr1pecyx0d6" path="res://ui/info-window/InfoText.cs" id="2_lgt8q"]
 [ext_resource type="PackedScene" uid="uid://dsvxlbhmpidvk" path="res://ui/buttons/close-button/close-button.tscn" id="2_tcp5j"]
 [ext_resource type="Script" uid="uid://bbqtd6br6c02d" path="res://ui/info-window/RouteName.cs" id="3_xu4vf"]
 
@@ -76,7 +75,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_lgt8q")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
-script = ExtResource("2_lgt8q")
 
 [connection signal="pressed" from="VBoxContainer/ButtonsRect/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonsRect/DeleteButton" to="." method="_on_delete_button_pressed"]
