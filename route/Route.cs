@@ -68,6 +68,11 @@ public partial class Route : Node
     public event Action OnPathChanged;
 
     /// <summary>
+    /// Fired when the route is deleted.
+    /// </summary>
+    public event Action OnDeleted;
+
+    /// <summary>
     /// Appends a new node to the end of the route's path and visual line.
     /// </summary>
     /// <param name="node">The Node2D to add to the path.</param>
@@ -173,6 +178,10 @@ public partial class Route : Node
         LevelState.ReturnRouteColor(new KeyValuePair<string, Color>(ColorName, Color));
         Visual?.QueueFree();
         UpdateAllHouseStatuses(); 
+        
+        // Invoke the event before queue-freeing
+        OnDeleted?.Invoke();
+        
         QueueFree();
     }
 }

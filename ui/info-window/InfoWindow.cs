@@ -39,6 +39,7 @@ public partial class InfoWindow : Control
         if (Route != null)
         {
             Route.OnPathChanged += UpdateInfoText;
+            Route.OnDeleted += QueueFree; // Destroys this window when Route triggers OnDeleted
         }
         UpdateInfoText();
     }
@@ -86,10 +87,11 @@ public partial class InfoWindow : Control
     {
         OpenWindows.Remove(Route.ID);
 
-        // Unsubscribe from the event to prevent memory leaks
+        // Unsubscribe from events to prevent memory leaks
         if (Route != null)
         {
             Route.OnPathChanged -= UpdateInfoText;
+            Route.OnDeleted -= QueueFree;
         }
     }
 }
