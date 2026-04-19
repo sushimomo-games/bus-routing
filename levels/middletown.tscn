@@ -1,0 +1,331 @@
+[gd_scene load_steps=10 format=3 uid="uid://c8x7p2l5m9k1"]
+
+[ext_resource type="Script" uid="uid://c1omwi6nrcts5" path="res://levels/Level.cs" id="1_8iv2f"]
+[ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
+[ext_resource type="Shader" uid="uid://ybjfv0lje8x6" path="res://assets/shadow-shader.gdshader" id="2_8iv2f"]
+[ext_resource type="PackedScene" uid="uid://7sg83f1kmn6m" path="res://buildings/destination/destination.tscn" id="2_q4dte"]
+[ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://buildings/house/house.tscn" id="3_udqdq"]
+[ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="6_q4dte"]
+[ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/level-ui.tscn" id="8_8iv2f"]
+[ext_resource type="Texture2D" uid="uid://c4tx6cege7xq5" path="res://assets/gradient.tres" id="9_cbuuc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8iv2f"]
+shader = ExtResource("2_8iv2f")
+shader_parameter/color = Color(0.09099999, 0.26801676, 0.65, 0.15686275)
+shader_parameter/angle = 124.9650059358375
+shader_parameter/max_dist = 20.00000095
+shader_parameter/gradientTexture = ExtResource("9_cbuuc")
+
+[node name="Middletown" type="Node2D"]
+script = ExtResource("1_8iv2f")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(600, 300)
+scale = Vector2(-63.42596, -2.0827663)
+script = ExtResource("2_4kxre")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+rotation = -4.1887903
+color = Color(1, 1, 1, 0.78431374)
+energy = 0.5
+
+[node name="RoadLines" type="Node2D" parent="."]
+modulate = Color(0.8342127, 0.83978754, 0.84536046, 1)
+self_modulate = Color(1, 1, 1, 0)
+
+[node name="Line2D" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(23, 52, 90, 52, 90, 120, 160, 120)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D2" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(90, 52, 90, 120, 90, 220, 90, 310)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D3" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(90, 120, 160, 120)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D4" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(90, 220, 160, 220)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D5" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(90, 310, 160, 310)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D6" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(160, 120, 160, 220, 160, 310)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D7" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(160, 120, 280, 60, 395, 60, 530, 60)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D8" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(395, 60, 395, 200, 395, 380)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D9" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(280, 200, 395, 200, 530, 200)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D10" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(160, 220, 280, 220, 395, 220, 530, 220)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D11" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(395, 380, 530, 380, 1065, 380)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D12" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(530, 60, 530, 200, 530, 220, 530, 380)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D13" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(530, 100, 700, 100, 970, 100)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D14" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(970, 100, 970, 200, 1065, 200)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D15" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(970, 200, 1200, 200, 1450, 160)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D16" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(1065, 200, 1065, 380)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D17" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(1200, 200, 1200, 250, 1350, 250)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D18" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(1350, 160, 1350, 250)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D19" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(280, 200, 280, 220)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D20" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(30, 310, 90, 310)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D21" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(90, 310, 90, 610, 200, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D22" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(200, 610, 395, 610, 530, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D23" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(30, 350, 30, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D24" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(30, 610, 200, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D25" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(395, 380, 395, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D26" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(530, 380, 530, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D27" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(1065, 380, 1065, 610, 1350, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="Line2D28" type="Line2D" parent="RoadLines"]
+points = PackedVector2Array(1350, 250, 1350, 610)
+width = 20.0
+default_color = Color(0.61200005, 0.6642, 0.72, 1)
+
+[node name="IntersectionNodes" type="Node" parent="."]
+
+[node name="IntersectionNode0" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(23, 52)
+Neighbors = [NodePath("../IntersectionNode1")]
+
+[node name="IntersectionNode1" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(90, 52)
+Neighbors = [NodePath("../IntersectionNode0"), NodePath("../IntersectionNode2")]
+
+[node name="IntersectionNode2" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(90, 120)
+Neighbors = [NodePath("../IntersectionNode1"), NodePath("../IntersectionNode3"), NodePath("../IntersectionNode6")]
+
+[node name="IntersectionNode3" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(90, 220)
+Neighbors = [NodePath("../IntersectionNode2"), NodePath("../IntersectionNode5"), NodePath("../IntersectionNode7")]
+
+[node name="IntersectionNode4" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(90, 310)
+Neighbors = [NodePath("../IntersectionNode3"), NodePath("../IntersectionNode8"), NodePath("../IntersectionNode11")]
+
+[node name="IntersectionNode5" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(160, 120)
+Neighbors = [NodePath("../IntersectionNode2"), NodePath("../IntersectionNode6"), NodePath("../IntersectionNode7")]
+
+[node name="IntersectionNode6" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(160, 220)
+Neighbors = [NodePath("../IntersectionNode5"), NodePath("../IntersectionNode3"), NodePath("../IntersectionNode7")]
+
+[node name="IntersectionNode7" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(160, 310)
+Neighbors = [NodePath("../IntersectionNode6"), NodePath("../IntersectionNode4")]
+
+[node name="IntersectionNode8" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(30, 310)
+Neighbors = [NodePath("../IntersectionNode4"), NodePath("../IntersectionNode9")]
+
+[node name="IntersectionNode9" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(30, 350)
+Neighbors = [NodePath("../IntersectionNode8"), NodePath("../IntersectionNode10")]
+
+[node name="IntersectionNode10" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(30, 610)
+Neighbors = [NodePath("../IntersectionNode9"), NodePath("../IntersectionNode11")]
+
+[node name="IntersectionNode11" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(200, 610)
+Neighbors = [NodePath("../IntersectionNode10"), NodePath("../IntersectionNode4"), NodePath("../IntersectionNode12")]
+
+[node name="IntersectionNode12" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(280, 60)
+Neighbors = [NodePath("../IntersectionNode5"), NodePath("../IntersectionNode13")]
+
+[node name="IntersectionNode13" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(395, 60)
+Neighbors = [NodePath("../IntersectionNode12"), NodePath("../IntersectionNode14"), NodePath("../IntersectionNode15")]
+
+[node name="IntersectionNode14" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(530, 60)
+Neighbors = [NodePath("../IntersectionNode13"), NodePath("../IntersectionNode15"), NodePath("../IntersectionNode16")]
+
+[node name="IntersectionNode15" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(395, 200)
+Neighbors = [NodePath("../IntersectionNode13"), NodePath("../IntersectionNode14"), NodePath("../IntersectionNode18")]
+
+[node name="IntersectionNode16" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(530, 100)
+Neighbors = [NodePath("../IntersectionNode14"), NodePath("../IntersectionNode22")]
+
+[node name="IntersectionNode17" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(280, 200)
+Neighbors = [NodePath("../IntersectionNode5"), NodePath("../IntersectionNode15"), NodePath("../IntersectionNode18")]
+
+[node name="IntersectionNode18" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(280, 220)
+Neighbors = [NodePath("../IntersectionNode17"), NodePath("../IntersectionNode6"), NodePath("../IntersectionNode19")]
+
+[node name="IntersectionNode19" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(395, 220)
+Neighbors = [NodePath("../IntersectionNode18"), NodePath("../IntersectionNode15"), NodePath("../IntersectionNode20")]
+
+[node name="IntersectionNode20" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(530, 220)
+Neighbors = [NodePath("../IntersectionNode19"), NodePath("../IntersectionNode14"), NodePath("../IntersectionNode16")]
+
+[node name="IntersectionNode21" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(395, 380)
+Neighbors = [NodePath("../IntersectionNode15"), NodePath("../IntersectionNode23"), NodePath("../IntersectionNode19")]
+
+[node name="IntersectionNode22" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(700, 100)
+Neighbors = [NodePath("../IntersectionNode16"), NodePath("../IntersectionNode24")]
+
+[node name="IntersectionNode23" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(530, 380)
+Neighbors = [NodePath("../IntersectionNode21"), NodePath("../IntersectionNode20"), NodePath("../IntersectionNode25")]
+
+[node name="IntersectionNode24" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(970, 100)
+Neighbors = [NodePath("../IntersectionNode22"), NodePath("../IntersectionNode26")]
+
+[node name="IntersectionNode25" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1065, 200)
+Neighbors = [NodePath("../IntersectionNode26"), NodePath("../IntersectionNode23"), NodePath("../IntersectionNode28")]
+
+[node name="IntersectionNode26" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(970, 200)
+Neighbors = [NodePath("../IntersectionNode24"), NodePath("../IntersectionNode25"), NodePath("../IntersectionNode27")]
+
+[node name="IntersectionNode27" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1200, 200)
+Neighbors = [NodePath("../IntersectionNode26"), NodePath("../IntersectionNode30"), NodePath("../IntersectionNode29")]
+
+[node name="IntersectionNode28" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1065, 380)
+Neighbors = [NodePath("../IntersectionNode25"), NodePath("../IntersectionNode21"), NodePath("../IntersectionNode31")]
+
+[node name="IntersectionNode29" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1200, 250)
+Neighbors = [NodePath("../IntersectionNode27"), NodePath("../IntersectionNode30")]
+
+[node name="IntersectionNode30" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1350, 160)
+Neighbors = [NodePath("../IntersectionNode27"), NodePath("../IntersectionNode29"), NodePath("../IntersectionNode32")]
+
+[node name="IntersectionNode31" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(395, 610)
+Neighbors = [NodePath("../IntersectionNode21"), NodePath("../IntersectionNode11"), NodePath("../IntersectionNode32")]
+
+[node name="IntersectionNode32" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(530, 610)
+Neighbors = [NodePath("../IntersectionNode31"), NodePath("../IntersectionNode23"), NodePath("../IntersectionNode33")]
+
+[node name="IntersectionNode33" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1350, 250)
+Neighbors = [NodePath("../IntersectionNode30"), NodePath("../IntersectionNode32"), NodePath("../IntersectionNode34")]
+
+[node name="IntersectionNode34" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
+position = Vector2(1350, 610)
+Neighbors = [NodePath("../IntersectionNode33"), NodePath("../IntersectionNode28")]
+
+[node name="BuildingShadows" type="Polygon2D" parent="."]
+editor_description = "Shader: https://github.com/jess-hammer/2d-shadows-demo-godot"
+material = SubResource("ShaderMaterial_8iv2f")
+polygon = PackedVector2Array(-9, -32, 1500, -32, 1500, 650, -9, 650)
+metadata/_edit_lock_ = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="LevelUI" parent="CanvasLayer" instance=ExtResource("8_8iv2f")]
+metadata/_edit_lock_ = true
+
+[node name="Houses" type="Node" parent="."]
+
+[node name="Destinations" type="Node" parent="."]
