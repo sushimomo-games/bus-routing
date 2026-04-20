@@ -1,11 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8x7p2l5nak1"]
+[gd_scene load_steps=12 format=3 uid="uid://c8x7p2l5nak1"]
 
 [ext_resource type="Script" uid="uid://c1omwi6nrcts5" path="res://levels/Level.cs" id="1_8iv2f"]
 [ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
 [ext_resource type="Shader" uid="uid://ybjfv0lje8x6" path="res://assets/shadow-shader.gdshader" id="2_8iv2f"]
 [ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="3_cjkv6"]
+[ext_resource type="Script" uid="uid://dbyi4m20fj0om" path="res://road/intersection/IntersectionNode.cs" id="4_5jioh"]
 [ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/level-ui.tscn" id="8_8iv2f"]
+[ext_resource type="Texture2D" uid="uid://gjwbpmv1y7b1" path="res://levels/level-mockup-assets/middletownbusgame.png" id="8_wyvd5"]
+[ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://buildings/house/house.tscn" id="8_yuoj6"]
 [ext_resource type="Texture2D" uid="uid://c4tx6cege7xq5" path="res://assets/gradient.tres" id="9_cbuuc"]
+[ext_resource type="Script" uid="uid://byktl3yiod0js" path="res://buildings/house/House.cs" id="9_m0wnc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8iv2f"]
 shader = ExtResource("2_8iv2f")
@@ -16,6 +20,7 @@ shader_parameter/gradientTexture = ExtResource("9_cbuuc")
 
 [node name="Middletown" type="Node2D"]
 script = ExtResource("1_8iv2f")
+metadata/_edit_lock_ = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(561, 272)
@@ -33,56 +38,305 @@ self_modulate = Color(1, 1, 1, 0)
 
 [node name="IntersectionNodes" type="Node" parent="."]
 
-[node name="IntersectionNode" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(279.1894, 112.589966)
-Neighbors = [NodePath("../@Node2D@23934"), NodePath("../@Node2D@23938")]
+[node name="IntersectionNode" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(462.9538, 175.88715)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27919"), NodePath("../@Node2D@27880"), NodePath("../@Node2D@27879"), NodePath("../@Node2D@27927")]
 
-[node name="@Node2D@23934" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(135, 319)
-Neighbors = [NodePath("../IntersectionNode"), NodePath("../@Node2D@23935")]
+[node name="@Node2D@27879" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(681.5999, 107.2923)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../IntersectionNode"), NodePath("../@Node2D@27881"), NodePath("../@Node2D@27928")]
 
-[node name="@Node2D@23935" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(415.3507, 433.22787)
-Neighbors = [NodePath("../@Node2D@23934"), NodePath("../@Node2D@23940"), NodePath("../@Node2D@23938"), NodePath("../@Node2D@23939")]
+[node name="@Node2D@27880" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(535.8987, 375.36713)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27881"), NodePath("../@Node2D@27883"), NodePath("../@Node2D@27885"), NodePath("../IntersectionNode")]
 
-[node name="@Node2D@23936" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(645.2145, 421.5151)
-Neighbors = [NodePath("../@Node2D@23937"), NodePath("../@Node2D@23940")]
+[node name="@Node2D@27881" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(746.4474, 300.8566)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27882"), NodePath("../@Node2D@27880"), NodePath("../@Node2D@27879")]
 
-[node name="@Node2D@23937" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(700.8502, 187.25906)
-Neighbors = [NodePath("../@Node2D@23940"), NodePath("../@Node2D@23936")]
+[node name="@Node2D@27882" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(828.29614, 478.6659)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27883"), NodePath("../@Node2D@27893"), NodePath("../@Node2D@27881")]
 
-[node name="@Node2D@23938" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(523, 250)
-Neighbors = [NodePath("../@Node2D@23935"), NodePath("../IntersectionNode")]
+[node name="@Node2D@27883" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(613.8197, 564.704)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27884"), NodePath("../@Node2D@27882"), NodePath("../@Node2D@27892"), NodePath("../@Node2D@27880")]
 
-[node name="@Node2D@23939" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(173.77417, 510.82516)
-Neighbors = [NodePath("../@Node2D@23935")]
+[node name="@Node2D@27884" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(413.96997, 642.8407)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27889"), NodePath("../@Node2D@27887"), NodePath("../@Node2D@27883"), NodePath("../@Node2D@27885")]
 
-[node name="@Node2D@23940" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(576.40173, 507.897)
-Neighbors = [NodePath("../@Node2D@23935"), NodePath("../@Node2D@23937"), NodePath("../@Node2D@23936")]
+[node name="@Node2D@27885" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(332.82797, 444.49362)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27884"), NodePath("../@Node2D@27886"), NodePath("../@Node2D@27880")]
 
-[node name="@Node2D@22214" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(531, 148)
-Neighbors = [NodePath("../@Node2D@22217"), NodePath("../@Node2D@22216")]
+[node name="@Node2D@27886" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(109.8681, 524.57526)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27885"), NodePath("../@Node2D@27887"), NodePath("../@Node2D@27904"), NodePath("../@Node2D@27919")]
 
-[node name="@Node2D@22215" parent="IntersectionNodes" instance=ExtResource("3_cjkv6")]
-position = Vector2(655, 158)
+[node name="@Node2D@27887" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(139.15009, 754.83826)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27888"), NodePath("../@Node2D@27884"), NodePath("../@Node2D@27886")]
 
-[node name="@Node2D@22216" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(626, 250)
-Neighbors = [NodePath("../@Node2D@22214")]
+[node name="@Node2D@27888" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(148, 880)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27895"), NodePath("../@Node2D@27889"), NodePath("../@Node2D@27887"), NodePath("../@Node2D@27903")]
 
-[node name="@Node2D@22217" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(465, 152)
-Neighbors = [NodePath("../@Node2D@22214"), NodePath("../@Node2D@22218")]
+[node name="@Node2D@27889" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(469, 766)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27888"), NodePath("../@Node2D@27890"), NodePath("../@Node2D@27892"), NodePath("../@Node2D@27884")]
 
-[node name="@Node2D@22218" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
-position = Vector2(279, 202)
-Neighbors = [NodePath("../@Node2D@22217")]
+[node name="@Node2D@27890" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(581, 1034)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27895"), NodePath("../@Node2D@27897"), NodePath("../@Node2D@27889"), NodePath("../@Node2D@27891")]
+
+[node name="@Node2D@27891" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(763, 955)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27890"), NodePath("../@Node2D@27898"), NodePath("../@Node2D@27894"), NodePath("../@Node2D@27892")]
+
+[node name="@Node2D@27892" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(662, 698)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27891"), NodePath("../@Node2D@27893"), NodePath("../@Node2D@27889"), NodePath("../@Node2D@27883")]
+
+[node name="@Node2D@27893" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(889.6057, 612.25366)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27894"), NodePath("../@Node2D@27892"), NodePath("../@Node2D@27882")]
+
+[node name="@Node2D@27894" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(998.0242, 837.6499)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27891"), NodePath("../@Node2D@27899"), NodePath("../@Node2D@27900"), NodePath("../@Node2D@27893")]
+
+[node name="@Node2D@27895" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(173.7138, 1076.0398)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27896"), NodePath("../@Node2D@27890"), NodePath("../@Node2D@27888")]
+
+[node name="@Node2D@27896" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(177.0138, 1125.5398)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27895")]
+
+[node name="@Node2D@27897" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(620.31384, 1120.0398)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27890")]
+
+[node name="@Node2D@27898" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(828.52747, 1123.2068)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27891")]
+
+[node name="@Node2D@27899" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1130.8895, 1120.067)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27894")]
+
+[node name="@Node2D@27900" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1868.5033, 851.1118)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27894"), NodePath("../@Node2D@27901"), NodePath("../@Node2D@27902")]
+
+[node name="@Node2D@27901" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1850.7875, 1124.8986)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27900")]
+
+[node name="@Node2D@27902" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(2185.1772, 861.7064)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27900")]
+
+[node name="@Node2D@27903" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-111.51312, 954.5122)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27888"), NodePath("../@Node2D@27904")]
+
+[node name="@Node2D@27904" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-180.4831, 635.0722)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27886"), NodePath("../@Node2D@27903"), NodePath("../@Node2D@27905"), NodePath("../@Node2D@27918")]
+
+[node name="@Node2D@27905" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-303.90308, 678.6322)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27904"), NodePath("../@Node2D@27906"), NodePath("../@Node2D@27909")]
+
+[node name="@Node2D@27906" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-607.61316, 775.4322)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27905"), NodePath("../@Node2D@27907"), NodePath("../@Node2D@27908")]
+
+[node name="@Node2D@27907" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-722.5631, 1120.2822)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27906")]
+
+[node name="@Node2D@27908" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-1058, 931)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27906")]
+
+[node name="@Node2D@27909" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-892.81805, 160.72726)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27905"), NodePath("../@Node2D@27910"), NodePath("../@Node2D@27911")]
+
+[node name="@Node2D@27910" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-1054.6362, 21.636368)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27909")]
+
+[node name="@Node2D@27911" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-868.27264, -69.27272)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27909"), NodePath("../@Node2D@27912"), NodePath("../@Node2D@27913")]
+
+[node name="@Node2D@27912" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-716.45447, -69.27272)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27911")]
+
+[node name="@Node2D@27913" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-847.33826, -301.87747)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27911"), NodePath("../@Node2D@27914"), NodePath("../@Node2D@27915")]
+
+[node name="@Node2D@27914" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-704.52637, -297.3617)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27913")]
+
+[node name="@Node2D@27915" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-832.66187, -460.49463)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27913"), NodePath("../@Node2D@27916"), NodePath("../@Node2D@27917")]
+
+[node name="@Node2D@27916" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-816.8566, -563.79333)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27915")]
+
+[node name="@Node2D@27917" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-1003.6975, -469.5262)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27915")]
+
+[node name="@Node2D@27918" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-201.72504, 394.69342)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27924"), NodePath("../@Node2D@27904"), NodePath("../@Node2D@27919")]
+
+[node name="@Node2D@27919" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(52.85266, 312.84473)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27918"), NodePath("../@Node2D@27886"), NodePath("../IntersectionNode"), NodePath("../@Node2D@27923")]
+
+[node name="@Node2D@27920" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-190, -561)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27922")]
+
+[node name="@Node2D@27921" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-434, -433)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27922")]
+
+[node name="@Node2D@27922" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-152, -438)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27925"), NodePath("../@Node2D@27923"), NodePath("../@Node2D@27920"), NodePath("../@Node2D@27921")]
+
+[node name="@Node2D@27923" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-63, -117)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27922"), NodePath("../@Node2D@27924"), NodePath("../@Node2D@27919")]
+
+[node name="@Node2D@27924" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(-226, -103)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27918"), NodePath("../@Node2D@27923")]
+
+[node name="@Node2D@27925" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(89, -474)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27927"), NodePath("../@Node2D@27926"), NodePath("../@Node2D@27922")]
+
+[node name="@Node2D@27926" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(8, -569)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27925")]
+
+[node name="@Node2D@27927" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(323.36145, -185.3357)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../IntersectionNode"), NodePath("../@Node2D@27925"), NodePath("../@Node2D@27929")]
+
+[node name="@Node2D@27928" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(451.9768, -565.3356)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27879")]
+
+[node name="@Node2D@27929" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1077.5153, -358.7715)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27927"), NodePath("../@Node2D@27930"), NodePath("../@Node2D@27935")]
+
+[node name="@Node2D@27930" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1087.2587, -315.89972)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27929"), NodePath("../@Node2D@27931"), NodePath("../@Node2D@27932")]
+
+[node name="@Node2D@27931" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1169.1049, -333.43817)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27930"), NodePath("../@Node2D@27936")]
+
+[node name="@Node2D@27932" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1120.3871, -2.156189)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27930"), NodePath("../@Node2D@27933")]
+
+[node name="@Node2D@27933" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1282.1305, -31.386963)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27932"), NodePath("../@Node2D@27934"), NodePath("../@Node2D@27936")]
+
+[node name="@Node2D@27934" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1323.0536, 218.04883)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27933")]
+
+[node name="@Node2D@27935" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1580.19, -543.1487)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27929"), NodePath("../@Node2D@27937")]
+
+[node name="@Node2D@27936" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(1590.908, -103.71283)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27933"), NodePath("../@Node2D@27931"), NodePath("../@Node2D@27937")]
+
+[node name="@Node2D@27937" type="Node2D" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("3_cjkv6")]
+position = Vector2(2128.9487, -200.17438)
+script = ExtResource("4_5jioh")
+Neighbors = [NodePath("../@Node2D@27935"), NodePath("../@Node2D@27936")]
 
 [node name="BuildingShadows" type="Polygon2D" parent="."]
 editor_description = "Shader: https://github.com/jess-hammer/2d-shadows-demo-godot"
@@ -98,3 +352,31 @@ metadata/_edit_lock_ = true
 [node name="Houses" type="Node" parent="."]
 
 [node name="Destinations" type="Node" parent="."]
+
+[node name="Buildings" type="Node2D" parent="."]
+
+[node name="House" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.7533145, 0.94448626, 0.76774603, 1)
+position = Vector2(422, 219)
+rotation = -1.9006639
+script = ExtResource("9_m0wnc")
+
+[node name="@Node2D@27964" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+position = Vector2(520, 185.99998)
+rotation = 1.2695053
+script = ExtResource("9_m0wnc")
+
+[node name="@Node2D@27965" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+position = Vector2(539, 246.99997)
+rotation = 1.2456688
+script = ExtResource("9_m0wnc")
+
+[node name="@Node2D@27966" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+position = Vector2(558, 299)
+rotation = 1.2104564
+script = ExtResource("9_m0wnc")
+
+[node name="Middletownbusgame" type="Sprite2D" parent="."]
+position = Vector2(567, 283)
+texture = ExtResource("8_wyvd5")
+metadata/_edit_lock_ = true
