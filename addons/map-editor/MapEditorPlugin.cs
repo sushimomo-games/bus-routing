@@ -27,8 +27,8 @@ public partial class MapEditorPlugin : EditorPlugin
         _modeSelector = new OptionButton();
         _modeSelector.AddItem("Road: Place Nodes", (int)ToolMode.PlaceRoad);
         _modeSelector.AddItem("Road: Connect Nodes", (int)ToolMode.ConnectRoad);
-        _modeSelector.AddItem("Build: House DNU", (int)ToolMode.PlaceHouse);
-        _modeSelector.AddItem("Build: Buisness DNU", (int)ToolMode.PlaceDestination);
+        _modeSelector.AddItem("Building: Place House", (int)ToolMode.PlaceHouse);
+        _modeSelector.AddItem("Building: Place Destination", (int)ToolMode.PlaceDestination);
 
         _modeSelector.Visible = false;
 
@@ -75,45 +75,39 @@ public partial class MapEditorPlugin : EditorPlugin
 
             ToolMode currentMode = (ToolMode)_modeSelector.Selected;
 
-            switch (currentMode)
+            if (currentMode == ToolMode.ConnectRoad)
             {
-                case ToolMode.PlaceRoad:
-                    CreateRoadNode(sceneRoot, worldPos);
-                    break;
-                case ToolMode.ConnectRoad:
-                    HandleConnection(sceneRoot, worldPos);
-                    break;
+                HandleConnection(sceneRoot, worldPos);
+            }
+            else
+            {
+                PlaceScene(sceneRoot, worldPos, currentMode);
             }
             return true;
         }
         return false;
     }
 
-    private void CreateRoadNode(Node sceneRoot, Vector2 worldPos)
+    private void PlaceScene(Node sceneRoot, Vector2 worldPos, ToolMode mode)
     {
-        Node container = sceneRoot.FindChild("IntersectionNodes", true, false);
+        if (!_scenes.ContainsKey(mode) || _scenes[mode] == null) return;
+        string containerName = (mode == ToolMode.PlaceRoad) ? "IntersectionNodes" : "Buildings";
+        Node container = sceneRoot.FindChild(containerName, true, false);
 
         if (container == null)
         {
-            container = new Node { Name = "IntersectionNodes" };
+            container = new Node2D { Name = containerName };
             sceneRoot.AddChild(container);
             container.Owner = sceneRoot;
-            GD.Print("Created 'IntersectionNodes' container.");
+            GD.Print($"Created {containerName} container.");
         }
 
-        if (_scenes[ToolMode.PlaceRoad] == null)
-        {
-            GD.PrintErr("CRITICAL: Intersection.tscn could not be loaded at res://Intersection.tscn");
-            return;
-        }
+        var instance = _scenes[mode].Instantiate<Node2D>();
+        container.AddChild(instance);
+        instance.Owner = sceneRoot;
+        instance.GlobalPosition = worldPos;
 
-        var newNode = _scenes[ToolMode.PlaceRoad].Instantiate<IntersectionNode>();
-
-        container.AddChild(newNode);
-        newNode.Owner = sceneRoot;
-        newNode.GlobalPosition = worldPos;
-
-        GD.Print($"Placed new Node under {container.Name}.");
+        GD.Print($"Placed {mode} at {worldPos}");
     }
 
     private void HandleConnection(Node sceneRoot, Vector2 worldPos)
