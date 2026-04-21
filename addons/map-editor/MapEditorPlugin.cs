@@ -1,5 +1,6 @@
 #if TOOLS
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,10 @@ public partial class MapEditorPlugin : EditorPlugin
     private OptionButton _modeSelector;
     private Button _toggleBtn;
     private bool _toolActive = false;
+
+    private Node2D _currentPlacingInstance = null;
+    private Vector2 _placementPosition =Vector2.Zero;
+
     private RoadNode _connectionSource = null;
     private enum ToolMode { PlaceRoad, ConnectRoad, PlaceHouse, PlaceDestination }
 
@@ -67,29 +72,54 @@ public partial class MapEditorPlugin : EditorPlugin
     public override bool _ForwardCanvasGuiInput(InputEvent @event)
     {
         if (!_toolActive) return false;
-        if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left && mb.CtrlPressed)
-        {
-            var sceneRoot = EditorInterface.Singleton.GetEditedSceneRoot();
-            if (sceneRoot == null) return false;
-            Vector2 worldPos = EditorInterface.Singleton.GetEditorViewport2D().GetFinalTransform().AffineInverse() * mb.Position;
 
+        if (@event is InputEventMouseButton input && input.ButtonIndex == MouseButton.Left && input.CtrlPressed)
+        {   
             ToolMode currentMode = (ToolMode)_modeSelector.Selected;
-
             if (currentMode == ToolMode.ConnectRoad)
             {
-                HandleConnection(sceneRoot, worldPos);
+                HandleInputEvent(input, HandleConnection);
+            }
+            else if (currentMode == ToolMode.PlaceRoad)
+            {
+                HandleInputEvent(input, PlaceScene);
             }
             else
             {
-                PlaceScene(sceneRoot, worldPos, currentMode);
+                HandleInputEvent(input, PlaceScene);
             }
             return true;
         }
         return false;
     }
 
-    private void PlaceScene(Node sceneRoot, Vector2 worldPos, ToolMode mode)
+    private void HandleInputEvent(InputEventMouseButton input, Action<Node, Vector2> OnInputPressed = null, Action<Node, Vector2> OnInputReleased = null)
     {
+        var sceneRoot = EditorInterface.Singleton.GetEditedSceneRoot();
+    
+        if (sceneRoot == null)
+        {
+            GD.PrintErr("Scene Root is not found. Exiting Input Event");
+            return;
+        }
+        
+        Vector2 eventPos = EditorInterface.Singleton.GetEditorViewport2D().GetFinalTransform().AffineInverse() * input.Position;
+
+        if (input.Pressed)
+        {
+            OnInputPressed?.Invoke(sceneRoot, eventPos);
+        }
+        else
+        {
+            OnInputReleased?.Invoke(sceneRoot, eventPos);
+        }
+    }
+
+
+
+    private void PlaceScene(Node sceneRoot, Vector2 worldPos)
+    {
+        ToolMode mode = (ToolMode)_modeSelector.Selected;
         if (!_scenes.ContainsKey(mode) || _scenes[mode] == null) return;
         string containerName = (mode == ToolMode.PlaceRoad) ? "IntersectionNodes" : "Buildings";
         Node container = sceneRoot.FindChild(containerName, true, false);
