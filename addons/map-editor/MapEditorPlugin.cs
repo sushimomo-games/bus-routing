@@ -11,10 +11,8 @@ public partial class MapEditorPlugin : EditorPlugin
     private OptionButton _modeSelector;
     private Button _toggleBtn;
     private bool _toolActive = false;
-
     private Node2D _currentPlacingInstance = null;
-    private Vector2 _placementPosition =Vector2.Zero;
-
+    private Vector2 _placementPosition = Vector2.Zero;
     private RoadNode _connectionSource = null;
     private enum ToolMode { PlaceRoad, ConnectRoad, PlaceHouse, PlaceDestination }
 
@@ -68,76 +66,85 @@ public partial class MapEditorPlugin : EditorPlugin
         }
         GD.Print(_toolActive ? "Road Mode: ON" : "Road Mode: OFF");
     }
-
     public override bool _ForwardCanvasGuiInput(InputEvent @event)
     {
         if (!_toolActive) return false;
-
-        if (@event is InputEventMouseButton input && input.ButtonIndex == MouseButton.Left && input.CtrlPressed)
+        if (@event is InputEventMouseButton mb)
         {   
-            ToolMode currentMode = (ToolMode)_modeSelector.Selected;
-            if (currentMode == ToolMode.ConnectRoad)
-            {
-                HandleInputEvent(input, HandleConnection);
-            }
-            else if (currentMode == ToolMode.PlaceRoad)
-            {
-                HandleInputEvent(input, PlaceScene);
-            }
-            else
-            {
-                HandleInputEvent(input, PlaceScene);
-            }
+            if (mb.ButtonIndex == MouseButton.Left && mb.CtrlPressed && mb.Pressed) HandleMousePress(mb);
+            if (mb.IsReleased()) _currentPlacingInstance = null;
+            return true;
+        }
+        if (@event is InputEventMouseMotion mm && _currentPlacingInstance != null)
+        {   
+            HandleMouseMotion(mm);
             return true;
         }
         return false;
     }
 
-    private void HandleInputEvent(InputEventMouseButton input, Action<Node, Vector2> OnInputPressed = null, Action<Node, Vector2> OnInputReleased = null)
+
+    private void HandleMousePress(InputEventMouseButton input)
     {
+        ToolMode currentMode = (ToolMode)_modeSelector.Selected;
         var sceneRoot = EditorInterface.Singleton.GetEditedSceneRoot();
-    
         if (sceneRoot == null)
         {
             GD.PrintErr("Scene Root is not found. Exiting Input Event");
             return;
         }
-        
         Vector2 eventPos = EditorInterface.Singleton.GetEditorViewport2D().GetFinalTransform().AffineInverse() * input.Position;
+        _placementPosition = eventPos;
 
-        if (input.Pressed)
+        switch (currentMode)
         {
-            OnInputPressed?.Invoke(sceneRoot, eventPos);
+            case ToolMode.ConnectRoad:
+                HandleConnection(sceneRoot, eventPos);
+                break;
+            case ToolMode.PlaceRoad:
+                PlaceScene(sceneRoot, eventPos, currentMode);
+                break;
+            case ToolMode.PlaceHouse:
+                _currentPlacingInstance = PlaceScene(sceneRoot, eventPos, currentMode);
+                break;
+            case ToolMode.PlaceDestination:
+                _currentPlacingInstance = PlaceScene(sceneRoot, eventPos, currentMode);
+                break;
         }
-        else
-        {
-            OnInputReleased?.Invoke(sceneRoot, eventPos);
-        }
+
     }
 
-
-
-    private void PlaceScene(Node sceneRoot, Vector2 worldPos)
+    private void HandleMouseMotion(InputEventMouseMotion input)
     {
-        ToolMode mode = (ToolMode)_modeSelector.Selected;
-        if (!_scenes.ContainsKey(mode) || _scenes[mode] == null) return;
-        string containerName = (mode == ToolMode.PlaceRoad) ? "IntersectionNodes" : "Buildings";
-        Node container = sceneRoot.FindChild(containerName, true, false);
+        Vector2 eventPos = EditorInterface.Singleton.GetEditorViewport2D().GetFinalTransform().AffineInverse() * input.Position;
+        float angle = _placementPosition.AngleToPoint(eventPos);
+        _currentPlacingInstance.Rotation = angle - Mathf.Pi / 2;
+    }
 
-        if (container == null)
-        {
-            container = new Node2D { Name = containerName };
-            sceneRoot.AddChild(container);
-            container.Owner = sceneRoot;
-            GD.Print($"Created {containerName} container.");
-        }
+    private Node2D PlaceScene(Node sceneRoot, Vector2 worldPos, ToolMode mode)
+    {
+        if (!_scenes.ContainsKey(mode) || _scenes[mode] == null) return null;
+        string containerName = (mode == ToolMode.PlaceRoad) ? "IntersectionNodes" : "Buildings";
+        Node container = GetOrCreateContainer(sceneRoot, containerName);
 
         var instance = _scenes[mode].Instantiate<Node2D>();
         container.AddChild(instance);
         instance.Owner = sceneRoot;
         instance.GlobalPosition = worldPos;
 
-        GD.Print($"Placed {mode} at {worldPos}");
+        return instance;
+    }
+
+    private Node GetOrCreateContainer(Node sceneRoot, string name)
+    {
+        Node container = sceneRoot.FindChild(name, true, false);
+        if (container == null)
+        {
+            container = new Node2D { Name = name };
+            sceneRoot.AddChild(container);
+            container.Owner = sceneRoot;
+        }
+        return container;
     }
 
     private void HandleConnection(Node sceneRoot, Vector2 worldPos)
@@ -175,11 +182,7 @@ public partial class MapEditorPlugin : EditorPlugin
             _connectionSource = null;
         }
     }
-
-
-
-
-
+    
     private RoadNode FindNodeAtPosition(Node root, Vector2 pos)
     {
         return root.FindChildren("*", "Node2D", true, false)
