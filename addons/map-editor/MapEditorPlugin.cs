@@ -9,6 +9,7 @@ public partial class MapEditorPlugin : EditorPlugin
 {
     private Dictionary<ToolMode, PackedScene> _scenes = new();
     private OptionButton _modeSelector;
+    private OptionButton _colorSelector;
     private Button _toggleBtn;
     private bool _toolActive = false;
     private Node2D _currentPlacingInstance = null;
@@ -16,7 +17,11 @@ public partial class MapEditorPlugin : EditorPlugin
     private RoadNode _connectionSource = null;
     private enum ToolMode { PlaceRoad, ConnectRoad, PlaceHouse, PlaceDestination }
 
-    public override bool _Handles(GodotObject @object) => _toolActive;
+    public override bool _Handles(GodotObject @object)
+    {
+
+        return _toolActive;
+    }
     public override void _EnterTree()
     {
         _scenes[ToolMode.PlaceRoad] = GD.Load<PackedScene>("res://road/intersection/intersection-node.tscn");
@@ -28,15 +33,26 @@ public partial class MapEditorPlugin : EditorPlugin
         _toggleBtn.Toggled += OnToolToggled;
 
         _modeSelector = new OptionButton();
+        _modeSelector.ItemSelected += OnModeSelected;
         _modeSelector.AddItem("Road: Place Nodes", (int)ToolMode.PlaceRoad);
         _modeSelector.AddItem("Road: Connect Nodes", (int)ToolMode.ConnectRoad);
         _modeSelector.AddItem("Building: Place House", (int)ToolMode.PlaceHouse);
         _modeSelector.AddItem("Building: Place Destination", (int)ToolMode.PlaceDestination);
-
         _modeSelector.Visible = false;
+
+
+        _colorSelector = new OptionButton();
+        foreach (var color in RouteColors.ColorList)
+        {
+            _colorSelector.AddItem(color.Key);
+        }
+        _colorSelector.Visible = false;
+
+
 
         container.AddChild(_toggleBtn);
         container.AddChild(_modeSelector);
+        container.AddChild(_colorSelector);
 
         AddControlToContainer(CustomControlContainer.CanvasEditorMenu, container);
     }
@@ -55,28 +71,54 @@ public partial class MapEditorPlugin : EditorPlugin
         {
             parent.QueueFree();
         }
+        if (IsInstanceValid(_modeSelector))
+        {
+            _modeSelector.ItemSelected -= OnModeSelected;
+        }
     }
     private void OnToolToggled(bool toggled)
     {
         _toolActive = toggled;
         _connectionSource = null;
+
         if (_modeSelector != null)
         {
             _modeSelector.Visible = toggled;
         }
+        UpdateColorSelectorVisibility();
         GD.Print(_toolActive ? "Road Mode: ON" : "Road Mode: OFF");
+    }
+
+    private void OnModeSelected(long index)
+    {
+        UpdateColorSelectorVisibility();
+    }
+
+    private void UpdateColorSelectorVisibility()
+    {
+        if (!_toolActive || _modeSelector == null || _colorSelector == null)
+        {
+            _colorSelector.Visible = false;
+            return;
+        }
+
+        ToolMode currentMode = (ToolMode)_modeSelector.Selected;
+        bool isBuildingMode = currentMode == ToolMode.PlaceHouse ||
+                              currentMode == ToolMode.PlaceDestination;
+
+        _colorSelector.Visible = isBuildingMode;
     }
     public override bool _ForwardCanvasGuiInput(InputEvent @event)
     {
         if (!_toolActive) return false;
         if (@event is InputEventMouseButton mb)
-        {   
+        {
             if (mb.ButtonIndex == MouseButton.Left && mb.CtrlPressed && mb.Pressed) HandleMousePress(mb);
             if (mb.IsReleased()) _currentPlacingInstance = null;
             return true;
         }
         if (@event is InputEventMouseMotion mm && _currentPlacingInstance != null)
-        {   
+        {
             HandleMouseMotion(mm);
             return true;
         }
@@ -182,7 +224,7 @@ public partial class MapEditorPlugin : EditorPlugin
             _connectionSource = null;
         }
     }
-    
+
     private RoadNode FindNodeAtPosition(Node root, Vector2 pos)
     {
         return root.FindChildren("*", "Node2D", true, false)
