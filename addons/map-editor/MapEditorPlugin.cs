@@ -42,7 +42,7 @@ public partial class MapEditorPlugin : EditorPlugin
 
 
         _colorSelector = new OptionButton();
-        foreach (var color in RouteColors.ColorList)
+        foreach (var color in Building.BuildingColorPalette)
         {
             _colorSelector.AddItem(color.Key);
         }
@@ -80,6 +80,17 @@ public partial class MapEditorPlugin : EditorPlugin
     {
         _toolActive = toggled;
         _connectionSource = null;
+        if (toggled)
+        {
+            EditorInterface.Singleton.SetMainScreenEditor("2D");
+            EditorInterface.Singleton.GetSelection().Clear();
+
+            var root = EditorInterface.Singleton.GetEditedSceneRoot();
+            if (root != null)
+            {
+                EditorInterface.Singleton.GetSelection().AddNode(root);
+            }
+        }
 
         if (_modeSelector != null)
         {
@@ -173,6 +184,12 @@ public partial class MapEditorPlugin : EditorPlugin
         container.AddChild(instance);
         instance.Owner = sceneRoot;
         instance.GlobalPosition = worldPos;
+
+        if (instance is Building building)
+        {
+            string selectedColor = _colorSelector.GetItemText(_colorSelector.Selected);
+            building.BuildingColor = selectedColor;
+        }
 
         return instance;
     }

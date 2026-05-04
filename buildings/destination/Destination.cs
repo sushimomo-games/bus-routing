@@ -1,5 +1,6 @@
 using Godot;
 
+[Tool]
 public partial class Destination : Building
 {
     protected override Color HighlightFactor => new(1.7f, 1.7f, 1.7f, 1.0f);

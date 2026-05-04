@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
+[Tool]
 public partial class House : Building
 {
     private Sprite2D _checkSprite;
