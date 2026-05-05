@@ -137,6 +137,12 @@ public partial class House : Building
             // Find all bus stops reachable via walking (transfer)
             foreach (var nearbyStop in current.GetNearbyBusStops())
             {
+                // Only allow walking to stops that have at least one route attached
+                if (!LevelState.AllRoutes.Any(r => r.Path.Contains(nearbyStop)))
+                {
+                    continue;
+                }
+
                 if (visited.Add(nearbyStop))
                 {
                     queue.Enqueue(nearbyStop);
