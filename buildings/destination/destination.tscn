@@ -1,9 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://7sg83f1kmn6m"]
+[gd_scene load_steps=9 format=3 uid="uid://7sg83f1kmn6m"]
 
-[ext_resource type="Script" uid="uid://cyb77mad3a4ns" path="res://destination/Destination.cs" id="1_5asxf"]
+[ext_resource type="Script" uid="uid://cyb77mad3a4ns" path="res://buildings/destination/Destination.cs" id="1_5asxf"]
+[ext_resource type="Shader" uid="uid://d4jeeprslmf4r" path="res://assets/outline.gdshader" id="1_outline"]
 [ext_resource type="Texture2D" uid="uid://bq2fkk3mnlbf0" path="res://assets/business.png" id="2_5asxf"]
 [ext_resource type="PackedScene" uid="uid://d3qg57hamhtvr" path="res://bus-stop/detector/bus-stop-detector.tscn" id="2_p3ua0"]
 [ext_resource type="Texture2D" uid="uid://44rx2yml64r" path="res://assets/normal-maps/business-nm.png" id="3_dhpfj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o40wj"]
+shader = ExtResource("1_outline")
+shader_parameter/line_color = Color(0, 0, 0, 1)
+shader_parameter/line_thickness = 0.0
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_txwbo"]
 diffuse_texture = ExtResource("2_5asxf")
@@ -16,6 +22,7 @@ polygon = PackedVector2Array(-239.99997, -214.99998, -239.99997, 164.99998, -159
 script = ExtResource("1_5asxf")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_o40wj")
 scale = Vector2(0.2, 0.2)
 texture = SubResource("CanvasTexture_txwbo")
 

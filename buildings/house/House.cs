@@ -6,7 +6,6 @@ using System.Linq;
 public partial class House : Building
 {
     private Sprite2D _checkSprite;
-    protected override Color HighlightFactor => new(1.4f, 1.4f, 1.4f, 1.0f);
     private bool _isChecked;
     private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);
     private Control _infoPopup;

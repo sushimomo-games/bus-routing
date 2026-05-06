@@ -20,9 +20,9 @@ public abstract partial class Building : Node2D
     private string _selectedColorName = "White";
     private BusStopDetector _busStopDetector;
     private Sprite2D _buildingSprite;
-    private Color _originalColor;
-    private Color _targetColor;
-    private float _lerpSpeed = 10f;
+    private float _targetThickness;
+    private float _currentThickness;
+    private float _lerpSpeed = 15f;
 
     [Export(PropertyHint.Enum, "Red,Blue,Green,Yellow,White")]
     public string BuildingColor
@@ -41,13 +41,6 @@ public abstract partial class Building : Node2D
     /// </summary>
     public Node ReachableBusStop => _busStopDetector?.ReachableBusStop;
 
-    /// <summary>
-    /// The color multiplier to apply when a bus stop is in range.
-    /// Override in derived classes to customize highlighting intensity.
-    /// </summary>
-    protected abstract Color HighlightFactor { get; }
-
-
     public override void _Ready()
     {
         UpdateSpriteColor();
@@ -56,6 +49,10 @@ public abstract partial class Building : Node2D
         {
             _busStopDetector = GetNodeOrNull<BusStopDetector>("BusStopDetector");
             _buildingSprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+            if (_buildingSprite?.Material != null)
+            {
+                _buildingSprite.Material = (Material)_buildingSprite.Material.Duplicate();
+            }
         }
     }
 
@@ -78,23 +75,25 @@ public abstract partial class Building : Node2D
 
         if (shouldHighlight)
         {
-            _targetColor = _originalColor * HighlightFactor;
+            _targetThickness = 20.0f;
         }
         else
         {
-            _targetColor = _originalColor;
+            _targetThickness = 0.0f;
         }
 
-        _buildingSprite.Modulate = _buildingSprite.Modulate.Lerp(
-           _targetColor, (float)(delta * _lerpSpeed)
-       );
+        _currentThickness = Mathf.Lerp(_currentThickness, _targetThickness, (float)(delta * _lerpSpeed));
+        
+        if (_buildingSprite?.Material is ShaderMaterial shaderMat)
+        {
+            shaderMat.SetShaderParameter("line_thickness", _currentThickness);
+        }
     }
 
     private void UpdateSpriteColor()
     {
         if (BuildingColorPalette.TryGetValue(_selectedColorName, out Color newColor))
         {
-            _originalColor = newColor;
             this.Modulate = newColor;
             if (IsInsideTree())
             {
