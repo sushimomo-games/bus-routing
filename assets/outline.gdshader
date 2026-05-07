@@ -9,16 +9,20 @@ const vec2 OFFSETS[8] = {
 };
 
 void fragment() {
-    vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
-    float outline = 0.0;
-
-    for (int i = 0; i < 8; i++) {
-        outline += texture(TEXTURE, UV + size * OFFSETS[i]).a;
-    }
-
-    outline = min(outline, 1.0);
-
     vec4 base_color = texture(TEXTURE, UV) * COLOR;
 
-    COLOR = mix(base_color, line_color, outline - texture(TEXTURE, UV).a);
+    if (line_thickness < 0.1) {
+        COLOR = base_color;
+    } else { 
+        vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
+        float outline = 0.0;
+
+        for (int i = 0; i < 8; i++) {
+            outline += texture(TEXTURE, UV + size * OFFSETS[i]).a;
+        }
+
+        outline = min(outline, 1.0);
+
+        COLOR = mix(base_color, line_color, outline - texture(TEXTURE, UV).a);
+    }
 }

@@ -1,38 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://cwiepcsny2a7m"]
 
 [ext_resource type="Script" uid="uid://byktl3yiod0js" path="res://buildings/house/House.cs" id="1_05tlr"]
+[ext_resource type="Shader" uid="uid://d4jeeprslmf4r" path="res://assets/outline.gdshader" id="2_4q48n"]
 [ext_resource type="Texture2D" uid="uid://cqawfm0pi26ew" path="res://assets/house.png" id="2_nxes2"]
 [ext_resource type="PackedScene" uid="uid://d3qg57hamhtvr" path="res://bus-stop/detector/bus-stop-detector.tscn" id="3_t6m4b"]
 [ext_resource type="Texture2D" uid="uid://b00hifirxyl02" path="res://assets/check.svg" id="4_nxes2"]
 [ext_resource type="PackedScene" uid="uid://c2lauycuruhka" path="res://ui/info-popup/info-popup.tscn" id="6_4q48n"]
 
-[sub_resource type="Shader" id="Shader_4q48n"]
-code = "shader_type canvas_item;
-
-uniform vec4 line_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-uniform float line_thickness : hint_range(0, 10) = 0.0;
-
-const vec2 OFFSETS[8] = {
-	vec2(-1, -1), vec2(-1, 0), vec2(-1, 1), vec2(0, -1), vec2(0, 1), 
-	vec2(1, -1), vec2(1, 0), vec2(1, 1)
-};
-
-void fragment() {
-	vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
-	float outline = 0.0;
-	
-	for (int i = 0; i < 8; i++) {
-		outline += texture(TEXTURE, UV + size * OFFSETS[i]).a;
-	}
-	outline = min(outline, 1.0);
-	
-	vec4 base_color = texture(TEXTURE, UV) * COLOR;
-	COLOR = mix(base_color, line_color, outline - texture(TEXTURE, UV).a);
-}
-"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
-shader = SubResource("Shader_4q48n")
+shader = ExtResource("2_4q48n")
 shader_parameter/line_color = Color(0, 0, 0, 1)
 shader_parameter/line_thickness = 0.0
 
