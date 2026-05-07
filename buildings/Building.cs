@@ -75,7 +75,7 @@ public abstract partial class Building : Node2D
 
         if (shouldHighlight)
         {
-            _targetThickness = 20.0f;
+            _targetThickness = 4.0f;
         }
         else
         {
@@ -87,6 +87,7 @@ public abstract partial class Building : Node2D
         if (_buildingSprite?.Material is ShaderMaterial shaderMat)
         {
             shaderMat.SetShaderParameter("line_thickness", _currentThickness);
+            shaderMat.SetShaderParameter("sprite_scale", _buildingSprite.GlobalScale);
         }
     }
 
