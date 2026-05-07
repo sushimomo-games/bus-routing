@@ -56,7 +56,7 @@ public abstract partial class Building : Node2D
         }
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
         if (Engine.IsEditorHint()) return;
         bool shouldHighlight = false;

@@ -41,11 +41,12 @@ public partial class House : Building
         base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
         _checkSprite = GetNode<Sprite2D>("Check");
         LevelState.AllHouses.Add(this);
-        SetProcess(false);
     }
 
     public override void _Process(double delta)
     {
+        base._Process(delta); // Yes, we need this too.
+
         if (_infoPopup != null)
         {
             _infoPopup.GlobalPosition = GetViewport().GetMousePosition() + new Vector2(15, 15);
@@ -84,18 +85,13 @@ public partial class House : Building
             canvasLayer.AddChild(_infoPopup);
             _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}";
             _infoPopup.Modulate = Modulate;
-            SetProcess(true);
         }
     }
 
     private void _on_area_2d_mouse_exited()
     {
-        if (_infoPopup != null)
-        {
-            _infoPopup.QueueFree();
-            _infoPopup = null;
-            SetProcess(false);
-        }
+        _infoPopup?.QueueFree();
+        _infoPopup = null;
     }
 
     /// <summary>
