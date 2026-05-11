@@ -1,16 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwiepcsny2a7m"]
+[gd_scene load_steps=11 format=3 uid="uid://cwiepcsny2a7m"]
 
 [ext_resource type="Script" uid="uid://byktl3yiod0js" path="res://buildings/house/House.cs" id="1_05tlr"]
-[ext_resource type="Shader" uid="uid://d4jeeprslmf4r" path="res://assets/outline.gdshader" id="2_4q48n"]
+[ext_resource type="Shader" uid="uid://bkiw64o711wls" path="res://shaders/outline.gdshader" id="2_4q48n"]
 [ext_resource type="Texture2D" uid="uid://cqawfm0pi26ew" path="res://assets/house.png" id="2_nxes2"]
 [ext_resource type="PackedScene" uid="uid://d3qg57hamhtvr" path="res://bus-stop/detector/bus-stop-detector.tscn" id="3_t6m4b"]
 [ext_resource type="Texture2D" uid="uid://b00hifirxyl02" path="res://assets/check.svg" id="4_nxes2"]
 [ext_resource type="PackedScene" uid="uid://c2lauycuruhka" path="res://ui/info-popup/info-popup.tscn" id="6_4q48n"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4q48n"]
 shader = ExtResource("2_4q48n")
 shader_parameter/line_color = Color(0, 0, 0, 1)
 shader_parameter/line_thickness = 0.0
+shader_parameter/sprite_scale = Vector2(1, 1)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_1cpkg"]
+diffuse_texture = ExtResource("2_nxes2")
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_q8k63"]
 polygon = PackedVector2Array(-325, 180, 245, 180, 245, 98, 325, 98, 325, -98, 244, -98, 244, -180, -325, -180)
@@ -22,11 +26,11 @@ size = Vector2(36, 56)
 script = ExtResource("1_05tlr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_outline")
+material = SubResource("ShaderMaterial_4q48n")
 position = Vector2(0, 5.6843405e-14)
 rotation = 1.5707964
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_nxes2")
+texture = SubResource("CanvasTexture_1cpkg")
 region_rect = Rect2(0, 0, 650, 360)
 
 [node name="BusStopDetector" parent="." instance=ExtResource("3_t6m4b")]

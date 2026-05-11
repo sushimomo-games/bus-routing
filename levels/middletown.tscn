@@ -1,18 +1,23 @@
-[gd_scene load_steps=13 format=3 uid="uid://c8x7p2l5nak1"]
+[gd_scene load_steps=12 format=3 uid="uid://c8x7p2l5nak1"]
 
 [ext_resource type="Script" uid="uid://c1omwi6nrcts5" path="res://levels/Level.cs" id="1_8iv2f"]
 [ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
 [ext_resource type="Shader" uid="uid://ybjfv0lje8x6" path="res://assets/shadow-shader.gdshader" id="2_8iv2f"]
 [ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="3_cjkv6"]
 [ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/level-ui.tscn" id="8_8iv2f"]
-[ext_resource type="Script" uid="uid://byktl3yiod0js" path="res://buildings/house/House.cs" id="8_m0wnc"]
 [ext_resource type="Texture2D" uid="uid://gjwbpmv1y7b1" path="res://levels/level-mockup-assets/middletownbusgame.png" id="8_wyvd5"]
 [ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://buildings/house/house.tscn" id="8_yuoj6"]
 [ext_resource type="PackedScene" uid="uid://7sg83f1kmn6m" path="res://buildings/destination/destination.tscn" id="9_0cyv3"]
 [ext_resource type="Texture2D" uid="uid://c4tx6cege7xq5" path="res://assets/gradient.tres" id="9_cbuuc"]
-[ext_resource type="Script" uid="uid://cyb77mad3a4ns" path="res://buildings/destination/Destination.cs" id="10_olar6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8iv2f"]
+shader = ExtResource("2_8iv2f")
+shader_parameter/color = Color(0.09099999, 0.26801676, 0.65, 0.15686275)
+shader_parameter/angle = 124.9650059358375
+shader_parameter/max_dist = 20.00000095
+shader_parameter/gradientTexture = ExtResource("9_cbuuc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5jioh"]
 shader = ExtResource("2_8iv2f")
 shader_parameter/color = Color(0.09099999, 0.26801676, 0.65, 0.15686275)
 shader_parameter/angle = 124.9650059358375
@@ -320,98 +325,91 @@ position = Vector2(551, 271)
 rotation = 1.2104564
 BuildingColor = "Blue"
 
-[node name="@Node2D@30493" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30493" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(568.99994, 319)
 rotation = 1.3089969
-script = ExtResource("8_m0wnc")
 BuildingColor = "Blue"
 
-[node name="@Node2D@30947" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30947" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(433.7105, 273.31317)
 rotation = -1.8756434
-script = ExtResource("8_m0wnc")
 BuildingColor = "Blue"
 
-[node name="@Node2D@30948" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30948" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(452.98767, 308.78314)
 rotation = -1.9343234
-script = ExtResource("8_m0wnc")
 BuildingColor = "Blue"
 
-[node name="@Node2D@30949" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30949" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(473.807, 356.97604)
 rotation = -1.9049942
-script = ExtResource("8_m0wnc")
 BuildingColor = "Blue"
 
-[node name="@Node2D@30950" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30950" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(647.6052, 148.74997)
 rotation = -1.8991257
-script = ExtResource("8_m0wnc")
 BuildingColor = "Green"
 
-[node name="@Node2D@30951" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30951" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(664, 188.00005)
 rotation = -1.8946881
-script = ExtResource("8_m0wnc")
 BuildingColor = "Green"
 
-[node name="@Node2D@30952" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30952" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(676, 227.99997)
 rotation = -1.8850286
-script = ExtResource("8_m0wnc")
 BuildingColor = "Green"
 
-[node name="@Node2D@30953" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30953" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(692, 274)
 rotation = -1.858078
-script = ExtResource("8_m0wnc")
 BuildingColor = "Green"
 
-[node name="@Node2D@30954" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30954" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(1, 0.84313726, 0, 1)
 position = Vector2(624, 290)
 rotation = -0.32855153
-script = ExtResource("8_m0wnc")
 BuildingColor = "Yellow"
 
-[node name="@Node2D@30955" type="Node2D" parent="Buildings" instance=ExtResource("8_yuoj6")]
+[node name="@Node2D@30955" parent="Buildings" instance=ExtResource("8_yuoj6")]
 modulate = Color(1, 0.84313726, 0, 1)
 position = Vector2(587.00006, 183)
 rotation = -3.45259
-script = ExtResource("8_m0wnc")
 BuildingColor = "Yellow"
 
-[node name="Business" type="Node2D" parent="Buildings" instance=ExtResource("9_0cyv3")]
+[node name="Business" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(1, 0.84313726, 0, 1)
 position = Vector2(1802, 904.99994)
 rotation = -3.0333214
-script = ExtResource("10_olar6")
 BuildingColor = "Yellow"
 
-[node name="@Node2D@32827" type="Node2D" parent="Buildings" instance=ExtResource("9_0cyv3")]
+[node name="@Node2D@32827" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(1929, 917)
 rotation = -3.0554752
-script = ExtResource("10_olar6")
 BuildingColor = "Blue"
 
-[node name="@Node2D@32828" type="Node2D" parent="Buildings" instance=ExtResource("9_0cyv3")]
+[node name="@Node2D@32828" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(1158, 1068)
 rotation = 1.5707964
-script = ExtResource("10_olar6")
 BuildingColor = "Green"
 
 [node name="Middletownbusgame" type="Sprite2D" parent="."]
 position = Vector2(567, 283)
 texture = ExtResource("8_wyvd5")
+metadata/_edit_lock_ = true
+
+[node name="BuildingShadows2" type="Polygon2D" parent="."]
+editor_description = "Shader: https://github.com/jess-hammer/2d-shadows-demo-godot"
+material = SubResource("ShaderMaterial_5jioh")
+polygon = PackedVector2Array(-9, -32, 1927, 144, 2865, 1319, 115, 1234)
 metadata/_edit_lock_ = true
