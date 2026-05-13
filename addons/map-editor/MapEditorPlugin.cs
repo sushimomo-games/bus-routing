@@ -3,6 +3,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Path;
 
 [Tool]
 public partial class MapEditorPlugin : EditorPlugin
@@ -24,9 +25,9 @@ public partial class MapEditorPlugin : EditorPlugin
     }
     public override void _EnterTree()
     {
-        _scenes[ToolMode.PlaceRoad] = GD.Load<PackedScene>("res://road/intersection/intersection-node.tscn");
-        _scenes[ToolMode.PlaceHouse] = GD.Load<PackedScene>("res://buildings/house/house.tscn");
-        _scenes[ToolMode.PlaceDestination] = GD.Load<PackedScene>("res://buildings/destination/destination.tscn");
+        _scenes[ToolMode.PlaceRoad] = GD.Load<PackedScene>(IntersectionScene);
+        _scenes[ToolMode.PlaceHouse] = GD.Load<PackedScene>(HouseScene);
+        _scenes[ToolMode.PlaceDestination] = GD.Load<PackedScene>(DestinationScene);
 
         var container = new HBoxContainer();
         _toggleBtn = new Button { Text = "Road Tool", ToggleMode = true };
