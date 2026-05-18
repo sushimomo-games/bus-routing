@@ -25,9 +25,13 @@ polygon = PackedVector2Array(-325, 180, 245, 180, 245, 98, 325, 98, 325, -98, 24
 size = Vector2(36, 56)
 
 [node name="House" type="Node2D"]
+editor_description = "Z-index of sprite must be on layer 1 in order for the map editor plugin to function properly."
 script = ExtResource("1_05tlr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+editor_description = "Z-index must be on layer 1 in order for map editor plugin to function properly."
+visibility_layer = 512
+z_index = 1
 material = SubResource("ShaderMaterial_4q48n")
 position = Vector2(0, 5.6843405e-14)
 rotation = 1.5707964

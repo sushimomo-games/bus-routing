@@ -16,7 +16,10 @@ public partial class House : Building
         private set
         {
             _isChecked = value;
-            _checkSprite.Visible = value;
+            if (_checkSprite != null)
+            {
+                _checkSprite.Visible = value;
+            }
             if (value && _busUsageProbability < 0.05f)
             {
                 _busUsageProbability = 0.05f;
@@ -40,6 +43,7 @@ public partial class House : Building
     {
         base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
         _checkSprite = GetNode<Sprite2D>("Check");
+        _checkSprite.Visible = _isChecked;
         LevelState.AllHouses.Add(this);
     }
 

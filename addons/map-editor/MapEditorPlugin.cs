@@ -20,7 +20,6 @@ public partial class MapEditorPlugin : EditorPlugin
 
     public override bool _Handles(GodotObject @object)
     {
-
         return _toolActive;
     }
     public override void _EnterTree()
