@@ -31,6 +31,11 @@ public partial class RoadEdge: Area2D
     }
 
     /// <summary>
+    /// Distance between endpoints (A and B) of road edge.
+    /// </summary>
+    public float Weight => A.DistanceTo(B);
+
+    /// <summary>
     /// Sets the endpoints of the road edge, both in terms of position and
     /// associated nodes. It also registers the edge with any bus stops it connects to.
     /// </summary>
@@ -63,17 +68,4 @@ public partial class RoadEdge: Area2D
     {
         LevelState.AllRoadEdges.Remove(this);
     }
-
-    public override void _Process(double delta)
-    {
-        // foreach (var roadNode in LevelState.AllRoadNodes)
-        // {
-        //     GD.Print(roadNode.Name + "'s neighbors:");
-        //     foreach (var neighbor in roadNode.Neighbors)
-        //     {
-        //         GD.Print("\t" + neighbor.Name);
-        //     }
-        // }
-    }
-
 }
