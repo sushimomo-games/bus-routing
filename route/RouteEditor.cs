@@ -55,10 +55,12 @@ public partial class RouteEditor : Node
 
     public static void ContinueRouteCreation(RoadNode nextNode)
     {
-        if (_routeInProgress.Path.Last() == nextNode)
-        {
+        var lastNode = _routeInProgress.Path.Last();
+        if (lastNode == nextNode)
             return;
-        }
+        if (!lastNode.Neighbors.Contains(nextNode)) // should we be able to skip bus stops?
+            return;
+
         _routeInProgress.AppendNode(nextNode);
         _mouseTrackingLine.SetPointPosition(_mouseTrackingLine.GetPointCount() - 1, nextNode.GlobalPosition);
         _mouseTrackingLine.AddPoint(nextNode.GlobalPosition);
