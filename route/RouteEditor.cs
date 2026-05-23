@@ -74,6 +74,8 @@ public partial class RouteEditor : Node
         if (_routeInProgress.Path.Count < 2)
         {
             errorMessage.DisplayMessage("Route must have at least 2 stops");
+            ResetState();
+            return;
         }
         if (lastNode is not BusStop)
         {
