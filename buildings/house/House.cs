@@ -10,6 +10,8 @@ public partial class House : Building
     private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);
     private Control _infoPopup;
 
+    public Route CurrentItinerary { get; private set; }
+
     public bool IsChecked
     {
         get => _isChecked;
@@ -62,22 +64,24 @@ public partial class House : Building
         if (ReachableBusStop is not BusStop startStop)
         {
             IsChecked = false;
+            CurrentItinerary = null;
             return;
         }
 
-        var validDestinationStops = LevelState.AllDestinations
+        var validDestinations = LevelState.AllDestinations
             .Where(destination => destination.Modulate == Modulate
             && destination.ReachableBusStop is BusStop)
-            .Select(destination => (BusStop)destination.ReachableBusStop)
             .ToHashSet();
 
-        if (validDestinationStops.Count == 0)
+        if (validDestinations.Count == 0)
         {
             IsChecked = false;
+            CurrentItinerary = null;
             return;
         }
 
-        IsChecked = CanReachAnyDestination(startStop, validDestinationStops);
+        CurrentItinerary = GenerateRoute(startStop, validDestinations);
+        IsChecked = CurrentItinerary != null;
     }
 
     private void _on_area_2d_mouse_entered()
@@ -87,7 +91,7 @@ public partial class House : Building
             _infoPopup = _infoPopupScene.Instantiate<Control>();
             var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer"); 
             canvasLayer.AddChild(_infoPopup);
-            _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}";
+            _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}\n Itinerary: {(CurrentItinerary != null ? string.Join("\n", CurrentItinerary.GetDirections()) : "No route available")}";
             _infoPopup.Modulate = Modulate;
         }
     }
@@ -99,13 +103,17 @@ public partial class House : Building
     }
 
     /// <summary>
-    /// Uses BFS to determine if any destination bus stop is reachable from the start
-    /// bus stop via routes and walking transfers between nearby bus stops.
+    /// Uses BFS to determine the optimal route to any destination bus stop from the start
+    /// bus stop via bus lines and walking transfers between nearby bus stops.
     /// </summary>
-    private bool CanReachAnyDestination(BusStop start, HashSet<BusStop> destinations)
+    private Route GenerateRoute(BusStop start, HashSet<Destination> validDestinations)
     {
+        var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet();
+
         var visited = new HashSet<BusStop>();
         var queue = new Queue<BusStop>();
+        
+        var lineageMap = new Dictionary<BusStop, (BusStop Parent, RouteSegment Segment)>();
         
         queue.Enqueue(start);
         visited.Add(start);
@@ -114,12 +122,29 @@ public partial class House : Building
         {
             var current = queue.Dequeue();
 
-            if (destinations.Contains(current))
+            if (validDestinationStops.Contains(current))
             {
-                return true;
+                var segments = new List<RouteSegment>();
+                var backtrackNode = current;
+                
+                while (backtrackNode != start)
+                {
+                    var lineage = lineageMap[backtrackNode];
+                    segments.Add(lineage.Segment);
+                    backtrackNode = lineage.Parent;
+                }
+                
+                segments.Reverse();
+                
+                segments.Insert(0, new WalkSegment(this, start));
+                
+                var actualDestination = validDestinations.First(d => d.ReachableBusStop == current);
+                segments.Add(new WalkSegment(current, actualDestination));
+                
+                return new Route(segments);
             }
 
-            // Find all bus stops reachable via routes from current stop
+            // Find all bus stops reachable via bus line from current stop
             foreach (var busLine in LevelState.AllBusLines)
             {
                 if (!busLine.Path.Contains(current)) continue;
@@ -128,6 +153,7 @@ public partial class House : Building
                 {
                     if (visited.Add(node))
                     {
+                        lineageMap[node] = (current, new RideSegment(busLine, current, node));
                         queue.Enqueue(node);
                     }
                 }
@@ -144,11 +170,12 @@ public partial class House : Building
 
                 if (visited.Add(nearbyStop))
                 {
+                    lineageMap[nearbyStop] = (current, new WalkSegment(current, nearbyStop));
                     queue.Enqueue(nearbyStop);
                 }
             }
         }
 
-        return false;
+        return null;
     }
 }

@@ -11,7 +11,7 @@ using static LevelState;
 public partial class BusLine : Node
 {
     /// <summary>
-    /// A static counter to ensure every new busLine gets a unique ID.
+    /// A static counter to ensure every new bus line gets a unique ID.
     /// </summary>
     private static uint _nextID = 1;
 
@@ -25,7 +25,7 @@ public partial class BusLine : Node
     private float _timeToComplete;
 
     /// <summary>
-    /// The estimated minutes it takes to complete the busLine,
+    /// The estimated minutes it takes to complete the bus line,
     /// calculated as the sum of distances
     /// between consecutive nodes. 
     /// </summary>
@@ -43,7 +43,7 @@ public partial class BusLine : Node
     }
 
     /// <summary>
-    /// List of bus stops and intersection nodes that make up the busLine.
+    /// List of bus stops and intersection nodes that make up the bus line.
     /// </summary>
     public List<RoadNode> Path { get; set; }
 
@@ -53,22 +53,22 @@ public partial class BusLine : Node
     public string ColorName { get; private set; }
 
     /// <summary>
-    /// The color assigned to this busLine. Set by hex value or Godot Color constants.
+    /// The color assigned to this bus line. Set by hex value or Godot Color constants.
     /// </summary>
     public Color Color { get; private set; }
 
     /// <summary>
-    /// The visual representation of this busLine.
+    /// The visual representation of this bus line.
     /// </summary>
     public BusLineVisual Visual { get; private set; }
 
     /// <summary>
-    /// Fired when the busLine's path has been changed.
+    /// Fired when the bus line's path has been changed.
     /// </summary>
     public event Action OnPathChanged;
 
     /// <summary>
-    /// Fired when the busLine is deleted.
+    /// Fired when the bus line is deleted.
     /// </summary>
     public event Action OnDeleted;
 
@@ -179,7 +179,6 @@ public partial class BusLine : Node
         Visual?.QueueFree();
         UpdateAllHouseStatuses(); 
         
-        // Invoke the event before queue-freeing
         OnDeleted?.Invoke();
         
         QueueFree();
