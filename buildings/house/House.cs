@@ -120,11 +120,11 @@ public partial class House : Building
             }
 
             // Find all bus stops reachable via routes from current stop
-            foreach (var route in LevelState.AllRoutes)
+            foreach (var busLine in LevelState.AllBusLines)
             {
-                if (!route.Path.Contains(current)) continue;
+                if (!busLine.Path.Contains(current)) continue;
                 
-                foreach (var node in route.Path.OfType<BusStop>())
+                foreach (var node in busLine.Path.OfType<BusStop>())
                 {
                     if (visited.Add(node))
                     {
@@ -136,8 +136,8 @@ public partial class House : Building
             // Find all bus stops reachable via walking (transfer)
             foreach (var nearbyStop in current.GetNearbyBusStops())
             {
-                // Only allow walking to stops that have at least one route attached
-                if (!LevelState.AllRoutes.Any(r => r.Path.Contains(nearbyStop)))
+                // Only allow walking to stops that have at least one busLine attached
+                if (!LevelState.AllBusLines.Any(r => r.Path.Contains(nearbyStop)))
                 {
                     continue;
                 }

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/bus-stop-placement/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
 [ext_resource type="Theme" uid="uid://bbd7hepk2p0vf" path="res://assets/ui-theme.tres" id="3_r2dcs"]
-[ext_resource type="Script" uid="uid://bgix2u8pqxx7u" path="res://ui/route-list/RouteList.cs" id="4_dkux8"]
+[ext_resource type="Script" uid="uid://81xn8ckdt0nr" path="res://ui/bus-line-list/BusLineList.cs" id="4_1jth6"]
 [ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
 [ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/bus-stop-placement/BudgetLabel.cs" id="6_07au4"]
 
@@ -65,12 +65,12 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Bus Lines"
 
-[node name="RouteList" type="ItemList" parent="BusLinesContainer"]
+[node name="BusLineList" type="ItemList" parent="BusLinesContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_r2dcs")
 allow_reselect = true
-script = ExtResource("4_dkux8")
+script = ExtResource("4_1jth6")
 
 [node name="ErrorMessage" parent="." instance=ExtResource("5_ftjap")]
 layout_mode = 1
@@ -94,4 +94,4 @@ offset_bottom = -4.0
 grow_vertical = 0
 script = ExtResource("6_07au4")
 
-[connection signal="item_selected" from="BusLinesContainer/RouteList" to="BusLinesContainer/RouteList" method="_on_item_selected"]
+[connection signal="item_selected" from="BusLinesContainer/BusLineList" to="BusLinesContainer/BusLineList" method="_on_item_selected"]

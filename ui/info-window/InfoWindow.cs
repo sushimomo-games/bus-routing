@@ -6,9 +6,9 @@ using static LevelState;
 public partial class InfoWindow : Control
 {
     /// <summary>
-    /// The route that this info window is displaying information about.
+    /// The busLine that this info window is displaying information about.
     /// </summary>
-    public Route Route { get; set; }
+    public BusLine BusLine { get; set; }
 
     /// <summary>
     /// Whether or not this info window is currently being dragged by the user.
@@ -23,30 +23,30 @@ public partial class InfoWindow : Control
 
     private ColorRect _topBarRect;
     private Button _deleteButton;
-    private ItemList _routeList;
+    private ItemList _busLineList;
     private Label _infoText;
 
     public override void _Ready()
     {
         Position = new Vector2(100, 100);
 
-        _routeList = GetTree().CurrentScene.GetNode<ItemList>(Path.RouteListNode);
+        _busLineList = GetTree().CurrentScene.GetNode<ItemList>(Path.BusLineListNode);
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
 
         // Subscribe to event
-        if (Route != null)
+        if (BusLine != null)
         {
-            Route.OnPathChanged += UpdateInfoText;
-            Route.OnDeleted += QueueFree; // Destroys this window when Route triggers OnDeleted
+            BusLine.OnPathChanged += UpdateInfoText;
+            BusLine.OnDeleted += QueueFree; // Destroys this window when BusLine triggers OnDeleted
         }
         UpdateInfoText();
     }
 
     private void UpdateInfoText()
     {
-        _infoText.Text = $"Time to complete: {Route.TimeToComplete:F2} minutes";
+        _infoText.Text = $"Time to complete: {BusLine.TimeToComplete:F2} minutes";
     }
 
     public override void _Input(InputEvent @event)
@@ -73,25 +73,25 @@ public partial class InfoWindow : Control
 
     private void _on_delete_button_pressed()
     {
-        _routeList.RemoveItem(AllRoutes.IndexOf(Route));
-        Route.Delete();
+        _busLineList.RemoveItem(AllBusLines.IndexOf(BusLine));
+        BusLine.Delete();
         QueueFree();
     }
 
     private void _on_edit_button_pressed()
     {
-        CurrentRouteCreationStep = RouteCreationStep.BeginningEdit;
+        CurrentBusLineCreationStep = BusLineCreationStep.BeginningEdit;
     }
 
     public override void _ExitTree()
     {
-        OpenWindows.Remove(Route.ID);
+        OpenWindows.Remove(BusLine.ID);
 
         // Unsubscribe from events to prevent memory leaks
-        if (Route != null)
+        if (BusLine != null)
         {
-            Route.OnPathChanged -= UpdateInfoText;
-            Route.OnDeleted -= QueueFree;
+            BusLine.OnPathChanged -= UpdateInfoText;
+            BusLine.OnDeleted -= QueueFree;
         }
     }
 }

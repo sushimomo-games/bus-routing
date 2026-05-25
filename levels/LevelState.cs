@@ -18,7 +18,7 @@ public partial class LevelState : Node
     /// The bus stop placement UI component for the current level.
     /// </summary>
     public static LevelUI LevelUI { get; set; }
-    public static List<Route> AllRoutes { get; set; } = [];
+    public static List<BusLine> AllBusLines { get; set; } = [];
     public static List<House> AllHouses { get; set; } = [];
     public static List<Destination> AllDestinations { get; set; } = [];
     public static List<Node> AllBusStops { get; set; } = [];
@@ -41,9 +41,9 @@ public partial class LevelState : Node
         }
     }
 
-    private static List<KeyValuePair<string, Color>> _availableColors = new(RouteColors.ColorList);
+    private static List<KeyValuePair<string, Color>> _availableColors = new(BusLineColors.ColorList);
 
-    public static KeyValuePair<string, Color>? GetNextRouteColor()
+    public static KeyValuePair<string, Color>? GetNextBusLineColor()
     {
         if (_availableColors.Count == 0)
         {
@@ -59,9 +59,9 @@ public partial class LevelState : Node
     /// Returns a route color back to the pool of available colors.
     /// Call this when a route is deleted.
     /// </summary>
-    public static void ReturnRouteColor(KeyValuePair<string, Color> colorInfo)
+    public static void ReturnBusLineColor(KeyValuePair<string, Color> colorInfo)
     {
-        if (!RouteColors.ColorList.Contains(colorInfo) || _availableColors.Contains(colorInfo))
+        if (!BusLineColors.ColorList.Contains(colorInfo) || _availableColors.Contains(colorInfo))
         {
             return;
         }
@@ -73,11 +73,11 @@ public partial class LevelState : Node
     /// Call this when routes are added, removed, or modified to ensure
     /// proper offset calculations for shared road segments.
     /// </summary>
-    public static void RefreshAllRouteVisuals()
+    public static void RefreshAllBusLineVisuals()
     {
-        foreach (var route in AllRoutes)
+        foreach (var busLine in AllBusLines)
         {
-            route.Visual?.UpdateVisual();
+            busLine.Visual?.UpdateVisual();
         }
     }
 

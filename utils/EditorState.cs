@@ -2,18 +2,18 @@ using Godot;
 using System.Collections.Generic;
 
 /// <summary>
-/// Represents all possible states that the route editor can be in.
+/// Represents all possible states that the busLine editor can be in.
 /// </summary>
 public enum EditorTool
 {
     None,
-    NewRoute
+    NewBusLine
 }
 
 /// <summary>
-/// Represents the steps involved in creating a new route.
+/// Represents the steps involved in creating a new busLine.
 /// </summary>
-public enum RouteCreationStep
+public enum BusLineCreationStep
 {
     NotCreating,
     AddingFirstStop,
@@ -23,15 +23,15 @@ public enum RouteCreationStep
 }
 
 /// <summary>
-/// Holds the current state of the route editor and routes.
+/// Holds the current state of the busLine editor and routes.
 /// </summary>
 public partial class EditorState : Node
 {
-    private static RouteCreationStep? _currentRouteCreationStep = RouteCreationStep.NotCreating;
-    public static RouteCreationStep? CurrentRouteCreationStep 
+    private static BusLineCreationStep? _currentBusLineCreationStep = BusLineCreationStep.NotCreating;
+    public static BusLineCreationStep? CurrentBusLineCreationStep 
     { 
-        get => _currentRouteCreationStep; 
-        set => _currentRouteCreationStep = value; 
+        get => _currentBusLineCreationStep; 
+        set => _currentBusLineCreationStep = value; 
     }
 
     private static EditorTool _activeTool = EditorTool.None;
@@ -41,21 +41,21 @@ public partial class EditorState : Node
         set
         {
             _activeTool = value;
-            if (_activeTool == EditorTool.NewRoute)
+            if (_activeTool == EditorTool.NewBusLine)
             {
-                CurrentRouteCreationStep = RouteCreationStep.AddingFirstStop;
+                CurrentBusLineCreationStep = BusLineCreationStep.AddingFirstStop;
             }
             else
             {
-                CurrentRouteCreationStep = null;
+                CurrentBusLineCreationStep = null;
             }
         }
     }
 
     /// <summary>
-    /// The route currently selected in the editor for inspection.
+    /// The busLine currently selected in the editor for inspection.
     /// </summary>
-    public static Route SelectedRoute { get; set; }
+    public static BusLine SelectedBusLine { get; set; }
 
     public static bool IsEditingFromStart { get; set; }
 

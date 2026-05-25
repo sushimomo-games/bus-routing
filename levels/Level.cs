@@ -1,8 +1,8 @@
 using Godot;
 using System;
 using static LevelState;
-using static RouteEditor;
-using static RouteCreationStep;
+using static BusLineEditor;
+using static BusLineCreationStep;
 using static EditorState;
 
 /// <summary>
@@ -24,8 +24,8 @@ public partial class Level : Node2D
 
     public override void _Process(double delta)
     {
-        if (CurrentRouteCreationStep == AddingSubsequentStops
-         || CurrentRouteCreationStep == ContinuingEdit)
+        if (CurrentBusLineCreationStep == AddingSubsequentStops
+         || CurrentBusLineCreationStep == ContinuingEdit)
         {
             DrawMouseTrackingLine(GetGlobalMousePosition());
         }

@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Manages the visual representation of a route using a Line2D node.
-/// Handles offset calculations to prevent overlapping when multiple routes
+/// Manages the visual representation of a busLine using a Line2D node.
+/// Handles offset calculations to prevent overlapping when multiple busLines
 /// share the same road segments.
 /// </summary>
-public partial class RouteVisual : Node2D
+public partial class BusLineVisual : Node2D
 {
-    private Route _route;
+    private BusLine _busLine;
     private Line2D _line;
     
     /// <summary>
-    /// The width of the route line.
+    /// The width of the busLine line.
     /// </summary>
     public float LineWidth { get; set; } = 8.0f;
 
     /// <summary>
-    /// The spacing between parallel route lines when they share a segment.
+    /// The spacing between parallel busLine lines when they share a segment.
     /// </summary>
     public float LineSpacing { get; set; } = 8.0f;
 
-    public RouteVisual(Route route)
+    public BusLineVisual(BusLine busLine)
     {
-        _route = route;
+        _busLine = busLine;
         _line = new Line2D
         {
             Width = LineWidth,
-            DefaultColor = route.Color
+            DefaultColor = busLine.Color
         };
         AddChild(_line);
     }
@@ -39,14 +39,14 @@ public partial class RouteVisual : Node2D
     }
 
     /// <summary>
-    /// Rebuilds the entire visual from the route's current path, applying
-    /// offsets to prevent overlapping with other routes on shared segments.
+    /// Rebuilds the entire visual from the busLine's current path, applying
+    /// offsets to prevent overlapping with other busLines on shared segments.
     /// </summary>
     public void UpdateVisual()
     {
         _line.ClearPoints();
         
-        var path = _route.Path;
+        var path = _busLine.Path;
         if (path.Count == 0) return;
         if (path.Count == 1)
         {
@@ -89,7 +89,7 @@ public partial class RouteVisual : Node2D
     /// </summary>
     private void AddPointsAtIntersection(int nodeIndex)
     {
-        var path = _route.Path;
+        var path = _busLine.Path;
         Vector2 currentPos = path[nodeIndex].GlobalPosition;
         
         Vector2 prevPos = path[nodeIndex - 1].GlobalPosition;
@@ -168,48 +168,48 @@ public partial class RouteVisual : Node2D
     /// </summary>
     private float CalculateSegmentOffsetAmount(RoadNode nodeA, RoadNode nodeB)
     {
-        var routesOnSegment = GetRoutesOnSegment(nodeA, nodeB);
+        var busLinesOnSegment = GetBusLinesOnSegment(nodeA, nodeB);
         
-        if (routesOnSegment.Count <= 1)
+        if (busLinesOnSegment.Count <= 1)
         {
             return 0f;
         }
 
-        int slotIndex = routesOnSegment.IndexOf(_route);
+        int slotIndex = busLinesOnSegment.IndexOf(_busLine);
         if (slotIndex < 0) return 0f;
 
-        float totalWidth = (routesOnSegment.Count - 1) * LineSpacing;
+        float totalWidth = (busLinesOnSegment.Count - 1) * LineSpacing;
         float startOffset = -totalWidth / 2.0f;
         return startOffset + (slotIndex * LineSpacing);
     }
 
     /// <summary>
-    /// Gets all routes that pass through a given segment, sorted by route ID
+    /// Gets all busLines that pass through a given segment, sorted by busLine ID
     /// for consistent slot assignment.
     /// </summary>
-    private List<Route> GetRoutesOnSegment(RoadNode nodeA, RoadNode nodeB)
+    private List<BusLine> GetBusLinesOnSegment(RoadNode nodeA, RoadNode nodeB)
     {
-        var routes = new List<Route>();
+        var busLines = new List<BusLine>();
         
-        foreach (var route in LevelState.AllRoutes)
+        foreach (var busLine in LevelState.AllBusLines)
         {
-            if (RouteContainsSegment(route, nodeA, nodeB))
+            if (BusLineContainsSegment(busLine, nodeA, nodeB))
             {
-                routes.Add(route);
+                busLines.Add(busLine);
             }
         }
 
-        // Sort by route ID to ensure consistent slot assignment
-        routes = routes.OrderBy(r => r.ID).ToList();
-        return routes;
+        // Sort by busLine ID to ensure consistent slot assignment
+        busLines = busLines.OrderBy(r => r.ID).ToList();
+        return busLines;
     }
 
     /// <summary>
-    /// Checks if a route contains a segment between two nodes (in either direction).
+    /// Checks if a busLine contains a segment between two nodes (in either direction).
     /// </summary>
-    private bool RouteContainsSegment(Route route, RoadNode nodeA, RoadNode nodeB)
+    private bool BusLineContainsSegment(BusLine busLine, RoadNode nodeA, RoadNode nodeB)
     {
-        var path = route.Path;
+        var path = busLine.Path;
         for (int i = 0; i < path.Count - 1; i++)
         {
             if ((path[i] == nodeA && path[i + 1] == nodeB) ||
@@ -224,7 +224,7 @@ public partial class RouteVisual : Node2D
     /// <summary>
     /// Adds a point to the end of the visual line.
     /// Note: For proper offset handling, prefer calling UpdateVisual() after
-    /// modifying the route path.
+    /// modifying the busLine path.
     /// </summary>
     public void AppendPoint(Vector2 position)
     {
@@ -235,7 +235,7 @@ public partial class RouteVisual : Node2D
     /// <summary>
     /// Adds a point to the beginning of the visual line.
     /// Note: For proper offset handling, prefer calling UpdateVisual() after
-    /// modifying the route path.
+    /// modifying the busLine path.
     /// </summary>
     public void PrependPoint(Vector2 position)
     {

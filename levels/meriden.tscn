@@ -74,8 +74,10 @@ BuildingColor = "Yellow"
 position = Vector2(488, 119)
 
 [node name="GreenHouse" parent="Houses" instance=ExtResource("3_udqdq")]
+modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(426, 220.99997)
 rotation = 3.117607
+BuildingColor = "Green"
 
 [node name="Destinations" type="Node" parent="."]
 
@@ -83,8 +85,10 @@ rotation = 3.117607
 position = Vector2(229, 111)
 
 [node name="Business" parent="Destinations" instance=ExtResource("2_q4dte")]
-position = Vector2(102.99999, 243)
+modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
+position = Vector2(92.99999, 245.00002)
 rotation = -1.5860153
+BuildingColor = "Green"
 
 [node name="Business2" parent="Destinations" instance=ExtResource("2_q4dte")]
 position = Vector2(231, 250)

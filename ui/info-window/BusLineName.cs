@@ -2,10 +2,10 @@ using Godot;
 using System;
 using static EditorState;
 
-public partial class RouteName : Label
+public partial class BusLineName : Label
 {
     public override void _Ready()
     {
-        Text = $"{SelectedRoute.ColorName} Line";
+        Text = $"{SelectedBusLine.ColorName} Line";
     }
 }

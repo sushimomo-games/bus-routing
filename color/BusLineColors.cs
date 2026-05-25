@@ -5,7 +5,7 @@ using System.Collections.Generic;
 /// A collection of key-value pairs to associate color names with their
 /// values.
 /// </summary>
-public static class RouteColors
+public static class BusLineColors
 {
     public static readonly List<KeyValuePair<string, Color>> ColorList =
     [

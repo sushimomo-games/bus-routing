@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using static EditorState;
 using static LevelState;
-using static RouteCreationStep;
+using static BusLineCreationStep;
 using static Path;
-using static RouteEditor;
+using static BusLineEditor;
 
 public partial class RoadNodeArea : Area2D
 {
-    private Route _tempRoute; // Used during route creation before the route is finalized.
-    /// <summary>
-    /// Backup of the route's path for reverting invalid edits.
-    /// </summary>
-    private static List<RoadNode> _routeBackup;
+    private BusLine _tempBusLine; // Used during busLine creation before the busLine is finalized.
+
     private ErrorMessage errorMessage;
 
     public override void _Ready()
@@ -27,10 +24,10 @@ public partial class RoadNodeArea : Area2D
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsLeftMouseRelease())
-            if (CurrentRouteCreationStep == AddingSubsequentStops)
-                RouteEditor.FinalizeRouteCreation();
-            else if (CurrentRouteCreationStep == ContinuingEdit)
-                RouteEditor.FinalizeRouteEdit();
+            if (CurrentBusLineCreationStep == AddingSubsequentStops)
+                BusLineEditor.FinalizeBusLineCreation();
+            else if (CurrentBusLineCreationStep == ContinuingEdit)
+                BusLineEditor.FinalizeBusLineEdit();
     }
 
     private void _on_input_event(Node viewport, InputEvent @event, long shapeIdx)
@@ -39,29 +36,29 @@ public partial class RoadNodeArea : Area2D
 
         if (@event.IsLeftMouseClick())
         {
-            if (selectedRoadNode is BusStop && CurrentRouteCreationStep == NotCreating)
+            if (selectedRoadNode is BusStop && CurrentBusLineCreationStep == NotCreating)
             {
-                RouteEditor.StartRouteCreation(selectedRoadNode);
+                BusLineEditor.StartBusLineCreation(selectedRoadNode);
             }
-            if (CurrentRouteCreationStep == BeginningEdit)
+            if (CurrentBusLineCreationStep == BeginningEdit)
             {
-                GD.Print($"Clicked on node: {selectedRoadNode.Name} during route edit. {SelectedRoute.ColorName}");
-                if (SelectedRoute.Path.First() == selectedRoadNode
-                 || SelectedRoute.Path.Last() == selectedRoadNode)
+                GD.Print($"Clicked on node: {selectedRoadNode.Name} during busLine edit. {SelectedBusLine.ColorName}");
+                if (SelectedBusLine.Path.First() == selectedRoadNode
+                 || SelectedBusLine.Path.Last() == selectedRoadNode)
                 {
-                    IsEditingFromStart = SelectedRoute.Path.First() == selectedRoadNode;
-                    RouteEditor.StartRouteEdit(SelectedRoute, selectedRoadNode);
-                    GD.Print($"Starting edit for: {SelectedRoute.ColorName}");
-                    CurrentRouteCreationStep = ContinuingEdit;
+                    IsEditingFromStart = SelectedBusLine.Path.First() == selectedRoadNode;
+                    BusLineEditor.StartBusLineEdit(SelectedBusLine, selectedRoadNode);
+                    GD.Print($"Starting edit for: {SelectedBusLine.ColorName}");
+                    CurrentBusLineCreationStep = ContinuingEdit;
                     return;
                 }
             }
         }
         else if (@event is InputEventMouseMotion)
         {
-            if (CurrentRouteCreationStep == AddingSubsequentStops || CurrentRouteCreationStep == ContinuingEdit)
+            if (CurrentBusLineCreationStep == AddingSubsequentStops || CurrentBusLineCreationStep == ContinuingEdit)
             {
-                RouteEditor.ContinueRouteCreation(selectedRoadNode);
+                BusLineEditor.ContinueBusLineCreation(selectedRoadNode);
             }
         }
     }

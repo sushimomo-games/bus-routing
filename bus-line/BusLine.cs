@@ -5,13 +5,13 @@ using System.Linq;
 using static LevelState;
 
 /// <summary>
-/// Represents a route consisting of a sequence of bus stops and its visual
+/// Represents a busLine consisting of a sequence of bus stops and its visual
 /// representation.
 /// </summary>
-public partial class Route : Node
+public partial class BusLine : Node
 {
     /// <summary>
-    /// A static counter to ensure every new route gets a unique ID.
+    /// A static counter to ensure every new busLine gets a unique ID.
     /// </summary>
     private static uint _nextID = 1;
 
@@ -25,7 +25,7 @@ public partial class Route : Node
     private float _timeToComplete;
 
     /// <summary>
-    /// The estimated minutes it takes to complete the route,
+    /// The estimated minutes it takes to complete the busLine,
     /// calculated as the sum of distances
     /// between consecutive nodes. 
     /// </summary>
@@ -43,37 +43,37 @@ public partial class Route : Node
     }
 
     /// <summary>
-    /// List of bus stops and intersection nodes that make up the route.
+    /// List of bus stops and intersection nodes that make up the busLine.
     /// </summary>
     public List<RoadNode> Path { get; set; }
 
     /// <summary>
-    /// The name of the color assigned to this route opposed to the hex value.
+    /// The name of the color assigned to this busLine opposed to the hex value.
     /// </summary>
     public string ColorName { get; private set; }
 
     /// <summary>
-    /// The color assigned to this route. Set by hex value or Godot Color constants.
+    /// The color assigned to this busLine. Set by hex value or Godot Color constants.
     /// </summary>
     public Color Color { get; private set; }
 
     /// <summary>
-    /// The visual representation of this route.
+    /// The visual representation of this busLine.
     /// </summary>
-    public RouteVisual Visual { get; private set; }
+    public BusLineVisual Visual { get; private set; }
 
     /// <summary>
-    /// Fired when the route's path has been changed.
+    /// Fired when the busLine's path has been changed.
     /// </summary>
     public event Action OnPathChanged;
 
     /// <summary>
-    /// Fired when the route is deleted.
+    /// Fired when the busLine is deleted.
     /// </summary>
     public event Action OnDeleted;
 
     /// <summary>
-    /// Appends a new node to the end of the route's path and visual line.
+    /// Appends a new node to the end of the busLine's path and visual line.
     /// </summary>
     /// <param name="node">The Node2D to add to the path.</param>
     public void AppendNode(RoadNode node)
@@ -86,7 +86,7 @@ public partial class Route : Node
     }
 
     /// <summary>
-    /// Inserts a new node at the beginning of the route's path and visual line.
+    /// Inserts a new node at the beginning of the busLine's path and visual line.
     /// </summary>
     /// <param name="node">The RoadNode to add to the path.</param>
     public void PrependNode(RoadNode node)
@@ -99,7 +99,7 @@ public partial class Route : Node
     }
 
     /// <summary>
-    /// Removes a node from the route's path and updates the visual line.
+    /// Removes a node from the busLine's path and updates the visual line.
     /// </summary>
     /// <param name="node">The RoadNode to remove from the path.</param>
     public void RemoveNode(RoadNode node)
@@ -112,7 +112,7 @@ public partial class Route : Node
     }
 
     /// <summary>
-    /// Clears all nodes from the route's path and its visual line.
+    /// Clears all nodes from the busLine's path and its visual line.
     /// </summary>
     public void ClearPath()
     {
@@ -122,7 +122,7 @@ public partial class Route : Node
     }
 
     /// <summary>
-    /// Sets the route's path to a new list of nodes, updating the visual line.
+    /// Sets the busLine's path to a new list of nodes, updating the visual line.
     /// </summary>
     public void SetPath(List<RoadNode> newPath)
     {
@@ -145,11 +145,11 @@ public partial class Route : Node
     /// Automatically assigns a unique ID initializes the path list, and
     /// assigns a color.
     /// </summary>
-    public Route()
+    public BusLine()
     {
         ID = _nextID++;
         Path = [];
-        var colorInfo = LevelState.GetNextRouteColor();
+        var colorInfo = LevelState.GetNextBusLineColor();
         if (colorInfo.HasValue)
         {
             ColorName = colorInfo.Value.Key;
@@ -158,24 +158,24 @@ public partial class Route : Node
         else
         {
             // Fallback if no colors are left. TODO: make it so players cannot
-            // create more routes.
+            // create more busLines.
             ColorName = "Default";
             Color = Colors.White;
         }
 
-        Visual = new RouteVisual(this);
+        Visual = new BusLineVisual(this);
         AddChild(Visual);
     }
 
     /// <summary>
-    /// Frees visual representation of Route and the Route itself.
+    /// Frees visual representation of BusLine and the BusLine itself.
     /// This is needed because _ExitTree does not work when QueueFreeing the
     /// node.
     /// </summary>
     public void Delete()
     {
-        LevelState.AllRoutes.Remove(this);
-        LevelState.ReturnRouteColor(new KeyValuePair<string, Color>(ColorName, Color));
+        LevelState.AllBusLines.Remove(this);
+        LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
         Visual?.QueueFree();
         UpdateAllHouseStatuses(); 
         

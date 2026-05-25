@@ -25,15 +25,15 @@ public partial class BusStopDeletor : Area2D
 
         var busStop = GetParent<BusStop>();
 
-        var affectedRoutes = AllRoutes.Where(route => route.ContainsNode(busStop)).ToList();
-        foreach (var route in affectedRoutes)
+        var affectedRoutes = AllBusLines.Where(busLine => busLine.ContainsNode(busStop)).ToList();
+        foreach (var busLine in affectedRoutes)
         {
-            route.RemoveNode(busStop);
-            if (route.Path.OfType<BusStop>().Count() <= 1)
+            busLine.RemoveNode(busStop);
+            if (busLine.Path.OfType<BusStop>().Count() <= 1)
             {
-                var routeList = GetTree().CurrentScene.GetNode<RouteList>(RouteListNode);
-                routeList.DeleteRoute(route);
-                route.Delete();
+                var busLineList = GetTree().CurrentScene.GetNode<BusLineList>(BusLineListNode);
+                busLineList.DeleteBusLine(busLine);
+                busLine.Delete();
             }
         }
 
