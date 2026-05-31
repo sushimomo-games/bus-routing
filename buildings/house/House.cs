@@ -94,12 +94,28 @@ public partial class House : Building
             _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}\n Itinerary: {(CurrentItinerary != null ? string.Join("\n", CurrentItinerary.GetDirections()) : "No route available")}";
             _infoPopup.Modulate = Modulate;
         }
+
+        if (CurrentItinerary != null)
+        {
+            foreach (var segment in CurrentItinerary.Itinerary.OfType<RideSegment>())
+            {
+                segment.Line.Visual.HighlightPath(segment.GetPathNodes());
+            }
+        }
     }
 
     private void _on_area_2d_mouse_exited()
     {
         _infoPopup?.QueueFree();
         _infoPopup = null;
+
+        if (CurrentItinerary != null)
+        {
+            foreach (var segment in CurrentItinerary.Itinerary.OfType<RideSegment>())
+            {
+                segment.Line.Visual.ClearHighlight();
+            }
+        }
     }
 
     /// <summary>

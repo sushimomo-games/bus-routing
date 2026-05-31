@@ -1,5 +1,6 @@
 using Godot;
 using System.Linq;
+using System.Collections.Generic;
 
 /// <summary>
 /// Represents a segment of a route where the user takes a bus.
@@ -8,17 +9,31 @@ using System.Linq;
 /// </summary>
 public class RideSegment : RouteSegment
 {
+    /// <summary>
+    /// The bus line being taken for this segment,
+    /// which contains the path and color information.
+    /// </summary>
     public BusLine Line { get; private set; }
+
+    /// <summary>
+    /// The bus stop where the user boards the bus for this segment.
+    /// This is the first stop in the of the segment.
+    /// </summary>
     public BusStop BoardingStop { get; private set; }
-    public BusStop AlightingStop { get; private set; }
+
+    /// <summary>
+    /// The bus stop where the user gets off for this segment.
+    /// This is the last stop in the of the segment.
+    /// </summary>
+    public BusStop ExitStop { get; private set; }
 
     public int StopsTraveled { get; private set; }
 
-    public RideSegment(BusLine line, BusStop boardingStop, BusStop alightingStop)
+    public RideSegment(BusLine line, BusStop boardingStop, BusStop exitStop)
     {
         Line = line;
         BoardingStop = boardingStop;
-        AlightingStop = alightingStop;
+        ExitStop = exitStop;
         
         CalculateRideStats();
     }
@@ -29,7 +44,7 @@ public class RideSegment : RouteSegment
         var stopsOnLine = Line.Path.OfType<BusStop>().ToList();
         
         int startIndex = stopsOnLine.IndexOf(BoardingStop);
-        int endIndex = stopsOnLine.IndexOf(AlightingStop);
+        int endIndex = stopsOnLine.IndexOf(ExitStop);
         
         StopsTraveled = Mathf.Abs(endIndex - startIndex);
     }
@@ -43,7 +58,7 @@ public class RideSegment : RouteSegment
             bool counting = false;
             foreach(var node in Line.Path)
             {
-                if(node == BoardingStop || node == AlightingStop)
+                if(node == BoardingStop || node == ExitStop)
                 {
                     if(counting)
                     {
@@ -67,10 +82,47 @@ public class RideSegment : RouteSegment
         } 
     }
 
+    /// <summary>
+    /// Returns a user-friendly instruction for this RideSegment, e.g.,
+    /// "Take the Orange Line for 3 stops."
+    /// </summary>
+    /// <returns></returns>
     public override string GetInstruction()
     {
         string plural = StopsTraveled == 1 ? "stop" : "stops";
         // E.g., "Take the Orange Line for 3 stops."
         return $"Take the {Line.ColorName} line for {StopsTraveled} {plural}.";
+    }
+
+    /// <summary>
+    /// Returns the list of RoadNodes that this RideSegment traverses,
+    /// starting from the BoardingStop and ending at the ExitStop.
+    /// </summary>
+    /// <returns></returns>
+    public List<RoadNode> GetPathNodes()
+    {
+        var nodes = new List<RoadNode>();
+        bool adding = false;
+        foreach (var node in Line.Path)
+        {
+            if (node == BoardingStop || node == ExitStop)
+            {
+                if (adding)
+                {
+                    nodes.Add(node);
+                    break;
+                }
+                else
+                {
+                    adding = true;
+                }
+            }
+            
+            if (adding)
+            {
+                nodes.Add(node);
+            }
+        }
+        return nodes;
     }
 }
