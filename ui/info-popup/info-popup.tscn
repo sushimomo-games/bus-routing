@@ -1,6 +1,13 @@
-[gd_scene format=3 uid="uid://c2lauycuruhka"]
+[gd_scene load_steps=2 format=3 uid="uid://c2lauycuruhka"]
 
-[node name="InfoPopup" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.862745)
+
+[node name="InfoPopup" type="PanelContainer"]
 z_index = 1
 layout_mode = 3
 anchors_preset = 15
@@ -10,16 +17,9 @@ offset_right = -942.0
 offset_bottom = -573.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 239.0
-offset_bottom = 51.0
-color = Color(1, 1, 1, 0.8627451)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
 [node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+layout_mode = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
