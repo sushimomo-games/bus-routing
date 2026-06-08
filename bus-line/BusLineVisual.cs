@@ -38,7 +38,7 @@ public partial class BusLineVisual : Node2D
         {
             Width = LineWidth + 4.0f,
             DefaultColor = busLine.Color.Lightened(0.4f),
-            ZIndex = 1,
+            ZIndex = 0,
             Modulate = new Color(1, 1, 1, 0),
             BeginCapMode = Line2D.LineCapMode.Round,
             EndCapMode = Line2D.LineCapMode.Round
