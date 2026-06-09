@@ -117,63 +117,80 @@ public partial class BusLineVisual : Node2D
         float offsetBefore = CalculateSegmentOffsetAmount(path[nodeIndex - 1], path[nodeIndex]);
         float offsetAfter = CalculateSegmentOffsetAmount(path[nodeIndex], path[nodeIndex + 1]);
 
-        // Check if segments are roughly collinear (going in same direction)
-        bool isCollinear = dirBefore.Dot(dirAfter) > 0.99f;
+        bool isCollinear = Mathf.Abs(dirBefore.Cross(dirAfter)) < 0.001f;
         
-        // Check if offsets are the same
         bool sameOffset = Mathf.Abs(offsetBefore - offsetAfter) < 0.001f;
 
-        if (isCollinear && sameOffset)
+        if (isCollinear)
         {
-            // Straight line with same offset - single point
-            _line.AddPoint(currentPos + perpBefore * offsetBefore);
-        }
-        else if (sameOffset)
-        {
-            // Corner with same offset - use miter
-            Vector2 miterOffset = CalculateMiterOffset(dirBefore, dirAfter, offsetBefore);
-            _line.AddPoint(currentPos + miterOffset);
+            if (sameOffset)
+            {
+                // Straight line with same offset - single point
+                _line.AddPoint(currentPos + perpBefore * offsetBefore);
+            }
+            else
+            {
+                // Different offsets - add two points at the intersection
+                _line.AddPoint(currentPos + perpBefore * offsetBefore);
+                _line.AddPoint(currentPos + perpAfter * offsetAfter);
+            }
         }
         else
         {
-            // Different offsets - add two points at the intersection
-            // One point for the incoming segment, one for the outgoing
-            _line.AddPoint(currentPos + perpBefore * offsetBefore);
-            _line.AddPoint(currentPos + perpAfter * offsetAfter);
+            // Corner - use line intersection
+            Vector2 intersection = CalculateIntersection(prevPos, dirBefore, offsetBefore, currentPos, dirAfter, offsetAfter, currentPos);
+            _line.AddPoint(intersection);
         }
     }
 
     /// <summary>
-    /// Calculates the miter offset at a corner where two segments meet.
-    /// This finds the point where the two offset lines would intersect.
+    /// Calculates the intersection point of two offset line segments.
+    /// Used to create clean continuous corners when offset lines change direction.
     /// </summary>
-    private Vector2 CalculateMiterOffset(Vector2 dirBefore, Vector2 dirAfter, float offsetAmount)
+    private Vector2 CalculateIntersection(Vector2 p1, Vector2 dir1, float offset1, Vector2 p2, Vector2 dir2, float offset2, Vector2 currentPos)
     {
-        Vector2 perpBefore = new Vector2(-dirBefore.Y, dirBefore.X);
-        Vector2 perpAfter = new Vector2(-dirAfter.Y, dirAfter.X);
+        Vector2 perp1 = new Vector2(-dir1.Y, dir1.X);
+        Vector2 perp2 = new Vector2(-dir2.Y, dir2.X);
 
-        // Calculate the miter direction (bisector of the angle)
-        // The miter direction is the normalized sum of the two perpendiculars
-        Vector2 miterDir = (perpBefore + perpAfter).Normalized();
+        Vector2 line1Start = p1 + perp1 * offset1;
+        Vector2 line2Start = p2 + perp2 * offset2;
 
-        // Handle case where segments are parallel (perpendiculars are the same)
-        if (miterDir.LengthSquared() < 0.001f)
+        float det = dir1.Cross(dir2);
+
+        // If lines are nearly parallel, fallback
+        if (Mathf.Abs(det) < 0.001f)
         {
-            return perpBefore * offsetAmount;
+            return currentPos + perp1 * offset1;
         }
 
-        // Calculate the miter length
-        // miterLength = offsetAmount / cos(theta/2)
-        // where theta is the angle between the perpendiculars
-        // cos(theta/2) = dot(perpBefore, miterDir)
-        float cosHalfAngle = perpBefore.Dot(miterDir);
+        Vector2 diff = line2Start - line1Start;
+        float t = diff.Cross(dir2) / det;
         
-        // Clamp to prevent extreme miter lengths at sharp angles
-        cosHalfAngle = Mathf.Max(cosHalfAngle, 0.5f);
-        
-        float miterLength = offsetAmount / cosHalfAngle;
+        Vector2 intersection = line1Start + dir1 * t;
 
-        return miterDir * miterLength;
+        // Clamp extreme corners
+        if (intersection.DistanceTo(currentPos) > 30.0f)
+        {
+             // Fallback to non-intersecting point avoiding extreme spikes
+             return currentPos + perp1 * offset1;
+        }
+
+        return intersection;
+    }
+
+    /// <summary>
+    /// Determines the canonical direction of a segment between two nodes.
+    /// This ensures we always calculate offsets based on a consistent direction,
+    /// regardless of which way the bus line travels the segment.
+    /// </summary>
+    private bool IsCanonicalDirection(RoadNode nodeA, RoadNode nodeB)
+    {
+        // First compare X, then Y as tie-breaker
+        if (Mathf.Abs(nodeA.GlobalPosition.X - nodeB.GlobalPosition.X) > 0.001f)
+        {
+            return nodeA.GlobalPosition.X < nodeB.GlobalPosition.X;
+        }
+        return nodeA.GlobalPosition.Y < nodeB.GlobalPosition.Y;
     }
 
     /// <summary>
@@ -192,8 +209,10 @@ public partial class BusLineVisual : Node2D
         if (slotIndex < 0) return 0f;
 
         float totalWidth = (busLinesOnSegment.Count - 1) * LineSpacing;
-        float startOffset = -totalWidth / 2.0f;
-        return startOffset + (slotIndex * LineSpacing);
+        float baseOffset = -totalWidth / 2.0f + (slotIndex * LineSpacing);
+
+        bool isCanonical = IsCanonicalDirection(nodeA, nodeB);
+        return isCanonical ? baseOffset : -baseOffset;
     }
 
     /// <summary>
@@ -353,22 +372,25 @@ public partial class BusLineVisual : Node2D
         float offsetBefore = CalculateSegmentOffsetAmount(path[nodeIndex - 1], path[nodeIndex]);
         float offsetAfter = CalculateSegmentOffsetAmount(path[nodeIndex], path[nodeIndex + 1]);
 
-        bool isCollinear = dirBefore.Dot(dirAfter) > 0.99f;
+        bool isCollinear = Mathf.Abs(dirBefore.Cross(dirAfter)) < 0.001f;
         bool sameOffset = Mathf.Abs(offsetBefore - offsetAfter) < 0.001f;
 
-        if (isCollinear && sameOffset)
+        if (isCollinear)
         {
-            _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
-        }
-        else if (sameOffset)
-        {
-            Vector2 miterOffset = CalculateMiterOffset(dirBefore, dirAfter, offsetBefore);
-            _highlightLine.AddPoint(currentPos + miterOffset);
+            if (sameOffset)
+            {
+                _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
+            }
+            else
+            {
+                _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
+                _highlightLine.AddPoint(currentPos + perpAfter * offsetAfter);
+            }
         }
         else
         {
-            _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
-            _highlightLine.AddPoint(currentPos + perpAfter * offsetAfter);
+            Vector2 intersection = CalculateIntersection(prevPos, dirBefore, offsetBefore, currentPos, dirAfter, offsetAfter, currentPos);
+            _highlightLine.AddPoint(intersection);
         }
     }
 
