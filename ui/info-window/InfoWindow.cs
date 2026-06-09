@@ -93,6 +93,12 @@ public partial class InfoWindow : Control
         CurrentBusLineCreationStep = BusLineCreationStep.BeginningEdit;
     }
 
+    private void _on_close_button_pressed()
+    {
+        GD.Print("Close button pressed, closing info window. i am stupid. my suffering is endless.");
+        QueueFree();
+    }
+
     public override void _ExitTree()
     {
         OpenWindows.Remove(BusLine.ID);

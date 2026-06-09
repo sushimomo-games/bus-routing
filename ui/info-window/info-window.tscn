@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://btim145fqqpsw"]
+[gd_scene load_steps=5 format=3 uid="uid://btim145fqqpsw"]
 
 [ext_resource type="Script" uid="uid://chvf71xw8o606" path="res://ui/info-window/InfoWindow.cs" id="1_q88rp"]
-[ext_resource type="PackedScene" uid="uid://dsvxlbhmpidvk" path="res://ui/buttons/close-button/close-button.tscn" id="2_tcp5j"]
 [ext_resource type="Script" uid="uid://cia608wjhcd68" path="res://ui/info-window/BusLineName.cs" id="3_lgt8q"]
 
 [sub_resource type="Theme" id="Theme_xu4vf"]
@@ -30,8 +29,11 @@ custom_minimum_size = Vector2(0, 31.09)
 layout_mode = 2
 color = Color(0.7162959, 0.7162963, 0.7162962, 1)
 
-[node name="CloseButton" parent="VBoxContainer/TopBarRect" instance=ExtResource("2_tcp5j")]
+[node name="CloseButton" type="Button" parent="VBoxContainer/TopBarRect"]
 layout_mode = 0
+offset_right = 17.0
+offset_bottom = 31.0
+text = "x"
 
 [node name="BusLineName" type="Label" parent="VBoxContainer/TopBarRect"]
 layout_mode = 0
@@ -75,5 +77,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
 
+[connection signal="pressed" from="VBoxContainer/TopBarRect/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonsRect/EditButton" to="." method="_on_edit_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ButtonsRect/DeleteButton" to="." method="_on_delete_button_pressed"]
