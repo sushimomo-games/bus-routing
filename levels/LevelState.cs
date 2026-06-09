@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using static PathGeometry;
 
 /// <summary>
 /// Holds the state of the level, including all routes.
@@ -92,5 +93,65 @@ public partial class LevelState : Node
         {
             house.UpdateCheckStatus();
         }
+    }
+
+    /// <summary>
+    /// Calculates just the offset amount (scalar) for a specific segment.
+    /// </summary>
+    public static float CalculateSegmentOffsetAmount(BusLine targetBusLine, RoadNode nodeA, RoadNode nodeB, float lineSpacing)
+    {
+        var busLinesOnSegment = GetBusLinesOnSegment(nodeA, nodeB);
+        
+        if (busLinesOnSegment.Count <= 1)
+        {
+            return 0f;
+        }
+
+        int slotIndex = busLinesOnSegment.IndexOf(targetBusLine);
+        if (slotIndex < 0) return 0f;
+
+        float totalWidth = (busLinesOnSegment.Count - 1) * lineSpacing;
+        float baseOffset = -totalWidth / 2.0f + (slotIndex * lineSpacing);
+
+        bool isCanonical =IsCanonicalDirection(nodeA, nodeB);
+        return isCanonical ? baseOffset : -baseOffset;
+    }
+
+    /// <summary>
+    /// Gets all busLines that pass through a given segment, sorted by busLine ID
+    /// for consistent slot assignment.
+    /// </summary>
+    public static List<BusLine> GetBusLinesOnSegment(RoadNode nodeA, RoadNode nodeB)
+    {
+        var busLines = new List<BusLine>();
+        
+        foreach (var busLine in AllBusLines)
+        {
+            if (BusLineContainsSegment(busLine, nodeA, nodeB))
+            {
+                busLines.Add(busLine);
+            }
+        }
+
+        // Sort by busLine ID to ensure consistent slot assignment
+        busLines = busLines.OrderBy(r => r.ID).ToList();
+        return busLines;
+    }
+
+    /// <summary>
+    /// Checks if a busLine contains a segment between two nodes (in either direction).
+    /// </summary>
+    public static bool BusLineContainsSegment(BusLine busLine, RoadNode nodeA, RoadNode nodeB)
+    {
+        var path = busLine.Path;
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            if ((path[i] == nodeA && path[i + 1] == nodeB) ||
+                (path[i] == nodeB && path[i + 1] == nodeA))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

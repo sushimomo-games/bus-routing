@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using static PathGeometry;
 
 /// <summary>
 /// Manages the visual representation of a busLine using a Line2D node.
@@ -77,7 +78,7 @@ public partial class BusLineVisual : Node2D
                 // First point: offset based on first segment only
                 Vector2 dir = (path[1].GlobalPosition - currentPos).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
-                float offset = CalculateSegmentOffsetAmount(path[0], path[1]);
+                float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, path[0], path[1], LineSpacing);
                 _line.AddPoint(currentPos + perp * offset);
             }
             else if (i == path.Count - 1)
@@ -85,7 +86,7 @@ public partial class BusLineVisual : Node2D
                 // Last point: offset based on last segment only
                 Vector2 dir = (currentPos - path[i - 1].GlobalPosition).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
-                float offset = CalculateSegmentOffsetAmount(path[i - 1], path[i]);
+                float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, path[i - 1], path[i], LineSpacing);
                 _line.AddPoint(currentPos + perp * offset);
             }
             else
@@ -114,8 +115,8 @@ public partial class BusLineVisual : Node2D
         Vector2 perpBefore = new Vector2(-dirBefore.Y, dirBefore.X);
         Vector2 perpAfter = new Vector2(-dirAfter.Y, dirAfter.X);
         
-        float offsetBefore = CalculateSegmentOffsetAmount(path[nodeIndex - 1], path[nodeIndex]);
-        float offsetAfter = CalculateSegmentOffsetAmount(path[nodeIndex], path[nodeIndex + 1]);
+        float offsetBefore = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex - 1], path[nodeIndex], LineSpacing);
+        float offsetAfter = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex], path[nodeIndex + 1], LineSpacing);
 
         bool isCollinear = Mathf.Abs(dirBefore.Cross(dirAfter)) < 0.001f;
         
@@ -141,116 +142,6 @@ public partial class BusLineVisual : Node2D
             Vector2 intersection = CalculateIntersection(prevPos, dirBefore, offsetBefore, currentPos, dirAfter, offsetAfter, currentPos);
             _line.AddPoint(intersection);
         }
-    }
-
-    /// <summary>
-    /// Calculates the intersection point of two offset line segments.
-    /// Used to create clean continuous corners when offset lines change direction.
-    /// </summary>
-    private Vector2 CalculateIntersection(Vector2 p1, Vector2 dir1, float offset1, Vector2 p2, Vector2 dir2, float offset2, Vector2 currentPos)
-    {
-        Vector2 perp1 = new Vector2(-dir1.Y, dir1.X);
-        Vector2 perp2 = new Vector2(-dir2.Y, dir2.X);
-
-        Vector2 line1Start = p1 + perp1 * offset1;
-        Vector2 line2Start = p2 + perp2 * offset2;
-
-        float det = dir1.Cross(dir2);
-
-        // If lines are nearly parallel, fallback
-        if (Mathf.Abs(det) < 0.001f)
-        {
-            return currentPos + perp1 * offset1;
-        }
-
-        Vector2 diff = line2Start - line1Start;
-        float t = diff.Cross(dir2) / det;
-        
-        Vector2 intersection = line1Start + dir1 * t;
-
-        // Clamp extreme corners
-        if (intersection.DistanceTo(currentPos) > 30.0f)
-        {
-             // Fallback to non-intersecting point avoiding extreme spikes
-             return currentPos + perp1 * offset1;
-        }
-
-        return intersection;
-    }
-
-    /// <summary>
-    /// Determines the canonical direction of a segment between two nodes.
-    /// This ensures we always calculate offsets based on a consistent direction,
-    /// regardless of which way the bus line travels the segment.
-    /// </summary>
-    private bool IsCanonicalDirection(RoadNode nodeA, RoadNode nodeB)
-    {
-        // First compare X, then Y as tie-breaker
-        if (Mathf.Abs(nodeA.GlobalPosition.X - nodeB.GlobalPosition.X) > 0.001f)
-        {
-            return nodeA.GlobalPosition.X < nodeB.GlobalPosition.X;
-        }
-        return nodeA.GlobalPosition.Y < nodeB.GlobalPosition.Y;
-    }
-
-    /// <summary>
-    /// Calculates just the offset amount (scalar) for a specific segment.
-    /// </summary>
-    private float CalculateSegmentOffsetAmount(RoadNode nodeA, RoadNode nodeB)
-    {
-        var busLinesOnSegment = GetBusLinesOnSegment(nodeA, nodeB);
-        
-        if (busLinesOnSegment.Count <= 1)
-        {
-            return 0f;
-        }
-
-        int slotIndex = busLinesOnSegment.IndexOf(_busLine);
-        if (slotIndex < 0) return 0f;
-
-        float totalWidth = (busLinesOnSegment.Count - 1) * LineSpacing;
-        float baseOffset = -totalWidth / 2.0f + (slotIndex * LineSpacing);
-
-        bool isCanonical = IsCanonicalDirection(nodeA, nodeB);
-        return isCanonical ? baseOffset : -baseOffset;
-    }
-
-    /// <summary>
-    /// Gets all busLines that pass through a given segment, sorted by busLine ID
-    /// for consistent slot assignment.
-    /// </summary>
-    private List<BusLine> GetBusLinesOnSegment(RoadNode nodeA, RoadNode nodeB)
-    {
-        var busLines = new List<BusLine>();
-        
-        foreach (var busLine in LevelState.AllBusLines)
-        {
-            if (BusLineContainsSegment(busLine, nodeA, nodeB))
-            {
-                busLines.Add(busLine);
-            }
-        }
-
-        // Sort by busLine ID to ensure consistent slot assignment
-        busLines = busLines.OrderBy(r => r.ID).ToList();
-        return busLines;
-    }
-
-    /// <summary>
-    /// Checks if a busLine contains a segment between two nodes (in either direction).
-    /// </summary>
-    private bool BusLineContainsSegment(BusLine busLine, RoadNode nodeA, RoadNode nodeB)
-    {
-        var path = busLine.Path;
-        for (int i = 0; i < path.Count - 1; i++)
-        {
-            if ((path[i] == nodeA && path[i + 1] == nodeB) ||
-                (path[i] == nodeB && path[i + 1] == nodeA))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     /// <summary>
@@ -303,7 +194,7 @@ public partial class BusLineVisual : Node2D
 
         Vector2 dir = (posB - posA).Normalized();
         Vector2 perp = new Vector2(-dir.Y, dir.X);
-        float offset = CalculateSegmentOffsetAmount(nodeA, nodeB);
+        float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, nodeA, nodeB, LineSpacing);
 
         _highlightLine.AddPoint(posA + perp * offset);
         _highlightLine.AddPoint(posB + perp * offset);
@@ -333,14 +224,14 @@ public partial class BusLineVisual : Node2D
             {
                 Vector2 dir = (pathNodes[1].GlobalPosition - currentPos).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
-                float offset = CalculateSegmentOffsetAmount(pathNodes[0], pathNodes[1]);
+                float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, pathNodes[0], pathNodes[1], LineSpacing);
                 _highlightLine.AddPoint(currentPos + perp * offset);
             }
             else if (i == pathNodes.Count - 1)
             {
                 Vector2 dir = (currentPos - pathNodes[i - 1].GlobalPosition).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
-                float offset = CalculateSegmentOffsetAmount(pathNodes[i - 1], pathNodes[i]);
+                float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, pathNodes[i - 1], pathNodes[i], LineSpacing);
                 _highlightLine.AddPoint(currentPos + perp * offset);
             }
             else
@@ -369,8 +260,8 @@ public partial class BusLineVisual : Node2D
         Vector2 perpBefore = new Vector2(-dirBefore.Y, dirBefore.X);
         Vector2 perpAfter = new Vector2(-dirAfter.Y, dirAfter.X);
         
-        float offsetBefore = CalculateSegmentOffsetAmount(path[nodeIndex - 1], path[nodeIndex]);
-        float offsetAfter = CalculateSegmentOffsetAmount(path[nodeIndex], path[nodeIndex + 1]);
+        float offsetBefore = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex - 1], path[nodeIndex], LineSpacing);
+        float offsetAfter = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex], path[nodeIndex + 1], LineSpacing);
 
         bool isCollinear = Mathf.Abs(dirBefore.Cross(dirAfter)) < 0.001f;
         bool sameOffset = Mathf.Abs(offsetBefore - offsetAfter) < 0.001f;
