@@ -28,18 +28,17 @@ theme_override_constants/separation = 0
 [node name="TopBarRect" type="ColorRect" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 31.09)
 layout_mode = 2
-color = Color(0.6509804, 0.6509804, 0.6509804, 0.78431374)
+color = Color(0.7162959, 0.7162963, 0.7162962, 1)
 
 [node name="CloseButton" parent="VBoxContainer/TopBarRect" instance=ExtResource("2_tcp5j")]
 layout_mode = 0
-offset_right = 24.0
 
 [node name="BusLineName" type="Label" parent="VBoxContainer/TopBarRect"]
 layout_mode = 0
-offset_left = 29.0
-offset_top = 5.0
-offset_right = 69.0
-offset_bottom = 28.0
+offset_left = 21.0
+offset_top = 4.0
+offset_right = 54.0
+offset_bottom = 27.0
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Test"
 script = ExtResource("3_lgt8q")

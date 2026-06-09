@@ -25,6 +25,7 @@ public partial class InfoWindow : Control
     private Button _deleteButton;
     private ItemList _busLineList;
     private Label _infoText;
+    private Button _closeButton;
 
     public override void _Ready()
     {
@@ -34,6 +35,9 @@ public partial class InfoWindow : Control
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
+        
+        // Grab the reference to your close button (update the path if necessary)
+        _closeButton = _topBarRect.GetNode<Button>("CloseButton");
 
         // Subscribe to event
         if (BusLine != null)
@@ -56,6 +60,12 @@ public partial class InfoWindow : Control
         {
             if (mouseButton.Pressed && _topBarRect.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
             {
+                // Prevent dragging and swallowing the input if we are clicking the close button
+                if (_closeButton != null && _closeButton.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
+                {
+                    return;
+                }
+
                 _isDragging = true;
                 _dragOffset = GetGlobalMousePosition() - GlobalPosition;
                 GetViewport().SetInputAsHandled(); // Prevent the click from interacting with other UI elements.

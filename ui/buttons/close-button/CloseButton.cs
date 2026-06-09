@@ -5,6 +5,7 @@ public partial class CloseButton : Button
 {
     private void _on_pressed()
     {
-        GetParent().QueueFree();
+        GD.Print("Close button pressed, closing info window. i am stupid.");
+        GetParent().GetParent().GetParent().QueueFree();
     }
 }
