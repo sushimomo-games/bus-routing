@@ -10,13 +10,9 @@ bg_color = Color(1, 1, 1, 0.862745)
 [node name="InfoPopup" type="PanelContainer"]
 z_index = 1
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -942.0
-offset_bottom = -573.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
 [node name="Label" type="Label" parent="."]
