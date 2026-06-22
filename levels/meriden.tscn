@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cwiepcsny2a7m" path="res://buildings/house/house.tscn" id="3_udqdq"]
 [ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="6_q4dte"]
 [ext_resource type="PackedScene" uid="uid://cmwqxdeod4tbc" path="res://shaders/building_shadows.tscn" id="7_udqdq"]
-[ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/bus-stop-placement/level-ui.tscn" id="8_8iv2f"]
+[ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/level-ui/level-ui.tscn" id="8_8iv2f"]
 
 [node name="Meriden" type="Node2D"]
 script = ExtResource("1_8iv2f")
