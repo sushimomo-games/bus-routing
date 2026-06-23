@@ -155,7 +155,7 @@ public partial class BusLineEditor : Node
         _busLineInProgress = null;
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;
-        CurrentBusLineCreationStep = NotCreating;
+        EditorState.ActiveTool = EditorTool.None;
         IsEditingFromStart = false;
     }
 }

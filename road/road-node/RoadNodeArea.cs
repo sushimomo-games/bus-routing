@@ -36,7 +36,7 @@ public partial class RoadNodeArea : Area2D
 
         if (@event.IsLeftMouseClick())
         {
-            if (selectedRoadNode is BusStop && CurrentBusLineCreationStep == NotCreating)
+            if (selectedRoadNode is BusStop && CurrentBusLineCreationStep == AddingFirstStop)
             {
                 BusLineEditor.StartBusLineCreation(selectedRoadNode);
             }

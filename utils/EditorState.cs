@@ -47,7 +47,7 @@ public partial class EditorState : Node
             }
             else
             {
-                CurrentBusLineCreationStep = null;
+                CurrentBusLineCreationStep = BusLineCreationStep.NotCreating;
             }
         }
     }
