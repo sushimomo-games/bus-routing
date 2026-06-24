@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using static LevelState;
 using static Path;
+using static EditorTool;
 
 public partial class LevelUI : Control
 {
@@ -16,6 +17,7 @@ public partial class LevelUI : Control
     public bool IsValidPlacement => _isValidPlacement;
     private Camera2D _camera;
     private ErrorMessage _errorMessage;
+    private Label _creatingNewLineLabel;
 
     private System.Collections.Generic.List<BusStop> _highlightedStops = new();
 
@@ -30,6 +32,8 @@ public partial class LevelUI : Control
         (
             ErrorMessageNode
         );
+        _creatingNewLineLabel = GetNode<Label>("CreatingNewLineLabel");
+        _creatingNewLineLabel.Visible = false;
     }
 
     public override void _Process(double delta)

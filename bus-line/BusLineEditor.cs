@@ -152,6 +152,7 @@ public partial class BusLineEditor : Node
     /// </summary>
     private static void ResetState()
     {
+        CurrentLevel.GetNode<Label>(CreatingNewLineLabelNode).Visible = false;
         _busLineInProgress = null;
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;

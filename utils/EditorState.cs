@@ -2,7 +2,7 @@ using Godot;
 using System.Collections.Generic;
 
 /// <summary>
-/// Represents all possible states that the busLine editor can be in.
+/// Represents all possible states that the bus line editor can be in.
 /// </summary>
 public enum EditorTool
 {

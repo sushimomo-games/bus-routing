@@ -111,5 +111,20 @@ offset_bottom = -4.0
 grow_vertical = 0
 script = ExtResource("6_07au4")
 
+[node name="CreatingNewLineLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -137.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.73, 0, 0.19466649, 1)
+text = "● Creating new line"
+
 [connection signal="pressed" from="BusLinesListContainer/BusLinesHeader/AddLineButton" to="BusLinesListContainer/BusLinesHeader/AddLineButton" method="_on_pressed"]
 [connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
