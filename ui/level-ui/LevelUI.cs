@@ -5,6 +5,11 @@ using static LevelState;
 using static Path;
 using static EditorTool;
 
+/// <summary>
+/// The LevelUI class is responsible for managing the user interface elements related to the level, 
+/// including bus stop placement and bus line creation. Err maybe it has too much responsbility.
+/// Note: _Process() is not always running.
+/// </summary>
 public partial class LevelUI : Control
 {
     private PackedScene _previewBusStopScene;
@@ -17,7 +22,6 @@ public partial class LevelUI : Control
     public bool IsValidPlacement => _isValidPlacement;
     private Camera2D _camera;
     private ErrorMessage _errorMessage;
-    private Label _creatingNewLineLabel;
 
     private System.Collections.Generic.List<BusStop> _highlightedStops = new();
 
@@ -32,8 +36,6 @@ public partial class LevelUI : Control
         (
             ErrorMessageNode
         );
-        _creatingNewLineLabel = GetNode<Label>("CreatingNewLineLabel");
-        _creatingNewLineLabel.Visible = false;
     }
 
     public override void _Process(double delta)
@@ -115,6 +117,10 @@ public partial class LevelUI : Control
         CleanupPreview();
     }
     
+    /// <summary>
+    /// Cleans up the preview bus stop and resets the state after a drop operation.
+    /// This includes removing the preview bus stop, clearing highlighted stops, and stopping _Process().
+    /// </summary>
     private void CleanupPreview()
     {
         if (_previewBusStop != null)
