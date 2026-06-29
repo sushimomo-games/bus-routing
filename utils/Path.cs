@@ -19,4 +19,5 @@ public static class Path
     public const string ErrorMessageNode = "CanvasLayer/LevelUI/ErrorMessage";
     public const string BusLineListNode = "CanvasLayer/LevelUI/BusLinesListContainer/BusLineList";
     public const string CreatingNewLineLabelNode = "CanvasLayer/LevelUI/CreatingNewLineLabel";
+    public const string EndBusLineButtonNode = "CanvasLayer/LevelUI/EndBusLineButton";
 }

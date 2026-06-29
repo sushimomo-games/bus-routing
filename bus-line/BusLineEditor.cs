@@ -51,6 +51,7 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = CreateLineAt(startNode.GlobalPosition);
         _mouseTrackingLine.DefaultColor = _busLineInProgress.Color;
         CurrentLevel.AddChild(_mouseTrackingLine);
+        CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = true;
     }
 
     public static void ContinueBusLineCreation(RoadNode nextNode)
@@ -153,6 +154,7 @@ public partial class BusLineEditor : Node
     private static void ResetState()
     {
         CurrentLevel.GetNode<Label>(CreatingNewLineLabelNode).Visible = false;
+        CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = false;
         _busLineInProgress = null;
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;
