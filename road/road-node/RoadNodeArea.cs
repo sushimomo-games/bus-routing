@@ -38,7 +38,7 @@ public partial class RoadNodeArea : Area2D
         {
             if (CurrentBusLineCreationStep == PausedCreation)
             {
-                if (BusLineEditor.ResumeBusLineCreation(selectedRoadNode))
+                if (BusLineEditor.CanResumeBusLineCreation(selectedRoadNode))
                     return;
             }
 

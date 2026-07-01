@@ -22,6 +22,11 @@ public partial class BusLineEditor : Node
     /// </summary>
     private static BusLine _busLineInProgress;
 
+    /// <summary>
+    /// Begins drawing the mouse tracking line at the specified road node.
+    /// </summary>
+    /// <param name="node">The road node to start the line at.</param>
+    /// <param name="color">The color of the line.</param>
     private static void BeginMouseTrackingLineAt(RoadNode node, Color color)
     {
         _mouseTrackingLine = CreateLineAt(node.GlobalPosition);
@@ -51,9 +56,14 @@ public partial class BusLineEditor : Node
             );
     }
 
+    /// <summary>
+    /// Starts the creation of a new bus line at the specified road node.
+    /// </summary>
+    /// <param name="startNode">The road node to start the bus line at.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
         CurrentBusLineCreationStep = AddingSubsequentStops;
+        IsEditingFromStart = false; // Ensure we default to appending for new lines
         _busLineInProgress = new BusLine();
         CurrentLevel.AddChild(_busLineInProgress);
         _busLineInProgress.AppendNode(startNode);
@@ -61,19 +71,39 @@ public partial class BusLineEditor : Node
         BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
     }
 
+
+    /// <summary>
+    /// Continues the creation of the bus line at the specified road node.
+    /// </summary>
+    /// <param name="nextNode">The road node to continue the bus line at.</param>
     public static void ContinueBusLineCreation(RoadNode nextNode)
     {
-        var lastNode = _busLineInProgress.Path.Last();
-        if (lastNode == nextNode)
+        // Target the active end of the line
+        var activeNode = IsEditingFromStart ? _busLineInProgress.Path.First() : _busLineInProgress.Path.Last();
+        
+        if (activeNode == nextNode)
             return;
-        if (!lastNode.Neighbors.Contains(nextNode)) // should we be able to skip bus stops?
+        if (!activeNode.Neighbors.Contains(nextNode)) // should we be able to skip bus stops?
             return;
 
-        _busLineInProgress.AppendNode(nextNode);
+        // Route to the correct addition method
+        if (IsEditingFromStart)
+        {
+            _busLineInProgress.PrependNode(nextNode);
+        }
+        else
+        {
+            _busLineInProgress.AppendNode(nextNode);
+        }
+
+        // The visual tracking line remains identical; it just links from the active node to the next.
         _mouseTrackingLine.SetPointPosition(_mouseTrackingLine.GetPointCount() - 1, nextNode.GlobalPosition);
         _mouseTrackingLine.AddPoint(nextNode.GlobalPosition);
     }
 
+    /// <summary>
+    /// Finalizes the creation of the bus line.
+    /// </summary>
     public static void FinalizeBusLineCreation()
     {
         RoadNode firstNode = _busLineInProgress.Path[0];
@@ -124,14 +154,26 @@ public partial class BusLineEditor : Node
         GD.Print("Paused draft segment: " + string.Join(", ", _busLineInProgress.Path.Select(node => node.Name)));
     }
 
-    public static bool ResumeBusLineCreation(RoadNode clickedNode)
+    public static bool CanResumeBusLineCreation(RoadNode clickedNode)
     {
         if (_busLineInProgress == null || CurrentBusLineCreationStep != PausedCreation)
             return false;
 
+        var firstNode = _busLineInProgress.Path.First();
         var lastNode = _busLineInProgress.Path.Last();
-        if (lastNode != clickedNode)
-            return false;
+
+        if (clickedNode == firstNode)
+        {
+            IsEditingFromStart = true;
+        }
+        else if (clickedNode == lastNode)
+        {
+            IsEditingFromStart = false;
+        }
+        else
+        {
+            return false; // Clicked a node that isn't an endpoint
+        }
 
         CurrentBusLineCreationStep = AddingSubsequentStops;
         BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
@@ -218,4 +260,9 @@ public partial class BusLineEditor : Node
 
         return true;
     }
+
+
+
+
+
 }
