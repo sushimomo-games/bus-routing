@@ -22,6 +22,13 @@ public partial class BusLineEditor : Node
     /// </summary>
     private static BusLine _busLineInProgress;
 
+    private static void BeginMouseTrackingLineAt(RoadNode node, Color color)
+    {
+        _mouseTrackingLine = CreateLineAt(node.GlobalPosition);
+        _mouseTrackingLine.DefaultColor = color;
+        CurrentLevel.AddChild(_mouseTrackingLine);
+    }
+
     /// <summary>
     /// Draws the Line2D segment that follows the player's cursor during
     /// busLine creation/editing.
@@ -29,6 +36,9 @@ public partial class BusLineEditor : Node
     /// <param name="mousePosition">The position of the mouse cursor.</param>
     public static void DrawMouseTrackingLine(Vector2 mousePosition)
     {
+        if (CurrentBusLineCreationStep != AddingSubsequentStops && CurrentBusLineCreationStep != ContinuingEdit)
+            return;
+
         if (MouseTrackingLine == null)
             return;
 
@@ -48,10 +58,7 @@ public partial class BusLineEditor : Node
         CurrentLevel.AddChild(_busLineInProgress);
         _busLineInProgress.AppendNode(startNode);
 
-        _mouseTrackingLine = CreateLineAt(startNode.GlobalPosition);
-        _mouseTrackingLine.DefaultColor = _busLineInProgress.Color;
-        CurrentLevel.AddChild(_mouseTrackingLine);
-        CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = true;
+        BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
     }
 
     public static void ContinueBusLineCreation(RoadNode nextNode)
@@ -69,6 +76,7 @@ public partial class BusLineEditor : Node
 
     public static void FinalizeBusLineCreation()
     {
+        RoadNode firstNode = _busLineInProgress.Path[0];
         RoadNode lastNode = _busLineInProgress.Path[^1];
         ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
 
@@ -78,9 +86,15 @@ public partial class BusLineEditor : Node
             ResetState();
             return;
         }
-        if (lastNode is not BusStop)
+        if (firstNode is not BusStop || lastNode is not BusStop)
         {
             errorMessage.DisplayMessage("BusLine must start and end at a bus stop");
+            ReturnBusLineColor(new KeyValuePair<string, Color>(_busLineInProgress.ColorName, _busLineInProgress.Color));
+            _busLineInProgress.QueueFree();
+        }
+        else if (!HasContinuousPath(_busLineInProgress.Path))
+        {
+            errorMessage.DisplayMessage("BusLine must be made up of continuous segments");
             ReturnBusLineColor(new KeyValuePair<string, Color>(_busLineInProgress.ColorName, _busLineInProgress.Color));
             _busLineInProgress.QueueFree();
         }
@@ -94,6 +108,34 @@ public partial class BusLineEditor : Node
         }
         GD.Print("Final busLine: " + string.Join(", ", _busLineInProgress.Path.Select(node => node.Name)));
         ResetState();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static void FinalizeDraftSegment()
+    {
+        if (_busLineInProgress == null)
+            return;
+
+        CurrentBusLineCreationStep = PausedCreation;
+        _mouseTrackingLine?.QueueFree();
+        _mouseTrackingLine = null;
+        GD.Print("Paused draft segment: " + string.Join(", ", _busLineInProgress.Path.Select(node => node.Name)));
+    }
+
+    public static bool ResumeBusLineCreation(RoadNode clickedNode)
+    {
+        if (_busLineInProgress == null || CurrentBusLineCreationStep != PausedCreation)
+            return false;
+
+        var lastNode = _busLineInProgress.Path.Last();
+        if (lastNode != clickedNode)
+            return false;
+
+        CurrentBusLineCreationStep = AddingSubsequentStops;
+        BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
+        return true;
     }
 
     /// <summary>
@@ -115,10 +157,7 @@ public partial class BusLineEditor : Node
             IsEditingFromStart = true;
         }
 
-        // Setup the preview line
-        _mouseTrackingLine = CreateLineAt(clickedNode.GlobalPosition);
-        _mouseTrackingLine.DefaultColor = busLine.Color;
-        CurrentLevel.AddChild(_mouseTrackingLine);
+        BeginMouseTrackingLineAt(clickedNode, busLine.Color);
     }
 
     public static void FinalizeBusLineEdit()
@@ -135,6 +174,10 @@ public partial class BusLineEditor : Node
         else if (firstNode is not BusStop || lastNode is not BusStop)
         {
             errorMessage.DisplayMessage("BusLine must start and end at a bus stop");
+        }
+        else if (!HasContinuousPath(_busLineInProgress.Path))
+        {
+            errorMessage.DisplayMessage("BusLine must be made up of continuous segments");
         }
         else
         {
@@ -160,5 +203,19 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
         IsEditingFromStart = false;
+    }
+
+    private static bool HasContinuousPath(List<RoadNode> path)
+    {
+        if (path == null || path.Count < 2)
+            return false;
+
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            if (!path[i].Neighbors.Contains(path[i + 1]))
+                return false;
+        }
+
+        return true;
     }
 }

@@ -18,6 +18,7 @@ public enum BusLineCreationStep
     NotCreating,
     AddingFirstStop,
     AddingSubsequentStops,
+    PausedCreation,
     BeginningEdit,
     ContinuingEdit
 }

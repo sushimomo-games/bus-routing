@@ -25,7 +25,7 @@ public partial class RoadNodeArea : Area2D
     {
         if (@event.IsLeftMouseRelease())
             if (CurrentBusLineCreationStep == AddingSubsequentStops)
-                BusLineEditor.FinalizeBusLineCreation();
+                BusLineEditor.FinalizeDraftSegment();
             else if (CurrentBusLineCreationStep == ContinuingEdit)
                 BusLineEditor.FinalizeBusLineEdit();
     }
@@ -36,6 +36,12 @@ public partial class RoadNodeArea : Area2D
 
         if (@event.IsLeftMouseClick())
         {
+            if (CurrentBusLineCreationStep == PausedCreation)
+            {
+                if (BusLineEditor.ResumeBusLineCreation(selectedRoadNode))
+                    return;
+            }
+
             if (selectedRoadNode is BusStop && CurrentBusLineCreationStep == AddingFirstStop)
             {
                 BusLineEditor.StartBusLineCreation(selectedRoadNode);
