@@ -48,6 +48,11 @@ public partial class BusLine : Node
     public List<RoadNode> Path { get; set; }
 
     /// <summary>
+    /// Potentially disjointed line segments used exclusively during the drafting phase.
+    /// </summary>
+    public List<DraftSegment> DraftLineSegments { get; set; } = [];
+
+    /// <summary>
     /// The name of the color assigned to this busLine opposed to the hex value.
     /// </summary>
     public string ColorName { get; private set; }
@@ -117,6 +122,14 @@ public partial class BusLine : Node
     public void ClearPath()
     {
         Path.Clear();
+        
+        // Ensure we wipe out any temporary drafting visuals
+        foreach (var segment in DraftLineSegments)
+        {
+            segment.QueueFree(); 
+        }
+        DraftLineSegments.Clear();
+        
         Visual?.ClearPoints();
         OnPathChanged?.Invoke();
     }
@@ -182,5 +195,66 @@ public partial class BusLine : Node
         OnDeleted?.Invoke();
         
         QueueFree();
+    }
+
+    public void StartNewSegment(RoadNode startNode)
+    {
+        if (startNode == null) return;
+        
+        GD.Print($"[DEBUG - BusLine] Starting new segment at {startNode.Name}");
+        
+        var newSegment = new DraftSegment(startNode);
+        
+        // UNCOMMENTED: We must add this to the tree for QueueFree to work later!
+        AddChild(newSegment); 
+        
+        DraftLineSegments.Add(newSegment);
+        OnPathChanged?.Invoke();
+        
+        GD.Print($"[DEBUG - BusLine] DraftLineSegments count is now {DraftLineSegments.Count}");
+    }
+    
+    public void CommitDraftToPath()
+    {
+        GD.Print($"[DEBUG - BusLine] Attempting to commit {DraftLineSegments.Count} segments to Path.");
+        if (DraftLineSegments.Count == 1)
+        {
+            Path = new List<RoadNode>(DraftLineSegments[0].Nodes);
+            DraftLineSegments[0].QueueFree();
+            DraftLineSegments.Clear();
+            Visual?.UpdateVisual();
+            OnPathChanged?.Invoke();
+            GD.Print("[DEBUG - BusLine] Successfully committed draft to path.");
+        }
+        else
+        {
+            GD.PrintErr($"[DEBUG - BusLine] Cannot commit: Route contains {DraftLineSegments.Count} disjointed segments.");
+        }
+    }
+
+    /// <summary>
+    /// Appends a node to a specific segment (defaults to the most recently created one).
+    /// </summary>
+    public void AppendToSegment(RoadNode node, int segmentIndex = -1)
+    {
+        if (node == null || DraftLineSegments.Count == 0) return;
+        
+        int index = segmentIndex < 0 ? DraftLineSegments.Count - 1 : segmentIndex;
+        DraftLineSegments[index].Append(node);
+        
+        OnPathChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Prepends a node to a specific segment (defaults to the most recently created one).
+    /// </summary>
+    public void PrependToSegment(RoadNode node, int segmentIndex = -1)
+    {
+        if (node == null || DraftLineSegments.Count == 0) return;
+
+        int index = segmentIndex < 0 ? DraftLineSegments.Count - 1 : segmentIndex;
+        DraftLineSegments[index].Prepend(node);
+        
+        OnPathChanged?.Invoke();
     }
 }

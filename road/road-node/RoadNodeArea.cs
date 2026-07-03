@@ -9,8 +9,6 @@ using static BusLineEditor;
 
 public partial class RoadNodeArea : Area2D
 {
-    private BusLine _tempBusLine; // Used during busLine creation before the busLine is finalized.
-
     private ErrorMessage errorMessage;
 
     public override void _Ready()
@@ -24,10 +22,13 @@ public partial class RoadNodeArea : Area2D
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsLeftMouseRelease())
-            if (CurrentBusLineCreationStep == AddingSubsequentStops)
+        {
+            // Both creation AND editing should merely pause the segment on mouse release
+            if (CurrentBusLineCreationStep == AddingSubsequentStops || CurrentBusLineCreationStep == ContinuingEdit)
+            {
                 BusLineEditor.FinalizeDraftSegment();
-            else if (CurrentBusLineCreationStep == ContinuingEdit)
-                BusLineEditor.FinalizeBusLineEdit();
+            }
+        }
     }
 
     private void _on_input_event(Node viewport, InputEvent @event, long shapeIdx)
@@ -38,15 +39,20 @@ public partial class RoadNodeArea : Area2D
         {
             if (CurrentBusLineCreationStep == PausedCreation)
             {
+                // Try to resume an existing segment first
                 if (BusLineEditor.CanResumeBusLineCreation(selectedRoadNode))
                     return;
+
+                // If it wasn't an endpoint, jump to the new node and start a disjointed segment
+                BusLineEditor.BeginNewDisjointedSegment(selectedRoadNode);
+                return;
             }
 
             if (selectedRoadNode is BusStop && CurrentBusLineCreationStep == AddingFirstStop)
             {
                 BusLineEditor.StartBusLineCreation(selectedRoadNode);
             }
-            if (CurrentBusLineCreationStep == BeginningEdit)
+            else if (CurrentBusLineCreationStep == BeginningEdit)
             {
                 GD.Print($"Clicked on node: {selectedRoadNode.Name} during busLine edit. {SelectedBusLine.ColorName}");
                 if (SelectedBusLine.Path.First() == selectedRoadNode
