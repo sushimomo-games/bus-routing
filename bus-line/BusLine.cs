@@ -201,17 +201,11 @@ public partial class BusLine : Node
     {
         if (startNode == null) return;
         
-        GD.Print($"[DEBUG - BusLine] Starting new segment at {startNode.Name}");
+        var newSegment = new DraftSegment(startNode, this);
         
-        var newSegment = new DraftSegment(startNode);
-        
-        // UNCOMMENTED: We must add this to the tree for QueueFree to work later!
-        AddChild(newSegment); 
-        
+        AddChild(newSegment);
         DraftLineSegments.Add(newSegment);
         OnPathChanged?.Invoke();
-        
-        GD.Print($"[DEBUG - BusLine] DraftLineSegments count is now {DraftLineSegments.Count}");
     }
     
     public void CommitDraftToPath()

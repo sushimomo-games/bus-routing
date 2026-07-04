@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using static PathGeometry;
 
-/// <summary>
-/// Manages the visual representation of a busLine using a Line2D node.
-/// Handles offset calculations to prevent overlapping when multiple busLines
-/// share the same road segments.
-/// </summary>
 public partial class BusLineVisual : Node2D
 {
     private BusLine _busLine;
@@ -15,14 +10,7 @@ public partial class BusLineVisual : Node2D
     private Line2D _highlightLine;
     private Tween _highlightTween;
     
-    /// <summary>
-    /// The width of the busLine line.
-    /// </summary>
     public float LineWidth { get; set; } = 8.0f;
-
-    /// <summary>
-    /// The spacing between parallel busLine lines when they share a segment.
-    /// </summary>
     public float LineSpacing { get; set; } = 8.0f;
 
     public BusLineVisual(BusLine busLine)
@@ -31,7 +19,10 @@ public partial class BusLineVisual : Node2D
         _line = new Line2D
         {
             Width = LineWidth,
-            DefaultColor = busLine.Color
+            DefaultColor = busLine.Color,
+            BeginCapMode = Line2D.LineCapMode.Round,
+            EndCapMode = Line2D.LineCapMode.Round,
+            JointMode = Line2D.LineJointMode.Round
         };
         AddChild(_line);
 
@@ -42,7 +33,8 @@ public partial class BusLineVisual : Node2D
             ZIndex = 0,
             Modulate = new Color(1, 1, 1, 0),
             BeginCapMode = Line2D.LineCapMode.Round,
-            EndCapMode = Line2D.LineCapMode.Round
+            EndCapMode = Line2D.LineCapMode.Round,
+            JointMode = Line2D.LineJointMode.Round
         };
         AddChild(_highlightLine);
     }
@@ -53,29 +45,33 @@ public partial class BusLineVisual : Node2D
     }
 
     /// <summary>
-    /// Rebuilds the entire visual from the busLine's current path, applying
-    /// offsets to prevent overlapping with other busLines on shared segments.
+    /// Rebuilds the visual from the default bus line path.
     /// </summary>
     public void UpdateVisual()
     {
+        UpdateVisualFromPath(_busLine.Path);
+    }
+
+    /// <summary>
+    /// NEW: Rebuilds the visual from an explicit, custom path (Perfect for DraftSegments!)
+    /// </summary>
+    public void UpdateVisualFromPath(List<RoadNode> path)
+    {
         _line.ClearPoints();
         
-        var path = _busLine.Path;
-        if (path.Count == 0) return;
+        if (path == null || path.Count == 0) return;
         if (path.Count == 1)
         {
             _line.AddPoint(path[0].GlobalPosition);
             return;
         }
 
-        // For each segment, calculate the offset and add points
         for (int i = 0; i < path.Count; i++)
         {
             Vector2 currentPos = path[i].GlobalPosition;
             
             if (i == 0)
             {
-                // First point: offset based on first segment only
                 Vector2 dir = (path[1].GlobalPosition - currentPos).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
                 float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, path[0], path[1], LineSpacing);
@@ -83,7 +79,6 @@ public partial class BusLineVisual : Node2D
             }
             else if (i == path.Count - 1)
             {
-                // Last point: offset based on last segment only
                 Vector2 dir = (currentPos - path[i - 1].GlobalPosition).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
                 float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, path[i - 1], path[i], LineSpacing);
@@ -91,21 +86,14 @@ public partial class BusLineVisual : Node2D
             }
             else
             {
-                // Middle point: may need two points if offsets differ
-                AddPointsAtIntersection(i);
+                AddPointsAtIntersection(i, path);
             }
         }
     }
 
-    /// <summary>
-    /// Adds points at an intersection node. If the offset changes between
-    /// incoming and outgoing segments, adds two points to create a clean transition.
-    /// </summary>
-    private void AddPointsAtIntersection(int nodeIndex)
+    private void AddPointsAtIntersection(int nodeIndex, List<RoadNode> path)
     {
-        var path = _busLine.Path;
         Vector2 currentPos = path[nodeIndex].GlobalPosition;
-        
         Vector2 prevPos = path[nodeIndex - 1].GlobalPosition;
         Vector2 nextPos = path[nodeIndex + 1].GlobalPosition;
         
@@ -119,68 +107,31 @@ public partial class BusLineVisual : Node2D
         float offsetAfter = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex], path[nodeIndex + 1], LineSpacing);
 
         bool isCollinear = Mathf.Abs(dirBefore.Cross(dirAfter)) < 0.001f;
-        
         bool sameOffset = Mathf.Abs(offsetBefore - offsetAfter) < 0.001f;
 
         if (isCollinear)
         {
             if (sameOffset)
             {
-                // Straight line with same offset - single point
                 _line.AddPoint(currentPos + perpBefore * offsetBefore);
             }
             else
             {
-                // Different offsets - add two points at the intersection
                 _line.AddPoint(currentPos + perpBefore * offsetBefore);
                 _line.AddPoint(currentPos + perpAfter * offsetAfter);
             }
         }
         else
         {
-            // Corner - use line intersection
             Vector2 intersection = CalculateIntersection(prevPos, dirBefore, offsetBefore, currentPos, dirAfter, offsetAfter, currentPos);
             _line.AddPoint(intersection);
         }
     }
 
-    /// <summary>
-    /// Adds a point to the end of the visual line.
-    /// Note: For proper offset handling, prefer calling UpdateVisual() after
-    /// modifying the busLine path.
-    /// </summary>
-    public void AppendPoint(Vector2 position)
-    {
-        // When appending, we need to recalculate to handle offsets properly
-        UpdateVisual();
-    }
-
-    /// <summary>
-    /// Adds a point to the beginning of the visual line.
-    /// Note: For proper offset handling, prefer calling UpdateVisual() after
-    /// modifying the busLine path.
-    /// </summary>
-    public void PrependPoint(Vector2 position)
-    {
-        // When prepending, we need to recalculate to handle offsets properly
-        UpdateVisual();
-    }
-
-    /// <summary>
-    /// Clears all points from the visual line.
-    /// </summary>
-    public void ClearPoints()
-    {
-        _line.ClearPoints();
-    }
-
-    /// <summary>
-    /// Gets the Line2D node for direct manipulation if needed.
-    /// </summary>
-    public Line2D GetLine2D()
-    {
-        return _line;
-    }
+    public void AppendPoint(Vector2 position) => UpdateVisual();
+    public void PrependPoint(Vector2 position) => UpdateVisual();
+    public void ClearPoints() => _line.ClearPoints();
+    public Line2D GetLine2D() => _line;
 
     /// <summary>
     /// Highlights a specific segment of the bus line with a glow overlay.
