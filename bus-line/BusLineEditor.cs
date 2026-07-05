@@ -86,6 +86,7 @@ public partial class BusLineEditor : Node
         _activeSegment = newSegment;
     }
 
+
     /// <summary>
     /// Continues the bus line creation process by adding a new node to the
     /// currently active draft segment.
@@ -100,10 +101,11 @@ public partial class BusLineEditor : Node
 
         if (!activeNode.Neighbors.Contains(nextNode))
         {
-            // Handle Jump / Disjointed segment break
             FinalizeDraftSegment(); 
+            CurrentBusLineCreationStep = AddingSubsequentStops;
             StartNewSegment(nextNode);
             IsEditingFromStart = false;
+            BeginMouseTrackingLineAt(nextNode, _busLineInProgress.Color);
             return;
         }
 
@@ -113,6 +115,11 @@ public partial class BusLineEditor : Node
             _activeSegment.Append(nextNode);
 
         CheckAndMergeSegments();
+
+        var newActiveNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+        
+        _mouseTrackingLine?.QueueFree();
+        BeginMouseTrackingLineAt(newActiveNode, _busLineInProgress.Color);
     }
 
     /// <summary>
