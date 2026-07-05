@@ -24,7 +24,7 @@ public enum BusLineCreationStep
 }
 
 /// <summary>
-/// Holds the current state of the busLine editor and routes.
+/// Holds the current state of the bus line editor and routes.
 /// </summary>
 public partial class EditorState : Node
 {

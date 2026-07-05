@@ -3,6 +3,7 @@ using System;
 using static EditorTool;
 using static Path;
 using static BusLineEditor;
+using static EditorState;
 
 public partial class AddLineButton : Button
 {
@@ -22,6 +23,7 @@ public partial class AddLineButton : Button
     private void _on_pressed()
     {
         EditorState.ActiveTool = NewBusLine;
+        _creatingNewLineLabel.Text = "● Select a starting stop...";
         _creatingNewLineLabel.Visible = true;
         _endBusLineButton.Visible = true;
     }

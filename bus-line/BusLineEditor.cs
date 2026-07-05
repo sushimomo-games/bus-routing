@@ -16,6 +16,7 @@ public partial class BusLineEditor : Node
     /// The bus line that is currently being created or edited.
     /// </summary>
     private static BusLine _busLineInProgress;
+    public static BusLine BusLineInProgress => _busLineInProgress;
 
     /// <summary>
     /// Tracks which disjointed segment the user is actively drawing from.
@@ -30,6 +31,7 @@ public partial class BusLineEditor : Node
     /// </summary>
     public static List<DraftSegment> DraftLineSegments { get; private set; } = [];
     private static bool IsEditingFromStart;
+    private static Label _creatingNewLineLabel;
 
     /// <summary>
     /// Obtains the road node to begin the the mouse tracking from, and what
@@ -325,11 +327,14 @@ public partial class BusLineEditor : Node
     /// <param name="startNode">The node from which to start the bus line creation.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
+        _creatingNewLineLabel = CurrentLevel.GetNode<Label>(CreatingNewLineLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
         IsEditingFromStart = false; 
         _busLineInProgress = new BusLine();
         CurrentLevel.AddChild(_busLineInProgress);
         
+        _creatingNewLineLabel.Text = $"● Creating {_busLineInProgress.ColorName} Line";
+
         StartNewSegment(startNode);
         _activeSegment = DraftLineSegments.Last();
 
