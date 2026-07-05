@@ -86,7 +86,6 @@ public partial class BusLineEditor : Node
         _activeSegment = newSegment;
     }
 
-
     /// <summary>
     /// Continues the bus line creation process by adding a new node to the
     /// currently active draft segment.
@@ -199,7 +198,6 @@ public partial class BusLineEditor : Node
         CurrentBusLineCreationStep = PausedCreation;
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;
-        _activeSegment = null;
     }
 
     public static bool CanResumeBusLineCreation(RoadNode clickedNode)
@@ -364,7 +362,9 @@ public partial class BusLineEditor : Node
                     GD.Print($"[DEBUG - Editor] Collision detected between segment {i} and {j}!");
                     
                     var segmentToAbsorb = segments[j];
-                    bool wasActive = (_activeSegment == segmentToAbsorb);
+                    
+                    // Check if EITHER the absorbed segment or the absorbing segment was active
+                    bool wasActive = (_activeSegment == segmentToAbsorb || _activeSegment == segments[i]);
                     
                     segments[i].MergeWith(segmentToAbsorb);
                     
@@ -373,7 +373,9 @@ public partial class BusLineEditor : Node
                     
                     if (wasActive) 
                     {
-                        _activeSegment = segments[i];
+                        // FIX: The connection point is now inside the middle of the merged line.
+                        // Pause drawing so the tracking line doesn't snap to the far end of the route.
+                        FinalizeDraftSegment();
                     }
                     
                     return; 
