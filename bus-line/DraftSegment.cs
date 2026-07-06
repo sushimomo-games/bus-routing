@@ -12,9 +12,8 @@ public partial class DraftSegment : Node2D
 
     public DraftSegment(RoadNode startNode, BusLine associatedBusLine)
     {
-        Nodes = new List<RoadNode> { startNode };
+        Nodes = [startNode];
         
-        // Pass the associated BusLine directly into your visual constructor
         _visual = new BusLineVisual(associatedBusLine);
         
         AddChild(_visual);
@@ -23,7 +22,6 @@ public partial class DraftSegment : Node2D
 
     private void UpdateVisuals()
     {
-        // Tell BusLineVisual to draw our custom temporary segment nodes list!
         _visual.UpdateVisualFromPath(Nodes);
     }
 

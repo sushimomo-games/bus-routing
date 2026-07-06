@@ -6,9 +6,16 @@ using Godot;
 /// </summary>
 public abstract class RouteSegment
 {
-    // The estimated time this specific step takes
-    public abstract float EstimatedTime { get; }
+    /// <summary>
+    /// The raw distance between beginning and end of the segment
+    /// </summary>
+    public abstract float Weight { get; }
     
+    /// <summary>
+    /// The estimated time to traverse this segment calculated from Weight
+    /// </summary>
+    // public abstract float EstimatedTime { get; }
+
     // Generates the human-readable instruction (e.g. "Walk to X")
     public abstract string GetInstruction();
 }

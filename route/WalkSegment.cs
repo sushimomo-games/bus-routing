@@ -14,7 +14,7 @@ public class WalkSegment : RouteSegment
         Destination = destination;
     }
 
-    public override float EstimatedTime => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition); // You can apply a walking speed modifier here
+    public override float Weight => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition); // You can apply a walking speed modifier here
 
     public override string GetInstruction()
     {

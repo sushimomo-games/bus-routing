@@ -46,6 +46,7 @@ public partial class House : Building
         base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
         _checkSprite = GetNode<Sprite2D>("Check");
         _checkSprite.Visible = _isChecked;
+        _infoPopup = GetNode<Control>("InfoPopup");
         LevelState.AllHouses.Add(this);
     }
 
@@ -80,8 +81,20 @@ public partial class House : Building
             return;
         }
 
-        CurrentItinerary = GenerateRoute(startStop, validDestinations);
-        IsChecked = CurrentItinerary != null;
+        var transitSegments = Pathfinder.CalculateBestRoute(startStop, validDestinations);
+
+        if (transitSegments != null)
+        {
+            transitSegments.Insert(0, new WalkSegment(this, startStop));
+            
+            CurrentItinerary = new Route(transitSegments);
+            IsChecked = true;
+        }
+        else
+        {
+            CurrentItinerary = null;
+            IsChecked = false;
+        }
     }
 
     private void _on_area_2d_mouse_entered()
@@ -116,82 +129,5 @@ public partial class House : Building
                 segment.Line.Visual.ClearHighlight();
             }
         }
-    }
-
-    /// <summary>
-    /// Uses BFS to determine the optimal route to any destination bus stop from the start
-    /// bus stop via bus lines and walking transfers between nearby bus stops.
-    /// </summary>
-    private Route GenerateRoute(BusStop start, HashSet<Destination> validDestinations)
-    {
-        var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet();
-
-        var visited = new HashSet<BusStop>();
-        var queue = new Queue<BusStop>();
-        
-        var lineageMap = new Dictionary<BusStop, (BusStop Parent, RouteSegment Segment)>();
-        
-        queue.Enqueue(start);
-        visited.Add(start);
-
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
-
-            if (validDestinationStops.Contains(current))
-            {
-                var segments = new List<RouteSegment>();
-                var backtrackNode = current;
-                
-                while (backtrackNode != start)
-                {
-                    var lineage = lineageMap[backtrackNode];
-                    segments.Add(lineage.Segment);
-                    backtrackNode = lineage.Parent;
-                }
-                
-                segments.Reverse();
-                
-                segments.Insert(0, new WalkSegment(this, start));
-                
-                var actualDestination = validDestinations.First(d => d.ReachableBusStop == current);
-                segments.Add(new WalkSegment(current, actualDestination));
-                
-                return new Route(segments);
-            }
-
-            // Find all bus stops reachable via bus line from current stop
-            foreach (var busLine in LevelState.AllBusLines)
-            {
-                if (!busLine.Path.Contains(current)) continue;
-                
-                foreach (var node in busLine.Path.OfType<BusStop>())
-                {
-                    if (visited.Add(node))
-                    {
-                        lineageMap[node] = (current, new RideSegment(busLine, current, node));
-                        queue.Enqueue(node);
-                    }
-                }
-            }
-
-            // Find all bus stops reachable via walking (transfer)
-            foreach (var nearbyStop in current.GetNearbyBusStops())
-            {
-                // Only allow walking to stops that have at least one busLine attached
-                if (!LevelState.AllBusLines.Any(r => r.Path.Contains(nearbyStop)))
-                {
-                    continue;
-                }
-
-                if (visited.Add(nearbyStop))
-                {
-                    lineageMap[nearbyStop] = (current, new WalkSegment(current, nearbyStop));
-                    queue.Enqueue(nearbyStop);
-                }
-            }
-        }
-
-        return null;
     }
 }

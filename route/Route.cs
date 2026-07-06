@@ -6,7 +6,7 @@ public partial class Route
 {
     public List<RouteSegment> Itinerary { get; private set; } = new List<RouteSegment>();
 
-    public float TotalTime => Itinerary.Sum(segment => segment.EstimatedTime);
+    public float TotalTime => Itinerary.Sum(segment => segment.Weight);
     public int TransferCount => Itinerary.OfType<WalkSegment>().Count() - 1;
 
     public Route(List<RouteSegment> segments)
