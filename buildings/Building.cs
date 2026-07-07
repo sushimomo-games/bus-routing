@@ -11,11 +11,11 @@ public abstract partial class Building : Node2D
 {
     public static readonly Dictionary<string, Color> BuildingColorPalette = new()
     {
-        { "Red", Colors.Red },
+        { "Red", Colors.IndianRed },
         { "Blue", Colors.DeepSkyBlue },
         { "Green", Colors.ForestGreen },
         { "Yellow", Colors.Gold },
-        { "White", Colors.White }
+        { "White", Colors.AntiqueWhite }
     };
     private string _selectedColorName = "White";
     private BusStopDetector _busStopDetector;

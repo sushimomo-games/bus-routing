@@ -21,21 +21,6 @@ rotation = -4.1887903
 color = Color(1, 1, 1, 0.78431374)
 energy = 0.5
 
-[node name="RoadLines" type="Node2D" parent="."]
-modulate = Color(0.8342127, 0.83978754, 0.84536046, 1)
-self_modulate = Color(1, 1, 1, 0)
-
-[node name="Line2D" type="Line2D" parent="RoadLines"]
-position = Vector2(-60, 10)
-points = PackedVector2Array(219, 166, 437, 160, 578, 158)
-width = 20.0
-default_color = Color(0.61200005, 0.6642, 0.72, 1)
-
-[node name="Line2D2" type="Line2D" parent="RoadLines"]
-points = PackedVector2Array(376, 171, 383, 389, 167, 396, 165, 177)
-width = 20.0
-default_color = Color(0.61200005, 0.6642, 0.72, 1)
-
 [node name="IntersectionNodes" type="Node" parent="."]
 
 [node name="IntersectionNode1" parent="IntersectionNodes" node_paths=PackedStringArray("Neighbors") instance=ExtResource("6_q4dte")]
@@ -71,6 +56,7 @@ position = Vector2(424, 120)
 BuildingColor = "Yellow"
 
 [node name="BlueHouse" parent="Houses" instance=ExtResource("3_udqdq")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(488, 119)
 
 [node name="GreenHouse" parent="Houses" instance=ExtResource("3_udqdq")]
@@ -82,6 +68,7 @@ BuildingColor = "Green"
 [node name="Destinations" type="Node" parent="."]
 
 [node name="Business1" parent="Destinations" instance=ExtResource("2_q4dte")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(229, 111)
 
 [node name="Business" parent="Destinations" instance=ExtResource("2_q4dte")]
@@ -91,6 +78,7 @@ rotation = -1.5860153
 BuildingColor = "Green"
 
 [node name="Business2" parent="Destinations" instance=ExtResource("2_q4dte")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(231, 250)
 rotation = 1.5711393
 

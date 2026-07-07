@@ -397,18 +397,18 @@ rotation = 1.5707964
 BuildingColor = "Green"
 
 [node name="@Node2D@22664" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-731, -340)
 BuildingColor = "Red"
 
 [node name="@Node2D@22665" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-661.00006, -345)
 rotation = 0.66806924
 BuildingColor = "Red"
 
 [node name="@Node2D@22666" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-812.69434, -263.46512)
 rotation = -3.0949588
 BuildingColor = "Red"
@@ -420,7 +420,7 @@ rotation = -3.112825
 BuildingColor = "Green"
 
 [node name="@Node2D@22668" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-660, -251)
 rotation = -3.819059
 BuildingColor = "Red"
@@ -432,7 +432,7 @@ rotation = -2.6906173
 BuildingColor = "Green"
 
 [node name="@Node2D@22670" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-935.99994, -418)
 rotation = -3.0928514
 BuildingColor = "Red"
@@ -444,7 +444,7 @@ rotation = -0.47546905
 BuildingColor = "Green"
 
 [node name="@Node2D@22674" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-866.00006, -513.00006)
 rotation = 0.03369534
 BuildingColor = "Red"
@@ -456,25 +456,25 @@ rotation = 0.047010448
 BuildingColor = "Green"
 
 [node name="@Node2D@22676" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-743.9999, -123.99999)
 rotation = 0.056280255
 BuildingColor = "Red"
 
 [node name="@Node2D@22677" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-678, -102.00003)
 rotation = 0.65858525
 BuildingColor = "Red"
 
 [node name="@Node2D@22678" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-840.99994, -28.000004)
 rotation = -2.9627995
 BuildingColor = "Red"
 
 [node name="@Node2D@22680" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-681, -24)
 rotation = -3.7115717
 BuildingColor = "Red"
@@ -816,223 +816,241 @@ rotation = 1.261866
 BuildingColor = "Green"
 
 [node name="@Node2D@34042" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(222.56662, 437.99902)
 rotation = -0.40232003
 BuildingColor = "Red"
 
 [node name="@Node2D@34043" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(263.81973, 416.02307)
 rotation = -0.39585006
 BuildingColor = "Red"
 
 [node name="@Node2D@34044" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(308.54272, 394.0471)
 rotation = -0.32635903
 BuildingColor = "Red"
 
 [node name="@Node2D@34045" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(352.49466, 374.3844)
 rotation = -0.36717427
 BuildingColor = "Red"
 
 [node name="@Node2D@34046" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(398.75656, 364.26657)
 rotation = -0.3461362
 BuildingColor = "Red"
 
 [node name="@Node2D@34047" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(164.74608, 315.14343)
 rotation = -3.456808
 BuildingColor = "Red"
 
 [node name="@Node2D@34048" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(222.22707, 297.61874)
 rotation = -3.4563503
 BuildingColor = "Red"
 
 [node name="@Node2D@34049" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(276.55362, 285.35144)
 rotation = -3.6052413
 BuildingColor = "Red"
 
 [node name="@Node2D@34050" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(330.17917, 266.07428)
 rotation = -3.6820135
 BuildingColor = "Red"
 
 [node name="@Node2D@34051" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(375.0424, 258.36343)
 rotation = -3.513302
 BuildingColor = "Red"
 
 [node name="@Node2D@34052" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(380.2675, 690.4567)
 rotation = -1.9203191
 BuildingColor = "Red"
 
 [node name="@Node2D@34053" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(403.9673, 738.383)
 rotation = -1.8463609
 BuildingColor = "Red"
 
 [node name="@Node2D@34054" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(599.7652, 420.58038)
 rotation = -3.4878778
 BuildingColor = "Red"
 
 [node name="@Node2D@34055" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(655.1863, 398.5146)
 rotation = -3.5762634
 BuildingColor = "Red"
 
 [node name="@Node2D@34056" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(717.2784, 381.58038)
 rotation = -3.5346498
 BuildingColor = "Red"
 
 [node name="@Node2D@34057" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(629.5284, 498.5804)
 rotation = -0.32773852
 BuildingColor = "Red"
 
 [node name="@Node2D@34058" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(677.76526, 477.02777)
 rotation = -0.33832312
 BuildingColor = "Red"
 
 [node name="@Node2D@34059" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(728.0547, 448.29092)
 rotation = -0.34555614
 BuildingColor = "Red"
 
 [node name="@Node2D@34060" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(772.1863, 427.7646)
 rotation = -0.36835086
 BuildingColor = "Red"
 
 [node name="@Node2D@34061" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(404.70105, 157.75298)
 rotation = -1.9114126
 BuildingColor = "Red"
 
 [node name="@Node2D@34062" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(379.04315, 113.90129)
 rotation = -1.8442576
 BuildingColor = "Red"
 
 [node name="@Node2D@34063" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(365.04794, 69.11659)
 rotation = -1.8736812
 BuildingColor = "Red"
 
 [node name="@Node2D@34064" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(276.06808, 657.18445)
 rotation = -0.3671738
 BuildingColor = "Red"
 
 [node name="@Node2D@34065" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(226.95885, 671.8607)
 rotation = -0.30161858
 BuildingColor = "Red"
 
 [node name="@Node2D@34066" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(180.10751, 684.8436)
 rotation = -0.32855356
 BuildingColor = "Red"
 
 [node name="@Node2D@34067" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-0.7969971, 288.649)
 rotation = -1.9635572
 
 [node name="@Node2D@34068" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-14.139099, 236.30685)
 rotation = -1.9274163
 
 [node name="@Node2D@34069" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-28.507523, 189.09631)
 rotation = -1.9585664
 
 [node name="@Node2D@34070" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(667.906, 590.88074)
 rotation = -3.5644455
 
 [node name="@Node2D@34071" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(713.4702, 575.45905)
 rotation = -3.4161682
 
 [node name="@Node2D@34072" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(764.64233, 563.54224)
 rotation = -3.4697132
 
 [node name="@Node2D@34073" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(824.5768, 534.45123)
 rotation = -3.6645317
 
 [node name="@Node2D@34074" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-1001.69867, 868.21045)
 rotation = -0.32855356
 
 [node name="@Node2D@34075" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-962.6986, 980.0789)
 rotation = -3.3137846
 
 [node name="@Node2D@34076" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-789.7644, 777.38153)
 rotation = -0.50101316
 
 [node name="@Node2D@34077" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-920.5143, 3.7689514)
 rotation = -1.4405848
 
 [node name="@Node2D@34078" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-242.54544, -490.81818)
 
 [node name="@Node2D@34079" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-89.976685, -293.51764)
 rotation = -1.6247973
 
 [node name="@Node2D@34080" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(521.1192, 790.0165)
 rotation = -3.4400916
 
 [node name="@Node2D@34081" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(564.3772, 773.0526)
 rotation = -3.4267125
 
 [node name="@Node2D@34082" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1287.7499, 264.87122)
 rotation = -2.6183128
 
 [node name="@Node2D@34083" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1386.2762, 254.60808)
 rotation = -4.16603
 
 [node name="@Node2D@34084" parent="Buildings" instance=ExtResource("9_0cyv3")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(103.999985, 1019)
 rotation = -1.6737181
 
@@ -1055,26 +1073,29 @@ rotation = 0.6831914
 BuildingColor = "Blue"
 
 [node name="@Node2D@34543" parent="Buildings" instance=ExtResource("9_0cyv3")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-688.00006, 415.00006)
 rotation = -2.410686
 BuildingColor = "Red"
 
 [node name="@Node2D@34544" parent="Buildings" instance=ExtResource("9_0cyv3")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(1403, -546)
 rotation = -0.31290126
 BuildingColor = "Red"
 
 [node name="@Node2D@34545" parent="Buildings" instance=ExtResource("9_0cyv3")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(140.09093, -313.36362)
 rotation = -2.0998268
 
 [node name="@Node2D@34546" parent="Buildings" instance=ExtResource("9_0cyv3")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1783, -206)
 rotation = -0.25933182
 
 [node name="@Node2D@34547" parent="Buildings" instance=ExtResource("9_0cyv3")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1519, -207.00006)
 rotation = 0.5191461
 
@@ -1091,7 +1112,7 @@ rotation = -3.4862404
 BuildingColor = "Yellow"
 
 [node name="@Node2D@34550" parent="Buildings" instance=ExtResource("9_0cyv3")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(1330.0002, -317.00006)
 rotation = 0.61942685
 BuildingColor = "Red"
@@ -1229,70 +1250,87 @@ rotation = -3.6260705
 BuildingColor = "Blue"
 
 [node name="@Node2D@37624" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(184.84732, 540.2335)
 rotation = -3.4772315
 
 [node name="@Node2D@37625" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(167.91309, 606.277)
 rotation = 1.3306254
 
 [node name="@Node2D@37626" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-117.359116, 730.9602)
 rotation = 1.3734013
 
 [node name="@Node2D@37627" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(222.84384, 1119.9828)
 rotation = -4.6499734
 
 [node name="@Node2D@37628" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(207.94174, 937.432)
 rotation = 1.2341226
 
 [node name="@Node2D@37629" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(562.5455, 887.2727)
 rotation = 1.0838963
 
 [node name="@Node2D@37630" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(884.7318, 697.10626)
 rotation = -1.9416869
 
 [node name="@Node2D@37631" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(707.1188, 643.7884)
 rotation = 1.1562887
 
 [node name="@Node2D@37632" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(821.86505, 600.75854)
 rotation = -1.9215256
 
 [node name="@Node2D@37633" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(179.21396, 204.97192)
 rotation = -0.43662703
 
 [node name="@Node2D@37634" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(238.61395, 185.17194)
 rotation = -0.4636476
 
 [node name="@Node2D@37635" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(294.71396, 158.77194)
 rotation = -0.5191462
 
 [node name="@Node2D@37636" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(344.72726, -5)
 rotation = -1.7942723
 
 [node name="@Node2D@37637" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(395.63635, -135.90909)
 rotation = 1.1978084
 
 [node name="@Node2D@37638" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1342.3171, 288.0526)
 rotation = -3.419892
 
 [node name="@Node2D@37639" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(-209.47, -594.6734)
 rotation = -0.38831878
 
 [node name="@Node2D@37640" parent="Buildings" instance=ExtResource("8_yuoj6")]
+modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(22.99057, -612.6339)
 rotation = 0.16514862
 
@@ -1309,55 +1347,55 @@ rotation = 0.64704597
 BuildingColor = "Green"
 
 [node name="@Node2D@37643" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-1089.5708, 30.015427)
 rotation = -1.6539388
 BuildingColor = "Red"
 
 [node name="@Node2D@37644" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-1023.79333, -22.699905)
 rotation = 0.38328528
 BuildingColor = "Red"
 
 [node name="@Node2D@37645" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-988.33875, 14.154175)
 rotation = 0.75683486
 BuildingColor = "Red"
 
 [node name="@Node2D@37646" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-1060.1809, 79.465195)
 rotation = -2.2636766
 BuildingColor = "Red"
 
 [node name="@Node2D@37647" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-683.07434, 1142.2561)
 rotation = -3.395269
 BuildingColor = "Red"
 
 [node name="@Node2D@37648" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-781.4215, 1146.3884)
 rotation = -2.0677648
 BuildingColor = "Red"
 
 [node name="@Node2D@37649" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-1101.2561, 886.8843)
 rotation = -0.85773504
 BuildingColor = "Red"
 
 [node name="@Node2D@37650" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-1105.3884, 953.8264)
 rotation = -2.0596478
 BuildingColor = "Red"
 
 [node name="@Node2D@37651" parent="Buildings" instance=ExtResource("8_yuoj6")]
-modulate = Color(1, 0, 0, 1)
+modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(507.00003, -574)
 rotation = 1.289023
 BuildingColor = "Red"
@@ -1381,6 +1419,7 @@ rotation = -2.1379685
 BuildingColor = "Yellow"
 
 [node name="Middletownbusgame" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(567, 283)
 texture = ExtResource("8_wyvd5")
 metadata/_edit_lock_ = true
