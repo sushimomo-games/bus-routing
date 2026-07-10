@@ -31,6 +31,21 @@ public partial class RoadNodeArea : Area2D
         }
     }
 
+    private void _on_mouse_entered()
+    {
+        EditorState.HoveredNode = this.GetParent<RoadNode>();
+        GD.Print($"Hovered over node: {EditorState.HoveredNode.Name}");
+    }
+
+    private void _on_mouse_exited()
+    {
+        if (EditorState.HoveredNode == this.GetParent<RoadNode>())
+        {
+            EditorState.HoveredNode = null;
+            GD.Print($"No longer hovering over node: {this.GetParent<RoadNode>().Name}");
+        }
+    }
+
     private void _on_input_event(Node viewport, InputEvent @event, long shapeIdx)
     {
         var selectedRoadNode = GetParent<RoadNode>();

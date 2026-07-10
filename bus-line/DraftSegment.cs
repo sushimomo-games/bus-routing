@@ -45,13 +45,14 @@ public partial class DraftSegment : Node2D
 
     public bool CanMergeWith(DraftSegment other)
     {
-        if (other == null) return false;
-        return LastNode == other.FirstNode || 
-               FirstNode == other.LastNode ||
-               LastNode == other.LastNode || 
-               FirstNode == other.FirstNode;
+        // A segment can only merge with another segment if their endpoints touch.
+        // This physically prevents T-junctions while allowing self-crossings.
+        return FirstNode == other.FirstNode ||
+            FirstNode == other.LastNode ||
+            LastNode == other.FirstNode ||
+            LastNode == other.LastNode;
     }
-
+    
     public void MergeWith(DraftSegment other)
     {
         if (LastNode == other.FirstNode)

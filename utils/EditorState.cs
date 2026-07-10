@@ -58,6 +58,7 @@ public partial class EditorState : Node
     /// </summary>
     public static BusLine SelectedBusLine { get; set; }
 
+    public static RoadNode HoveredNode { get; set; }
     public static bool IsEditingFromStart { get; set; }
 
     /// <summary>

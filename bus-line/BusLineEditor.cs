@@ -52,22 +52,40 @@ public partial class BusLineEditor : Node
     /// frame while the user is actively creating a bus line, allowing them to
     /// see where the next segment will be drawn as they move the mouse.
     /// <param name="mousePosition">The current position of the mouse in the game world.</param>
-    public static void DrawMouseTrackingLine(Vector2 mousePosition)
+public static void DrawMouseTrackingLine(Vector2 mousePosition)
+{
+    if (CurrentBusLineCreationStep != AddingSubsequentStops && CurrentBusLineCreationStep != ContinuingEdit)
+        return;
+
+    if (MouseTrackingLine == null || _activeSegment == null)
+        return;
+
+    // 1. Figure out which node we are drawing FROM
+    var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+
+    // 2. Default to the valid bus line color
+    Color targetColor = _busLineInProgress.Color;
+
+    // 3. Predictive Check: Are we hovering over a node?
+    if (HoveredNode != null && HoveredNode != activeNode)
     {
-        if (CurrentBusLineCreationStep != AddingSubsequentStops && CurrentBusLineCreationStep != ContinuingEdit)
-            return;
-
-        if (MouseTrackingLine == null)
-            return;
-
-        if (MouseTrackingLine.GetPointCount() < 2)
-            MouseTrackingLine.AddPoint(mousePosition);
-        else
-            MouseTrackingLine.SetPointPosition
-            (
-                MouseTrackingLine.GetPointCount() - 1, mousePosition
-            );
+        // If the edge already exists OR it's not a valid neighbor, flag it as invalid
+        if (EdgeAlreadyExists(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
+        {
+            // Set line to a semi-transparent red (R, G, B, Alpha)
+            targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+        }
     }
+
+    // Apply the color
+    MouseTrackingLine.DefaultColor = targetColor;
+
+    // Draw the points as usual
+    if (MouseTrackingLine.GetPointCount() < 2)
+        MouseTrackingLine.AddPoint(mousePosition);
+    else
+        MouseTrackingLine.SetPointPosition(MouseTrackingLine.GetPointCount() - 1, mousePosition);
+}
 
     /// <summary>
     /// Starts a new draft segment for the bus line creation process,
@@ -272,16 +290,37 @@ public partial class BusLineEditor : Node
     {
         if (_busLineInProgress == null) return;
 
+        if (IsNodeInternalToAnySegment(startNode))
+        {
+            GD.Print("Cannot branch off the middle of an existing route.");
+            return; 
+        }
+
         GD.Print($"[DEBUG - Editor] Jumping to start new segment at {startNode.Name}");
         
-        // Re-enter the active drawing state
         CurrentBusLineCreationStep = AddingSubsequentStops;
-        IsEditingFromStart = false; // Default to appending for a new segment
+        IsEditingFromStart = false; 
 
         StartNewSegment(startNode);
         _activeSegment = DraftLineSegments.Last();
 
         BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
+    }
+
+    private static bool IsNodeInternalToAnySegment(RoadNode node)
+    {
+        foreach (var segment in DraftLineSegments)
+        {
+            if (segment.Nodes.Count > 2)
+            {
+                // If the node exists, but isn't the first or last node, it's internal
+                if (segment.Nodes.Contains(node) && node != segment.FirstNode && node != segment.LastNode)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
