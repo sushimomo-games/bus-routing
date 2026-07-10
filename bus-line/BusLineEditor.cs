@@ -87,6 +87,32 @@ public partial class BusLineEditor : Node
     }
 
     /// <summary>
+    /// Checks if an edge is collinear with any existing edges in the draft segments.
+    /// </summary>
+    /// <param name="nodeA"></param>
+    /// <param name="nodeB"></param>
+    /// <returns></returns>
+    private static bool EdgeAlreadyExists(RoadNode nodeA, RoadNode nodeB)
+    {
+        foreach (var segment in DraftLineSegments)
+        {
+            if (segment.Nodes.Count < 2) continue;
+
+            for (int i = 0; i < segment.Nodes.Count - 1; i++)
+            {
+                var n1 = segment.Nodes[i];
+                var n2 = segment.Nodes[i + 1];
+
+                if ((n1 == nodeA && n2 == nodeB) || (n1 == nodeB && n2 == nodeA))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Continues the bus line creation process by adding a new node to the
     /// currently active draft segment.
     /// </summary>
@@ -97,6 +123,16 @@ public partial class BusLineEditor : Node
 
         var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
         if (activeNode == nextNode) return;
+
+        // Prevents drawing over ANY existing segment, stopping K-turns entirely.
+        if (EdgeAlreadyExists(activeNode, nextNode))
+        {
+
+            GD.Print("Invalid route: Cannot traverse the same road twice.");
+            ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
+            errorMessage.DisplayMessage("Cannot route a bus over the same road twice.");
+            return; 
+        }
 
         if (!activeNode.Neighbors.Contains(nextNode))
         {
