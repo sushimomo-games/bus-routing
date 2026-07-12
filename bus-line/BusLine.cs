@@ -13,8 +13,8 @@ public partial class BusLine : Node
 
     public uint ID { get; private set; }
     public List<RoadNode> Path { get; set; } = [];
-    public string ColorName { get; private set; }
-    public Color Color { get; private set; }
+    public string ColorName { get; set; }
+    public Color Color { get; set; }
     public BusLineVisual Visual { get; private set; }
 
     public event Action OnPathChanged;

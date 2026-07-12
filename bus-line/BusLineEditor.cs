@@ -33,6 +33,8 @@ public partial class BusLineEditor : Node
     private static bool IsEditingFromStart;
     private static Label _creatingNewLineLabel;
 
+    public static bool IsInEditingMode { get; private set; }
+
     /// <summary>
     /// Obtains the road node to begin the the mouse tracking from, and what
     /// color the line should be drawn in.
@@ -60,27 +62,20 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
     if (MouseTrackingLine == null || _activeSegment == null)
         return;
 
-    // 1. Figure out which node we are drawing FROM
     var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
 
-    // 2. Default to the valid bus line color
     Color targetColor = _busLineInProgress.Color;
 
-    // 3. Predictive Check: Are we hovering over a node?
     if (HoveredNode != null && HoveredNode != activeNode)
     {
-        // If the edge already exists OR it's not a valid neighbor, flag it as invalid
         if (EdgeAlreadyExists(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
         {
-            // Set line to a semi-transparent red (R, G, B, Alpha)
             targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
         }
     }
 
-    // Apply the color
     MouseTrackingLine.DefaultColor = targetColor;
 
-    // Draw the points as usual
     if (MouseTrackingLine.GetPointCount() < 2)
         MouseTrackingLine.AddPoint(mousePosition);
     else
@@ -154,8 +149,15 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
 
         if (!activeNode.Neighbors.Contains(nextNode))
         {
+            // Cache whether we are Creating or Editing
+            var previousStep = CurrentBusLineCreationStep;
+
+            // This safely terminates the line visual, but overrides state to PausedCreation
             FinalizeDraftSegment(); 
-            CurrentBusLineCreationStep = AddingSubsequentStops;
+
+            // Restore the correct active mode
+            CurrentBusLineCreationStep = previousStep;
+
             StartNewSegment(nextNode);
             IsEditingFromStart = false;
             BeginMouseTrackingLineAt(nextNode, _busLineInProgress.Color);
@@ -325,22 +327,26 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
     {
+        IsInEditingMode = true;
+        CurrentBusLineCreationStep = ContinuingEdit;
         GD.Print($"Starting to edit busLine: {busLine.ColorName}");
-        _busLineInProgress = new BusLine();
+
+        _busLineInProgress = new BusLine
+        {
+            ColorName = busLine.ColorName,
+            Color = busLine.Color
+        };
+        CurrentLevel.AddChild(_busLineInProgress);
         
         // Push the existing path into a draft segment so it can be edited
         StartNewSegment(busLine.Path[0]);
         for (int i = 1; i < busLine.Path.Count; i++)
         {
-            // _busLineInProgress.AppendToSegment(busLine.Path[i], 0);
+            DraftLineSegments[0].Append(busLine.Path[i]);
         }
 
         _activeSegment = DraftLineSegments[0];
-
-        if (_activeSegment.FirstNode == clickedNode)
-            IsEditingFromStart = true;
-        else
-            IsEditingFromStart = false;
+        IsEditingFromStart = _activeSegment.FirstNode == clickedNode;
 
         BeginMouseTrackingLineAt(clickedNode, busLine.Color);
     }
@@ -356,7 +362,8 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
             return; 
         }
 
-        // _busLineInProgress.CommitDraftToPath();
+        // Apply the modified draft segment to the temporary bus line path
+        _busLineInProgress.SetPath(DraftLineSegments[0].Nodes);
 
         var firstNode = _busLineInProgress.Path.First();
         var lastNode = _busLineInProgress.Path.Last();
@@ -376,6 +383,10 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
             UpdateAllHouseStatuses();
         }
         
+        // Clean up the draft segments
+        DraftLineSegments[0].QueueFree();
+        DraftLineSegments.Clear();
+        
         LevelState.RefreshAllBusLineVisuals();
         _busLineInProgress.QueueFree(); // Clean up the temporary editing duplicate
         _busLineInProgress = null;
@@ -390,7 +401,8 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
     /// </summary>
     private static void ResetState()
     {
-        CurrentLevel.GetNode<Label>(CreatingNewLineLabelNode).Visible = false;
+        IsInEditingMode = false;
+        CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode).Visible = false;
         CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = false;
         _busLineInProgress = null;
         _activeSegment = null;
@@ -407,7 +419,7 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
     /// <param name="startNode">The node from which to start the bus line creation.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
-        _creatingNewLineLabel = CurrentLevel.GetNode<Label>(CreatingNewLineLabelNode);
+        _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
         IsEditingFromStart = false; 
         _busLineInProgress = new BusLine();
@@ -439,7 +451,7 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
                     var segmentToAbsorb = segments[j];
                     
                     // Check if EITHER the absorbed segment or the absorbing segment was active
-                    bool wasActive = (_activeSegment == segmentToAbsorb || _activeSegment == segments[i]);
+                    bool wasActive = _activeSegment == segmentToAbsorb || _activeSegment == segments[i];
                     
                     segments[i].MergeWith(segmentToAbsorb);
                     
@@ -448,8 +460,6 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
                     
                     if (wasActive) 
                     {
-                        // FIX: The connection point is now inside the middle of the merged line.
-                        // Pause drawing so the tracking line doesn't snap to the far end of the route.
                         FinalizeDraftSegment();
                     }
                     

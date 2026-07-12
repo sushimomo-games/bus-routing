@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=9 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cc6jt12y5aelv" path="res://ui/level-ui/AddLineButton.cs" id="4_putxw"]
 [ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
 [ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/level-ui/BudgetLabel.cs" id="6_07au4"]
+[ext_resource type="Script" uid="uid://bxwc5v3pghdtw" path="res://ui/buttons/EndBusLineButton.cs" id="8_te10w"]
 
 [node name="LevelUI" type="Control"]
 layout_mode = 3
@@ -111,7 +112,7 @@ offset_bottom = -4.0
 grow_vertical = 0
 script = ExtResource("6_07au4")
 
-[node name="CreatingNewLineLabel" type="Label" parent="."]
+[node name="LineEditorStatusLabel" type="Label" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -134,7 +135,9 @@ anchor_top = 0.06790123
 anchor_right = 0.20659722
 anchor_bottom = 0.11574074
 text = "End Bus Line"
+script = ExtResource("8_te10w")
 metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="BusLinesListContainer/BusLinesHeader/AddLineButton" to="BusLinesListContainer/BusLinesHeader/AddLineButton" method="_on_pressed"]
 [connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
+[connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]

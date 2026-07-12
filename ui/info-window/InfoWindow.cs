@@ -26,20 +26,22 @@ public partial class InfoWindow : Control
     private ItemList _busLineList;
     private Label _infoText;
     private Button _closeButton;
+    private Label _lineEditorStatusLabel;
+    private Button _endBusLineButton;
 
     public override void _Ready()
     {
         Position = new Vector2(100, 100);
 
         _busLineList = GetTree().CurrentScene.GetNode<ItemList>(Path.BusLineListNode);
+        _lineEditorStatusLabel = GetTree().CurrentScene.GetNode<Label>(Path.LineEditorStatusLabelNode);
+        _endBusLineButton = GetTree().CurrentScene.GetNode<Button>(Path.EndBusLineButtonNode);
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
         
-        // Grab the reference to your close button (update the path if necessary)
         _closeButton = _topBarRect.GetNode<Button>("CloseButton");
 
-        // Subscribe to event
         if (BusLine != null)
         {
             BusLine.OnPathChanged += UpdateInfoText;
@@ -91,6 +93,9 @@ public partial class InfoWindow : Control
     private void _on_edit_button_pressed()
     {
         CurrentBusLineCreationStep = BusLineCreationStep.BeginningEdit;
+        _lineEditorStatusLabel.Text = $"● Editing bus line: {BusLine.ColorName}";
+        _lineEditorStatusLabel.Visible = true;
+        _endBusLineButton.Visible = true;
     }
 
     private void _on_close_button_pressed()
@@ -103,7 +108,6 @@ public partial class InfoWindow : Control
     {
         OpenWindows.Remove(BusLine.ID);
 
-        // Unsubscribe from events to prevent memory leaks
         if (BusLine != null)
         {
             BusLine.OnPathChanged -= UpdateInfoText;
