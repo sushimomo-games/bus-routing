@@ -15,9 +15,8 @@ public partial class AddLineButton : Button
 
     public override void _Ready()
     {
-        _creatingNewLineLabel = GetTree().CurrentScene.GetNode<Label>(CreatingNewLineLabelNode);
+        _creatingNewLineLabel = GetTree().CurrentScene.GetNode<Label>(LineEditorStatusLabelNode);
         _endBusLineButton = GetTree().CurrentScene.GetNode<Button>(EndBusLineButtonNode);
-        _endBusLineButton.Pressed += OnEndBusLineButtonPressed;
     }
 
     private void _on_pressed()
@@ -26,10 +25,5 @@ public partial class AddLineButton : Button
         _creatingNewLineLabel.Text = "● Select a starting stop...";
         _creatingNewLineLabel.Visible = true;
         _endBusLineButton.Visible = true;
-    }
-
-    private void OnEndBusLineButtonPressed()
-    {
-        FinalizeBusLineCreation();
     }
 }
