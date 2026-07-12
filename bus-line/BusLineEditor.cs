@@ -54,33 +54,33 @@ public partial class BusLineEditor : Node
     /// frame while the user is actively creating a bus line, allowing them to
     /// see where the next segment will be drawn as they move the mouse.
     /// <param name="mousePosition">The current position of the mouse in the game world.</param>
-public static void DrawMouseTrackingLine(Vector2 mousePosition)
-{
-    if (CurrentBusLineCreationStep != AddingSubsequentStops && CurrentBusLineCreationStep != ContinuingEdit)
-        return;
-
-    if (MouseTrackingLine == null || _activeSegment == null)
-        return;
-
-    var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
-
-    Color targetColor = _busLineInProgress.Color;
-
-    if (HoveredNode != null && HoveredNode != activeNode)
+    public static void DrawMouseTrackingLine(Vector2 mousePosition)
     {
-        if (EdgeAlreadyExists(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
+        if (CurrentBusLineCreationStep != AddingSubsequentStops && CurrentBusLineCreationStep != ContinuingEdit)
+            return;
+
+        if (MouseTrackingLine == null || _activeSegment == null)
+            return;
+
+        var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+
+        Color targetColor = _busLineInProgress.Color;
+
+        if (HoveredNode != null && HoveredNode != activeNode)
         {
-            targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+            if (DraftLineSegments.DoesEdgeExistBetween(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
+            {
+                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+            }
         }
+
+        MouseTrackingLine.DefaultColor = targetColor;
+
+        if (MouseTrackingLine.GetPointCount() < 2)
+            MouseTrackingLine.AddPoint(mousePosition);
+        else
+            MouseTrackingLine.SetPointPosition(MouseTrackingLine.GetPointCount() - 1, mousePosition);
     }
-
-    MouseTrackingLine.DefaultColor = targetColor;
-
-    if (MouseTrackingLine.GetPointCount() < 2)
-        MouseTrackingLine.AddPoint(mousePosition);
-    else
-        MouseTrackingLine.SetPointPosition(MouseTrackingLine.GetPointCount() - 1, mousePosition);
-}
 
     /// <summary>
     /// Starts a new draft segment for the bus line creation process,
@@ -100,32 +100,6 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
     }
 
     /// <summary>
-    /// Checks if an edge is collinear with any existing edges in the draft segments.
-    /// </summary>
-    /// <param name="nodeA"></param>
-    /// <param name="nodeB"></param>
-    /// <returns></returns>
-    private static bool EdgeAlreadyExists(RoadNode nodeA, RoadNode nodeB)
-    {
-        foreach (var segment in DraftLineSegments)
-        {
-            if (segment.Nodes.Count < 2) continue;
-
-            for (int i = 0; i < segment.Nodes.Count - 1; i++)
-            {
-                var n1 = segment.Nodes[i];
-                var n2 = segment.Nodes[i + 1];
-
-                if ((n1 == nodeA && n2 == nodeB) || (n1 == nodeB && n2 == nodeA))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
     /// Continues the bus line creation process by adding a new node to the
     /// currently active draft segment.
     /// </summary>
@@ -138,7 +112,7 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
         if (activeNode == nextNode) return;
 
         // Prevents drawing over ANY existing segment, stopping K-turns entirely.
-        if (EdgeAlreadyExists(activeNode, nextNode))
+        if (DraftLineSegments.DoesEdgeExistBetween(activeNode, nextNode))
         {
 
             GD.Print("Invalid route: Cannot traverse the same road twice.");
@@ -292,7 +266,7 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
     {
         if (_busLineInProgress == null) return;
 
-        if (IsNodeInternalToAnySegment(startNode))
+        if (DraftLineSegments.IsNodeInternal(startNode))
         {
             GD.Print("Cannot branch off the middle of an existing route.");
             return; 
@@ -307,22 +281,6 @@ public static void DrawMouseTrackingLine(Vector2 mousePosition)
         _activeSegment = DraftLineSegments.Last();
 
         BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
-    }
-
-    private static bool IsNodeInternalToAnySegment(RoadNode node)
-    {
-        foreach (var segment in DraftLineSegments)
-        {
-            if (segment.Nodes.Count > 2)
-            {
-                // If the node exists, but isn't the first or last node, it's internal
-                if (segment.Nodes.Contains(node) && node != segment.FirstNode && node != segment.LastNode)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
