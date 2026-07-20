@@ -82,7 +82,7 @@ public static class Pathfinder
         return distance * 2.5f; 
     }
 
-    private static float CalculateDirectionalRideCost(List<RoadNode> path, int startIndex, int endIndex)
+    public static float CalculateDirectionalRideCost(List<RoadNode> path, int startIndex, int endIndex)
     {
         float totalDistance = 0f;
         for (int i = startIndex; i < endIndex; i++)
