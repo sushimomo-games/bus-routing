@@ -12,9 +12,10 @@ public static class Pathfinder
         var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet();
 
         var priorityQueue = new PriorityQueue<BusStop, float>();
-        
         var costs = new Dictionary<BusStop, float>();
         var lineageMap = new Dictionary<BusStop, (BusStop Parent, RouteSegment Segment)>();
+        
+        var visited = new HashSet<BusStop>(); 
 
         priorityQueue.Enqueue(start, 0f);
         costs[start] = 0f;
@@ -23,29 +24,33 @@ public static class Pathfinder
         {
             var current = priorityQueue.Dequeue();
 
+            // Skip stale queue entries 
+            if (!visited.Add(current)) continue;
+
             if (validDestinationStops.Contains(current))
             {
                 var destinationNode = validDestinations.First(d => d.ReachableBusStop == current);
                 return BuildTransitItinerary(start, current, destinationNode, lineageMap);
             }
 
-            // Evaluate Bus Line Connections
             foreach (var busLine in LevelState.AllBusLines)
             {
-                if (!busLine.Path.Contains(current)) continue;
+                int currentIndex = busLine.Path.IndexOf(current);
+                if (currentIndex == -1) continue;
 
-                foreach (var nextNode in busLine.Path.OfType<BusStop>())
+                for (int i = currentIndex + 1; i < busLine.Path.Count; i++)
                 {
-                    if (nextNode == current) continue;
-
-                    float rideCost = CalculateRideCost(current, nextNode);
-                    float newCost = costs[current] + rideCost;
-
-                    if (!costs.ContainsKey(nextNode) || newCost <= costs[nextNode])
+                    if (busLine.Path[i] is BusStop nextNode)
                     {
-                        costs[nextNode] = newCost;
-                        lineageMap[nextNode] = (current, new RideSegment(busLine, current, nextNode));
-                        priorityQueue.Enqueue(nextNode, newCost);
+                        float rideCost = CalculateDirectionalRideCost(busLine.Path, currentIndex, i);
+                        float newCost = costs[current] + rideCost;
+
+                        if (!costs.ContainsKey(nextNode) || newCost < costs[nextNode])
+                        {
+                            costs[nextNode] = newCost;
+                            lineageMap[nextNode] = (current, new RideSegment(busLine, current, nextNode));
+                            priorityQueue.Enqueue(nextNode, newCost);
+                        }
                     }
                 }
             }
@@ -58,7 +63,8 @@ public static class Pathfinder
                 float walkCost = CalculateWalkCost(current, nearbyStop);
                 float newCost = costs[current] + walkCost;
 
-                if (!costs.ContainsKey(nearbyStop) || newCost <= costs[nearbyStop])
+                // Changed <= to < 
+                if (!costs.ContainsKey(nearbyStop) || newCost < costs[nearbyStop])
                 {
                     costs[nearbyStop] = newCost;
                     lineageMap[nearbyStop] = (current, new WalkSegment(current, nearbyStop));
@@ -67,18 +73,23 @@ public static class Pathfinder
             }
         }
 
-        return null; // No route found
-    }
-
-    private static float CalculateRideCost(BusStop start, BusStop end)
-    {
-        return start.GlobalPosition.DistanceTo(end.GlobalPosition);
+        return null; 
     }
 
     private static float CalculateWalkCost(BusStop start, BusStop end)
     {
         float distance = start.GlobalPosition.DistanceTo(end.GlobalPosition);
         return distance * 2.5f; 
+    }
+
+    private static float CalculateDirectionalRideCost(List<RoadNode> path, int startIndex, int endIndex)
+    {
+        float totalDistance = 0f;
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            totalDistance += path[i].GlobalPosition.DistanceTo(path[i + 1].GlobalPosition);
+        }
+        return totalDistance;
     }
 
     private static List<RouteSegment> BuildTransitItinerary(

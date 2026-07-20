@@ -28,9 +28,7 @@ public partial class BusLineList : ItemList
             RemoveItem(itemIndex);
         }
 
-        busLine.Visual?.QueueFree();
-        LevelState.AllBusLines.Remove(busLine);
-        busLine.QueueFree();
+        busLine.Delete();
 
         SelectedBusLine = null;
         LevelState.UpdateAllHouseStatuses();

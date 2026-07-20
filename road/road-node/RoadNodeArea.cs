@@ -5,7 +5,6 @@ using static EditorState;
 using static LevelState;
 using static BusLineCreationStep;
 using static Path;
-using static BusLineEditor;
 
 public partial class RoadNodeArea : Area2D
 {

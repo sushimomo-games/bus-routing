@@ -30,7 +30,8 @@ public partial class BusLineEditor : Node
     /// visualization before finalizing the route.
     /// </summary>
     public static List<DraftSegment> DraftLineSegments { get; private set; } = [];
-    private static bool IsEditingFromStart;
+    private static bool _isEditingFromStart;
+    public static bool IsEditingFromStart => _isEditingFromStart;
     private static Label _creatingNewLineLabel;
 
     public static bool IsInEditingMode { get; private set; }
@@ -62,7 +63,7 @@ public partial class BusLineEditor : Node
         if (MouseTrackingLine == null || _activeSegment == null)
             return;
 
-        var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+        var activeNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
 
         Color targetColor = _busLineInProgress.Color;
 
@@ -108,7 +109,7 @@ public partial class BusLineEditor : Node
     {
         if (_activeSegment == null) return;
 
-        var activeNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+        var activeNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
         if (activeNode == nextNode) return;
 
         // Prevents drawing over ANY existing segment, stopping K-turns entirely.
@@ -133,19 +134,19 @@ public partial class BusLineEditor : Node
             CurrentBusLineCreationStep = previousStep;
 
             StartNewSegment(nextNode);
-            IsEditingFromStart = false;
+            _isEditingFromStart = false;
             BeginMouseTrackingLineAt(nextNode, _busLineInProgress.Color);
             return;
         }
 
-        if (IsEditingFromStart)
+        if (_isEditingFromStart)
             _activeSegment.Prepend(nextNode);
         else
             _activeSegment.Append(nextNode);
 
         CheckAndMergeSegments();
 
-        var newActiveNode = IsEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+        var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
         
         _mouseTrackingLine?.QueueFree();
         BeginMouseTrackingLineAt(newActiveNode, _busLineInProgress.Color);
@@ -241,7 +242,7 @@ public partial class BusLineEditor : Node
             if (clickedNode == segment.FirstNode)
             {
                 _activeSegment = segment;
-                IsEditingFromStart = true;
+                _isEditingFromStart = true;
                 CurrentBusLineCreationStep = AddingSubsequentStops;
                 BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
                 return true;
@@ -249,7 +250,7 @@ public partial class BusLineEditor : Node
             else if (clickedNode == segment.LastNode)
             {
                 _activeSegment = segment;
-                IsEditingFromStart = false;
+                _isEditingFromStart = false;
                 CurrentBusLineCreationStep = AddingSubsequentStops;
                 BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
                 return true;
@@ -275,7 +276,7 @@ public partial class BusLineEditor : Node
         GD.Print($"[DEBUG - Editor] Jumping to start new segment at {startNode.Name}");
         
         CurrentBusLineCreationStep = AddingSubsequentStops;
-        IsEditingFromStart = false; 
+        _isEditingFromStart = false; 
 
         StartNewSegment(startNode);
         _activeSegment = DraftLineSegments.Last();
@@ -304,7 +305,7 @@ public partial class BusLineEditor : Node
         }
 
         _activeSegment = DraftLineSegments[0];
-        IsEditingFromStart = _activeSegment.FirstNode == clickedNode;
+        _isEditingFromStart = _activeSegment.FirstNode == clickedNode;
 
         BeginMouseTrackingLineAt(clickedNode, busLine.Color);
     }
@@ -367,7 +368,7 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
-        IsEditingFromStart = false;
+        _isEditingFromStart = false;
     }
 
     /// <summary>
@@ -379,7 +380,7 @@ public partial class BusLineEditor : Node
     {
         _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
-        IsEditingFromStart = false; 
+        _isEditingFromStart = false; 
         _busLineInProgress = new BusLine();
         CurrentLevel.AddChild(_busLineInProgress);
         

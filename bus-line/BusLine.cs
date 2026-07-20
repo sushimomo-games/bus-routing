@@ -82,6 +82,10 @@ public partial class BusLine : Node
         }
     }
 
+    /// <summary>
+    /// Use this instead of QueueFree() directly on the bus line to properly clean
+    /// up the busLine and return its color to the pool.
+    /// </summary>
     public void Delete()
     {
         LevelState.AllBusLines.Remove(this);
