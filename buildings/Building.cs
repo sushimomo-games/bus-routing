@@ -39,7 +39,7 @@ public abstract partial class Building : Node2D
     /// Gets the bus stop node that this building can reach.
     /// Returns null if no bus stop is currently in range.
     /// </summary>
-    public Node ReachableBusStop => _busStopDetector?.ReachableBusStop;
+    public virtual Node ReachableBusStop => _busStopDetector?.ReachableBusStop;
 
     public override void _Ready()
     {

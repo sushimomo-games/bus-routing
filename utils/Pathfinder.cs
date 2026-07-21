@@ -76,13 +76,13 @@ public static class Pathfinder
         return null; 
     }
 
-    private static float CalculateWalkCost(BusStop start, BusStop end)
+    internal static float CalculateWalkCost(BusStop start, BusStop end)
     {
         float distance = start.GlobalPosition.DistanceTo(end.GlobalPosition);
         return distance * 2.5f; 
     }
 
-    public static float CalculateDirectionalRideCost(List<RoadNode> path, int startIndex, int endIndex)
+    internal static float CalculateDirectionalRideCost(List<RoadNode> path, int startIndex, int endIndex)
     {
         float totalDistance = 0f;
         for (int i = startIndex; i < endIndex; i++)
@@ -92,7 +92,7 @@ public static class Pathfinder
         return totalDistance;
     }
 
-    private static List<RouteSegment> BuildTransitItinerary(
+    internal static List<RouteSegment> BuildTransitItinerary(
         BusStop start, 
         BusStop end, 
         Destination finalDestination,
