@@ -3,7 +3,7 @@ using Godot;
 /// <summary>
 /// Represents a segment of a route where the user walks from one point to another.
 /// </summary>
-public class WalkSegment : RouteSegment
+public class WalkSegment : CommuteSegment
 {
     public Node2D Origin { get; private set; }
     public Node2D Destination { get; private set; }

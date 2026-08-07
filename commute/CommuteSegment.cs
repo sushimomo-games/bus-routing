@@ -1,10 +1,10 @@
 using Godot;
 
 /// <summary>
-/// Abstract base class representing a segment of a route,
+/// Abstract base class representing a segment of a commute,
 /// which can be either a walk or a bus ride.
 /// </summary>
-public abstract class RouteSegment
+public abstract class CommuteSegment
 {
     /// <summary>
     /// The raw distance between beginning and end of the segment

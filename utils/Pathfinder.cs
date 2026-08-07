@@ -7,13 +7,13 @@ public static class Pathfinder
     /// <summary>
     /// Uses Dijkstra's algorithm to find the lowest-cost route.
     /// </summary>
-    public static List<RouteSegment> CalculateBestRoute(BusStop start, HashSet<Destination> validDestinations)
+    public static List<CommuteSegment> CalculateBestRoute(BusStop start, HashSet<Destination> validDestinations)
     {
         var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet();
 
         var priorityQueue = new PriorityQueue<BusStop, float>();
         var costs = new Dictionary<BusStop, float>();
-        var lineageMap = new Dictionary<BusStop, (BusStop Parent, RouteSegment Segment)>();
+        var lineageMap = new Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)>();
         
         var visited = new HashSet<BusStop>(); 
 
@@ -92,13 +92,13 @@ public static class Pathfinder
         return totalDistance;
     }
 
-    internal static List<RouteSegment> BuildTransitItinerary(
+    internal static List<CommuteSegment> BuildTransitItinerary(
         BusStop start, 
         BusStop end, 
         Destination finalDestination,
-        Dictionary<BusStop, (BusStop Parent, RouteSegment Segment)> lineageMap)
+        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap)
     {
-        var segments = new List<RouteSegment>();
+        var segments = new List<CommuteSegment>();
         var backtrackNode = end;
 
         while (backtrackNode != start)

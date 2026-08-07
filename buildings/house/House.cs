@@ -10,7 +10,7 @@ public partial class House : Building
     private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);
     private Control _infoPopup;
 
-    public Route CurrentItinerary { get; private set; }
+    public Commute CurrentItinerary { get; private set; }
 
     public bool IsChecked
     {
@@ -87,7 +87,7 @@ public partial class House : Building
         {
             transitSegments.Insert(0, new WalkSegment(this, startStop));
             
-            CurrentItinerary = new Route(transitSegments);
+            CurrentItinerary = new Commute(transitSegments);
             IsChecked = true;
         }
         else

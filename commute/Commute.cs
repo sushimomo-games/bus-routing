@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class Route
+public partial class Commute
 {
-    public List<RouteSegment> Itinerary { get; private set; } = new List<RouteSegment>();
+    public List<CommuteSegment> Itinerary { get; private set; } = new List<CommuteSegment>();
 
     public float TotalTime => Itinerary.Sum(segment => segment.Weight);
     public int TransferCount => Itinerary.OfType<WalkSegment>().Count() - 1;
 
-    public Route(List<RouteSegment> segments)
+    public Commute(List<CommuteSegment> segments)
     {
         Itinerary = segments;
     }

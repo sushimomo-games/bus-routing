@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// Contains details about the bus line, boarding and alighting stops,
 /// and calculates estimated time and instructions for this segment.
 /// </summary>
-public class RideSegment : RouteSegment
+public class RideSegment : CommuteSegment
 {
     /// <summary>
     /// The bus line being taken for this segment,
