@@ -1,7 +1,7 @@
 using Godot;
 
 /// <summary>
-/// Represents a segment of a route where the user walks from one point to another.
+/// Represents a segment of a commute where a passenger walks from one point to another.
 /// </summary>
 public class WalkSegment : CommuteSegment
 {
@@ -14,11 +14,22 @@ public class WalkSegment : CommuteSegment
         Destination = destination;
     }
 
-    public override float Weight => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition); // You can apply a walking speed modifier here
+    /// <summary>
+    /// The spatial distance in world pixels.
+    /// </summary>
+    public override float Weight => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition);
+
+    /// <summary>
+    /// Estimated time in minutes required to walk this segment. Adjust the
+    /// divisor to change the walking speed (pixels per minute).
+    /// </summary>
+    public float WalkingTimeMinutes => Weight / 50.0f;
 
     public override string GetInstruction()
     {
         string destName = Destination is BusStop ? "the bus stop" : "your destination";
-        return $"Walk to {destName}.";
+        
+        int roundedMinutes = Mathf.Max(1, Mathf.RoundToInt(WalkingTimeMinutes));
+        return $"Walk {roundedMinutes} min ({DistanceMiles:F1} mi).";
     }
 }

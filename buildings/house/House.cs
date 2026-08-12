@@ -104,7 +104,7 @@ public partial class House : Building
             _infoPopup = _infoPopupScene.Instantiate<Control>();
             var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer"); 
             canvasLayer.AddChild(_infoPopup);
-            _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}\nItinerary: {(CurrentItinerary != null ? string.Join("\n", CurrentItinerary.GetDirections()) : "No route available")}";
+            _infoPopup.GetNode<Label>("Label").Text = $"Bus Usage Probability: {BusUsageProbability:P1}\n\n{(CurrentItinerary != null ? string.Join("\n", CurrentItinerary.GetDirections()) : "No route available")}";
             _infoPopup.Modulate = Modulate;
         }
 

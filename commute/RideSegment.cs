@@ -91,7 +91,7 @@ public class RideSegment : CommuteSegment
     {
         string plural = StopsTraveled == 1 ? "stop" : "stops";
         // E.g., "Take the Orange Line for 3 stops."
-        return $"Take the {Line.ColorName} line for {StopsTraveled} {plural}.";
+        return $"Take the {Line.ColorName} line for {StopsTraveled} {plural} ({DistanceMiles:F1} mi).";
     }
 
     /// <summary>

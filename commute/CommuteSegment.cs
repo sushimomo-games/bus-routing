@@ -10,11 +10,11 @@ public abstract class CommuteSegment
     /// The raw distance between beginning and end of the segment
     /// </summary>
     public abstract float Weight { get; }
-    
+
     /// <summary>
-    /// The estimated time to traverse this segment calculated from Weight
+    /// The distance of a segment in miles, assuming 200 pixels = 1 mile.
     /// </summary>
-    // public abstract float EstimatedTime { get; }
+    public float DistanceMiles => Weight / 200.0f;
 
     // Generates the human-readable instruction (e.g. "Walk to X")
     public abstract string GetInstruction();
