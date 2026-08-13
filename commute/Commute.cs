@@ -2,23 +2,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class Commute
+public partial class Commute(List<CommuteSegment> segments)
 {
-    public List<CommuteSegment> Itinerary { get; private set; } = new List<CommuteSegment>();
+    public List<CommuteSegment> Itinerary { get; private set; } = segments;
 
-    public float TotalTime => Itinerary.Sum(segment => segment.Weight);
+    /// <summary>
+    /// The estimated time that a commute should take a resident in minutes.
+    /// </summary>
+    public float TotalTimeMinutes => Itinerary.Sum(segment => segment.TimeMinutes);
+    
     public int TransferCount => Itinerary.OfType<WalkSegment>().Count() - 1;
-
-    public Commute(List<CommuteSegment> segments)
-    {
-        Itinerary = segments;
-    }
 
     /// <summary>
     /// Returns a list of sequential instructions for the UI.
     /// </summary>
     public List<string> GetDirections()
     {
-        return Itinerary.Select(segment => segment.GetInstruction()).ToList();
+        return [.. Itinerary.Select(segment => segment.GetInstruction())];
     }
 }

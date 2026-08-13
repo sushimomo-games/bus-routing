@@ -16,6 +16,11 @@ public abstract class CommuteSegment
     /// </summary>
     public float DistanceMiles => Weight / 200.0f;
 
+    /// <summary>
+    /// The estimated time in minutes required to complete the segment.
+    /// </summary>
+    public abstract float TimeMinutes { get; }
+
     // Generates the human-readable instruction (e.g. "Walk to X")
     public abstract string GetInstruction();
 }

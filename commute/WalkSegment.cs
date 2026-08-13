@@ -23,13 +23,13 @@ public class WalkSegment : CommuteSegment
     /// Estimated time in minutes required to walk this segment. Adjust the
     /// divisor to change the walking speed (pixels per minute).
     /// </summary>
-    public float WalkingTimeMinutes => Weight / 50.0f;
+    public override float TimeMinutes => Weight / 50.0f;
 
     public override string GetInstruction()
     {
         string destName = Destination is BusStop ? "the bus stop" : "your destination";
         
-        int roundedMinutes = Mathf.Max(1, Mathf.RoundToInt(WalkingTimeMinutes));
+        int roundedMinutes = Mathf.Max(1, Mathf.RoundToInt(TimeMinutes));
         return $"Walk {roundedMinutes} min ({DistanceMiles:F1} mi).";
     }
 }

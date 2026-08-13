@@ -82,6 +82,8 @@ public class RideSegment : CommuteSegment
         } 
     }
 
+    public override float TimeMinutes => Weight / 100.0f; 
+
     /// <summary>
     /// Returns a user-friendly instruction for this RideSegment, e.g.,
     /// "Take the Orange Line for 3 stops."
@@ -91,7 +93,7 @@ public class RideSegment : CommuteSegment
     {
         string plural = StopsTraveled == 1 ? "stop" : "stops";
         // E.g., "Take the Orange Line for 3 stops."
-        return $"Take the {Line.ColorName} line for {StopsTraveled} {plural} ({DistanceMiles:F1} mi).";
+        return $"Ride {Line.ColorName} line for {StopsTraveled} {plural} ({DistanceMiles:F1} mi).";
     }
 
     /// <summary>
