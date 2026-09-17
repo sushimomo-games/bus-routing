@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://jf2a1v8x5v1v"]
+
+[ext_resource type="Texture2D" uid="uid://clsoik5b2ikb7" path="res://assets/arrow.png" id="1_nac7e"]
+
+[node name="UndoButton" type="Control"]
+layout_mode = 3
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+
+[node name="TextureButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_right = 57.0
+offset_bottom = 57.0
+texture_normal = ExtResource("1_nac7e")
+ignore_texture_size = true
+stretch_mode = 0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=12 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -8,6 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
 [ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/level-ui/BudgetLabel.cs" id="6_07au4"]
 [ext_resource type="Script" uid="uid://bxwc5v3pghdtw" path="res://ui/buttons/EndBusLineButton.cs" id="8_te10w"]
+[ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
+[ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
+[ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
 
 [node name="LevelUI" type="Control"]
 layout_mode = 3
@@ -137,6 +140,30 @@ anchor_bottom = 0.11574074
 text = "End Bus Line"
 script = ExtResource("8_te10w")
 metadata/_edit_use_anchors_ = true
+
+[node name="UndoButton" parent="." instance=ExtResource("9_itewi")]
+layout_mode = 0
+anchors_preset = 0
+offset_left = 26.0
+offset_top = 116.0
+offset_right = 26.0
+offset_bottom = 116.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="RedoButton" parent="." instance=ExtResource("10_gwjw8")]
+layout_mode = 1
+offset_left = 21.0
+offset_top = 178.0
+offset_right = 21.0
+offset_bottom = 178.0
+
+[node name="SliceButton" parent="." instance=ExtResource("11_hn6xl")]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 265.0
+offset_right = 28.0
+offset_bottom = 265.0
 
 [connection signal="pressed" from="BusLinesListContainer/BusLinesHeader/AddLineButton" to="BusLinesListContainer/BusLinesHeader/AddLineButton" method="_on_pressed"]
 [connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
