@@ -143,27 +143,26 @@ metadata/_edit_use_anchors_ = true
 
 [node name="UndoButton" parent="." instance=ExtResource("9_itewi")]
 layout_mode = 0
-anchors_preset = 0
-offset_left = 26.0
-offset_top = 116.0
-offset_right = 26.0
-offset_bottom = 116.0
+offset_left = 32.0
+offset_top = 120.0
+offset_right = 32.0
+offset_bottom = 120.0
 grow_horizontal = 1
 grow_vertical = 1
 
 [node name="RedoButton" parent="." instance=ExtResource("10_gwjw8")]
 layout_mode = 1
-offset_left = 21.0
-offset_top = 178.0
-offset_right = 21.0
-offset_bottom = 178.0
+offset_left = 32.0
+offset_top = 192.0
+offset_right = 32.0
+offset_bottom = 192.0
 
 [node name="SliceButton" parent="." instance=ExtResource("11_hn6xl")]
 layout_mode = 0
-offset_left = 28.0
-offset_top = 265.0
-offset_right = 28.0
-offset_bottom = 265.0
+offset_left = 32.0
+offset_top = 264.0
+offset_right = 32.0
+offset_bottom = 264.0
 
 [connection signal="pressed" from="BusLinesListContainer/BusLinesHeader/AddLineButton" to="BusLinesListContainer/BusLinesHeader/AddLineButton" method="_on_pressed"]
 [connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
