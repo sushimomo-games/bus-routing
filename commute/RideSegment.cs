@@ -50,7 +50,7 @@ public class RideSegment : CommuteSegment
     }
     
     // For RideSegment, distance along nodes
-    public override float Weight 
+    protected override float Weight 
     { 
         get 
         {

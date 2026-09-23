@@ -1,4 +1,5 @@
 using Godot;
+using static GlobalConstants;
 
 /// <summary>
 /// Abstract base class representing a segment of a commute,
@@ -7,14 +8,14 @@ using Godot;
 public abstract class CommuteSegment
 {
     /// <summary>
-    /// The raw distance between beginning and end of the segment
+    /// The raw distance between beginning and end of the segment.
     /// </summary>
-    public abstract float Weight { get; }
+    protected abstract float Weight { get; }
 
     /// <summary>
-    /// The distance of a segment in miles, assuming 200 pixels = 1 mile.
+    /// The distance of a segment in miles.
     /// </summary>
-    public float DistanceMiles => Weight / 200.0f;
+    public float DistanceMiles => Weight / PixelsPerMile;
 
     /// <summary>
     /// The estimated time in minutes required to complete the segment.

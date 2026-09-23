@@ -5,7 +5,14 @@ using Godot;
 /// </summary>
 public class WalkSegment : CommuteSegment
 {
+    /// <summary>
+    /// The starting point of the walk segment.
+    /// </summary>
     public Node2D Origin { get; private set; }
+
+    /// <summary>
+    /// The ending point of the walk segment.
+    /// </summary>
     public Node2D Destination { get; private set; }
 
     public WalkSegment(Node2D origin, Node2D destination)
@@ -15,16 +22,32 @@ public class WalkSegment : CommuteSegment
     }
 
     /// <summary>
-    /// The spatial distance in world pixels.
+    /// The raw distance between the origin and destination of the walk
+    /// segment. The player should never be shown this value directly. Use the
+    /// TimeMinutes property for player-facing calls.
     /// </summary>
-    public override float Weight => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition);
+    protected override float Weight => Origin.GlobalPosition.DistanceTo(Destination.GlobalPosition);
 
     /// <summary>
-    /// Estimated time in minutes required to walk this segment. Adjust the
-    /// divisor to change the walking speed (pixels per minute).
+    /// The weighted distance of the walk segment, taking into account walking
+    /// speed or difficulty. This is different from RawDistance in that it can
+    /// be adjusted to reflect the actual time required to walk the distance.
     /// </summary>
-    public override float TimeMinutes => Weight / 50.0f;
+    public override float TimeMinutes => Weight * 2.5f; // Adjust the multiplier to represent walking speed or difficulty
 
+    /// <summary>
+    /// The cost of the walk segment, which is equivalent to the time in
+    /// minutes for now. This exists to make the Pathfinder code more readable.
+    /// </summary>
+    public float Cost => TimeMinutes;
+
+    /// <summary>
+    /// Generates a human-readable instruction for the walk segment, indicating
+    /// where the resident should walk to. The instruction changes based on
+    /// whether the resident is walking to a bus stop or to their destination.
+    /// For example: "Walk to the bus stop." or "Walk to your destination."
+    /// </summary>
+    /// <returns></returns>
     public override string GetInstruction()
     {
         string destName = Destination is BusStop ? "the bus stop" : "your destination";
