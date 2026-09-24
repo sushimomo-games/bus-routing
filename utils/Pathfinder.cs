@@ -78,23 +78,17 @@ public static class Pathfinder
         { 
             if (!LevelState.AllBusLines.Any(r => r.Path.Contains(nearbyStop))) continue; 
             
-            float walkCost = CalculateWalkCost(current, nearbyStop); 
-            float newCost = costs[current] + walkCost; 
+            var walkSegment = new WalkSegment(current, nearbyStop);
+            float newCost = costs[current] + walkSegment.Cost; 
             
             if (!costs.ContainsKey(nearbyStop) || newCost < costs[nearbyStop]) 
             { 
                 costs[nearbyStop] = newCost; 
-                lineageMap[nearbyStop] = (current, new WalkSegment(current, nearbyStop)); 
+                lineageMap[nearbyStop] = (current, walkSegment); 
                 priorityQueue.Enqueue(nearbyStop, newCost); 
             } 
         } 
     }
-
-    internal static float CalculateWalkCost(BusStop start, BusStop end) 
-    { 
-        float distance = start.GlobalPosition.DistanceTo(end.GlobalPosition); 
-        return distance * 2.5f; 
-    } 
 
     internal static float CalculateDirectionalRideCost(List<Node2D> path, int startIndex, int endIndex) 
     { 
