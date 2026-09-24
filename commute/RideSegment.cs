@@ -84,6 +84,8 @@ public class RideSegment : CommuteSegment
 
     public override float TimeMinutes => Weight / 100.0f; 
 
+    public float Cost => TimeMinutes;
+
     /// <summary>
     /// Returns a user-friendly instruction for this RideSegment, e.g.,
     /// "Take the Orange Line for 3 stops."
