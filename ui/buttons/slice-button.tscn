@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://boeq5c2p8isiw"]
 
 [ext_resource type="Texture2D" uid="uid://duemgd3xvq2rv" path="res://assets/slice.svg" id="1_wv0hv"]
-[ext_resource type="Texture2D" uid="uid://c330wqctv3k73" path="res://assets/slicehover.svg" id="2_1dejv"]
+[ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="2_1dejv"]
 
 [node name="SliceButton" type="Control"]
 layout_mode = 3
@@ -9,9 +9,10 @@ anchors_preset = 0
 
 [node name="TextureButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_right = 50.0
-offset_bottom = 49.0
+offset_right = 57.0
+offset_bottom = 57.0
 texture_normal = ExtResource("1_wv0hv")
-texture_hover = ExtResource("2_1dejv")
 ignore_texture_size = true
 stretch_mode = 0
+
+[node name="HoverScaler" parent="TextureButton" instance=ExtResource("2_1dejv")]

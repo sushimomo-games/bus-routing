@@ -27,10 +27,10 @@ layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
-offset_left = 25.0
-offset_top = 25.0
-offset_right = 25.0
-offset_bottom = 25.0
+offset_left = 32.0
+offset_top = 40.0
+offset_right = 32.0
+offset_bottom = 40.0
 
 [node name="BusLinesListContainer" type="VBoxContainer" parent="."]
 layout_mode = 1

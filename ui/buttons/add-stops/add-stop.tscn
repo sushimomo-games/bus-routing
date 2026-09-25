@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dkglf58b8n1vu"]
+[gd_scene load_steps=4 format=3 uid="uid://dkglf58b8n1vu"]
 
 [ext_resource type="Script" uid="uid://7r3ra74yrcan" path="res://ui/buttons/add-stops/AddStop.cs" id="1_dmrtr"]
 [ext_resource type="Texture2D" uid="uid://btvj3err7vmtr" path="res://assets/bus-stop.png" id="2_dmrtr"]
+[ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_bu5c6"]
 
 [node name="AddStop" type="Control"]
 layout_mode = 3
@@ -15,9 +16,10 @@ script = ExtResource("1_dmrtr")
 layout_mode = 0
 offset_right = 58.0
 offset_bottom = 58.0
-pivot_offset = Vector2(29, 29)
 texture = ExtResource("2_dmrtr")
 expand_mode = 1
+
+[node name="HoverScaler" parent="TextureRect" instance=ExtResource("3_bu5c6")]
 
 [connection signal="mouse_entered" from="TextureRect" to="." method="_on_texture_rect_mouse_entered"]
 [connection signal="mouse_exited" from="TextureRect" to="." method="_on_texture_rect_mouse_exited"]

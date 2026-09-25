@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://be8cl7jr4j0gc"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_rt6l5"]
-[ext_resource type="Texture2D" uid="uid://ded8ecfummrfu" path="res://assets/arrowhover.svg" id="2_evff2"]
+[ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_v5b5b"]
 
 [node name="RedoButton" type="Control"]
 layout_mode = 3
@@ -12,7 +12,8 @@ layout_mode = 0
 offset_right = 54.0
 offset_bottom = 51.0
 texture_normal = ExtResource("1_rt6l5")
-texture_hover = ExtResource("2_evff2")
 ignore_texture_size = true
 stretch_mode = 0
 flip_h = true
+
+[node name="HoverScaler" parent="TextureButton" instance=ExtResource("3_v5b5b")]

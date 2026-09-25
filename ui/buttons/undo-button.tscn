@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://jf2a1v8x5v1v"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_t5wrp"]
-[ext_resource type="Texture2D" uid="uid://ded8ecfummrfu" path="res://assets/arrowhover.svg" id="2_nwxmw"]
+[ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_4rvkd"]
 
 [node name="UndoButton" type="Control"]
 layout_mode = 3
@@ -15,6 +15,7 @@ layout_mode = 0
 offset_right = 54.0
 offset_bottom = 51.0
 texture_normal = ExtResource("1_t5wrp")
-texture_hover = ExtResource("2_nwxmw")
 ignore_texture_size = true
 stretch_mode = 0
+
+[node name="HoverScaler" parent="TextureButton" instance=ExtResource("3_4rvkd")]
