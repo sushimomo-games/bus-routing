@@ -13,6 +13,11 @@ script = ExtResource("1_dmrtr")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 58.0
+offset_bottom = 58.0
+pivot_offset = Vector2(29, 29)
 texture = ExtResource("2_dmrtr")
+expand_mode = 1
+
+[connection signal="mouse_entered" from="TextureRect" to="." method="_on_texture_rect_mouse_entered"]
+[connection signal="mouse_exited" from="TextureRect" to="." method="_on_texture_rect_mouse_exited"]
