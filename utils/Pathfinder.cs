@@ -5,7 +5,8 @@ using System.Linq;
 public static class Pathfinder 
 { 
     /// <summary>
-    /// Uses Dijkstra's algorithm to find the lowest-cost route.
+    /// Uses Dijkstra's algorithm to find the most time-efficient commute
+    /// for a house.
     /// </summary>
     public static List<CommuteSegment> CalculateBestRoute(BusStop start, HashSet<Destination> validDestinations) 
     { 
@@ -38,7 +39,16 @@ public static class Pathfinder
         return null; 
     } 
 
-    private static void EvaluateBusConnections(
+    /// <summary>
+    /// Evaluates all possible bus connections from the current bus stop and
+    /// updates the costs, lineage map, and priority queue accordingly.
+    /// </summary>
+    /// <param name="current"></param>
+    /// <param name="costs"></param>
+    /// <param name="lineageMap"></param>
+    /// <param name="priorityQueue"></param>
+    private static void EvaluateBusConnections
+    (
         BusStop current, 
         Dictionary<BusStop, float> costs, 
         Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap, 
@@ -67,7 +77,16 @@ public static class Pathfinder
         }
     }
 
-    private static void EvaluateWalkConnections(
+    /// <summary>
+    /// Evaluates all possible walking connections from the current bus stop and
+    /// updates the costs, lineage map, and priority queue accordingly.
+    /// </summary>
+    /// <param name="current"></param>
+    /// <param name="costs"></param>
+    /// <param name="lineageMap"></param>
+    /// <param name="priorityQueue"></param>
+    private static void EvaluateWalkConnections
+    (
         BusStop current, 
         Dictionary<BusStop, float> costs, 
         Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap, 
@@ -89,7 +108,18 @@ public static class Pathfinder
         } 
     }
 
-    internal static List<CommuteSegment> BuildTransitItinerary( 
+    /// <summary>
+    /// Builds an itinerary comprised of walk and ride segments from the
+    /// starting bus stop to the destination.
+    /// 
+    /// </summary>
+    /// <param name="start">The bus stop that the itinerary begins from.</param>
+    /// <param name="end">The bus stop that the itinerary ends at.</param>
+    /// <param name="finalDestination">The destination of the commute.</param>
+    /// <param name="lineageMap">A map containing the parent and segment information for each bus stop.</param>
+    /// <returns>A list of commute segments representing the itinerary from start to the final destination.</returns>
+    internal static List<CommuteSegment> BuildTransitItinerary
+    ( 
         BusStop start, 
         BusStop end, 
         Destination finalDestination, 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://c8x7p2l5nak1"]
 
 [ext_resource type="Script" uid="uid://c1omwi6nrcts5" path="res://levels/Level.cs" id="1_8iv2f"]
-[ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://Camera.cs" id="2_4kxre"]
+[ext_resource type="Script" uid="uid://dcew74obwshpi" path="res://camera/Camera.cs" id="2_4kxre"]
 [ext_resource type="PackedScene" uid="uid://sqsjlmlyneb6" path="res://road/intersection/intersection-node.tscn" id="3_cjkv6"]
 [ext_resource type="PackedScene" uid="uid://dc2wfu8lyap4i" path="res://ui/level-ui/level-ui.tscn" id="8_8iv2f"]
 [ext_resource type="Texture2D" uid="uid://gjwbpmv1y7b1" path="res://levels/level-mockup-assets/middletownbusgame.png" id="8_wyvd5"]
@@ -382,18 +382,24 @@ BuildingColor = "Yellow"
 modulate = Color(1, 0.84313726, 0, 1)
 position = Vector2(1802, 904.99994)
 rotation = -3.0333214
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Yellow"
 
 [node name="@Node2D@32827" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(1929, 917)
 rotation = -3.0554752
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Blue"
 
 [node name="@Node2D@32828" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(1158, 1068)
 rotation = 1.5707964
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Green"
 
 [node name="@Node2D@22664" parent="Buildings" instance=ExtResource("8_yuoj6")]
@@ -1053,68 +1059,92 @@ rotation = -4.16603
 modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(103.999985, 1019)
 rotation = -1.6737181
+ResidentQuota = 0
+RandomizeQuota = true
 
 [node name="@Node2D@34540" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(1771, -505)
 rotation = 0.66477287
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Green"
 
 [node name="@Node2D@34541" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(1223.0001, -241)
 rotation = -2.5439563
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Blue"
 
 [node name="@Node2D@34542" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0, 0.7490196, 1, 1)
 position = Vector2(1421, -264)
 rotation = 0.6831914
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Blue"
 
 [node name="@Node2D@34543" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(-688.00006, 415.00006)
 rotation = -2.410686
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Red"
 
 [node name="@Node2D@34544" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(1403, -546)
 rotation = -0.31290126
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Red"
 
 [node name="@Node2D@34545" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(140.09093, -313.36362)
 rotation = -2.0998268
+ResidentQuota = 0
+RandomizeQuota = true
 
 [node name="@Node2D@34546" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1783, -206)
 rotation = -0.25933182
+ResidentQuota = 0
+RandomizeQuota = true
 
 [node name="@Node2D@34547" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.98039216, 0.92156863, 0.84313726, 1)
 position = Vector2(1519, -207.00006)
 rotation = 0.5191461
+ResidentQuota = 0
+RandomizeQuota = true
 
 [node name="@Node2D@34548" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.13333334, 0.54509807, 0.13333334, 1)
 position = Vector2(1316, -189.00006)
 rotation = -2.616797
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Green"
 
 [node name="@Node2D@34549" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(1, 0.84313726, 0, 1)
 position = Vector2(1406.0001, -122.99997)
 rotation = -3.4862404
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Yellow"
 
 [node name="@Node2D@34550" parent="Buildings" instance=ExtResource("9_0cyv3")]
 modulate = Color(0.8039216, 0.36078432, 0.36078432, 1)
 position = Vector2(1330.0002, -317.00006)
 rotation = 0.61942685
+ResidentQuota = 0
+RandomizeQuota = true
 BuildingColor = "Red"
 
 [node name="@Node2D@37602" parent="Buildings" instance=ExtResource("8_yuoj6")]
