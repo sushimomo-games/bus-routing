@@ -23,7 +23,6 @@ offset_bottom = 51.0
 tooltip_text = "Redo"
 shortcut = SubResource("Shortcut_sho3k")
 texture_normal = ExtResource("1_rt6l5")
-ignore_texture_size = true
 stretch_mode = 0
 flip_h = true
 

@@ -6,19 +6,15 @@
 
 [node name="AddStop" type="Control"]
 layout_mode = 3
-anchor_right = 0.042000003
-anchor_bottom = 0.074
-offset_right = -48.384003
-offset_bottom = -47.952
+anchors_preset = 0
 script = ExtResource("1_dmrtr")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 58.0
-offset_bottom = 58.0
+layout_mode = 1
+offset_right = 75.0
+offset_bottom = 75.0
 tooltip_text = "Drag to add bus stop"
 texture = ExtResource("2_dmrtr")
-expand_mode = 1
 
 [node name="HoverScaler" parent="TextureRect" instance=ExtResource("3_bu5c6")]
 

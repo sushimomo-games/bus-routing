@@ -5,7 +5,7 @@ using static Path;
 using static BusLineEditor;
 using static EditorState;
 
-public partial class AddLineButton : Button
+public partial class AddLineButton : TextureButton
 {
     /// <summary>
     /// The label that indicates to the player that they are currently creating a new bus line.

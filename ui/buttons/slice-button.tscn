@@ -17,9 +17,9 @@ layout_mode = 3
 anchors_preset = 0
 
 [node name="TextureButton" type="TextureButton" parent="."]
-layout_mode = 0
-offset_right = 57.0
-offset_bottom = 57.0
+layout_mode = 1
+offset_right = 78.0
+offset_bottom = 76.0
 tooltip_text = "Remove segment from bus line"
 shortcut = SubResource("Shortcut_01n23")
 texture_normal = ExtResource("1_wv0hv")
