@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://jf2a1v8x5v1v"]
+[gd_scene load_steps=5 format=3 uid="uid://jf2a1v8x5v1v"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_t5wrp"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_4rvkd"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_nwxmw"]
+device = -1
+ctrl_pressed = true
+keycode = 90
+unicode = 122
+
+[sub_resource type="Shortcut" id="Shortcut_4rvkd"]
+events = [SubResource("InputEventKey_nwxmw")]
 
 [node name="UndoButton" type="Control"]
 layout_mode = 3
@@ -14,6 +23,8 @@ size_flags_horizontal = 0
 layout_mode = 0
 offset_right = 54.0
 offset_bottom = 51.0
+tooltip_text = "Undo"
+shortcut = SubResource("Shortcut_4rvkd")
 texture_normal = ExtResource("1_t5wrp")
 ignore_texture_size = true
 stretch_mode = 0

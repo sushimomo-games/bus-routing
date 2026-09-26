@@ -16,6 +16,7 @@ script = ExtResource("1_dmrtr")
 layout_mode = 0
 offset_right = 58.0
 offset_bottom = 58.0
+tooltip_text = "Drag to add bus stop"
 texture = ExtResource("2_dmrtr")
 expand_mode = 1
 
