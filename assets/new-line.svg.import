@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ded8ecfummrfu"
-path="res://.godot/imported/arrowhover.svg-ce5732b6351781189f42409e9f84cc84.ctex"
+uid="uid://cf2hb2eygxr8p"
+path="res://.godot/imported/new-line.svg-114f4d2f791519b7403584bbb93e5f2d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/arrowhover.svg"
-dest_files=["res://.godot/imported/arrowhover.svg-ce5732b6351781189f42409e9f84cc84.ctex"]
+source_file="res://assets/new-line.svg"
+dest_files=["res://.godot/imported/new-line.svg-114f4d2f791519b7403584bbb93e5f2d.ctex"]
 
 [params]
 

@@ -358,7 +358,7 @@ public partial class BusLineEditor : Node
     /// This method is called after a bus line creation or edit process is
     /// completed or canceled.
     /// </summary>
-    private static void ResetState()
+    public static void ResetState()
     {
         IsInEditingMode = false;
         CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode).Visible = false;

@@ -7,6 +7,12 @@ public partial class EndBusLineButton : Button
 {
     private void _on_pressed()
     {
+        if (CurrentBusLineCreationStep == AddingFirstStop)
+        {
+            BusLineEditor.ResetState();
+            return;
+        }
+
         if (BusLineEditor.IsInEditingMode)
         {
             FinalizeBusLineEdit();
