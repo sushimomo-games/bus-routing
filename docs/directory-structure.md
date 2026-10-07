@@ -1,5 +1,5 @@
 # Directory Structure Guide
-Here is a rundown of some of the directories in the project:
+Here is a rundown of some of the important directories in the project:
 ```
 |── assets # image files (png, svg)
 |── docs # .md files for developers to read
