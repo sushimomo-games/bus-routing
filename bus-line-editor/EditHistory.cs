@@ -7,9 +7,9 @@ using System.Collections.Generic;
 public partial class EditHistory : Node
 {
     /// <summary>
-    /// A read only stack for storing the descendants of the IEdit interface.
+    /// A read only stack for storing the descendants of the AbstractEdit class.
     /// </summary>
-    private readonly Stack<IEdit> _undo = new();
+    private readonly Stack<AbstractEdit> _undo = new();
 
     /// <summary>
     /// Gets a value indicating whether there are any actions available in the history stack to undo.
