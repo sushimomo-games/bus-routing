@@ -28,5 +28,7 @@ public abstract partial class AbstractEdit : Node
     /// <remarks>
     /// This method is called when the player wants to redo an action that was previously undone.
     /// </remarks>
-    public abstract void Apply();
+    
+    
+    // public abstract void Apply();
 }
