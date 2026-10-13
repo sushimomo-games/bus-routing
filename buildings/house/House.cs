@@ -21,6 +21,7 @@ public partial class House : Building
             if (_checkSprite != null)
             {
                 _checkSprite.Visible = value;
+                
             }
             if (value && _busUsageProbability < 0.05f)
             {
@@ -97,6 +98,7 @@ public partial class House : Building
         }
     }
 
+/* 
     private void _on_area_2d_mouse_entered()
     {
         if (_infoPopup == null)
@@ -133,4 +135,25 @@ public partial class House : Building
             }
         }
     }
+*/
+
+    private void _on_house_clicked(
+        Node viewport,
+        InputEvent @event,
+        long shapeIdx)
+    {
+
+        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+        {
+            string commuteDetails = CurrentItinerary != null
+            ? $"Total Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
+            : "No commute available";
+
+            GD.Print(commuteDetails); //add to information panel!!!
+
+        }
+
+    }
+
+
 }

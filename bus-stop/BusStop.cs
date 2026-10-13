@@ -32,11 +32,24 @@ public partial class BusStop : RoadNode
     private void _on_bus_stop_area_mouse_entered()
     {
         _walkRadiusSprite.Visible = true;
+        
     }
 
     private void _on_bus_stop_area_mouse_exited()
     {
         _walkRadiusSprite.Visible = false;
+    }
+
+    private void _on_bus_stop_clicked(Node viewport,
+        InputEvent @event,
+        long shapeIdx)
+    {
+
+        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+        {
+            GD.Print("Show info here");
+        }
+
     }
 
     public override void _ExitTree()
@@ -45,4 +58,6 @@ public partial class BusStop : RoadNode
         LevelState.AllRoadNodes.Remove(this);
         LevelState.Budget -= Cost.BusStopRemoval;
     }
+
+    
 }
