@@ -19,6 +19,7 @@ public partial class LevelState : Node
     /// The bus stop placement UI component for the current level.
     /// </summary>
     public static LevelUI LevelUI { get; set; }
+    public static InformationPanel InformationPanel { get; set; }
     public static List<BusLine> AllBusLines { get; set; } = [];
     public static List<House> AllHouses { get; set; } = [];
     public static List<Destination> AllDestinations { get; set; } = [];

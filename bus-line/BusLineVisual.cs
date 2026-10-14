@@ -250,4 +250,49 @@ public partial class BusLineVisual : Node2D
                        .SetEase(Tween.EaseType.Out);
         _highlightTween.TweenCallback(Callable.From(_highlightLine.ClearPoints));
     }
+   /* public override void _UnhandledInput(InputEvent @event)
+{
+    if (@event is InputEventMouseButton mouse &&
+        mouse.Pressed &&
+        mouse.ButtonIndex == MouseButton.Left)
+    {
+        Vector2 mousePos = GetGlobalMousePosition();
+
+        foreach (Vector2 point in _line.Points)
+        {
+            if (mousePos.DistanceTo(point) < 15)
+            {
+                GD.Print($"Bus line {_busLine.ColorName} clicked!");
+                break;
+            }
+        }
+    }
+}*/
+/// This is what makes the buslines actually clickable 
+public override void _UnhandledInput(InputEvent @event)
+{
+    if (@event is InputEventMouseButton mouse &&
+        mouse.Pressed &&
+        mouse.ButtonIndex == MouseButton.Left)
+    {
+        Vector2 mousePos = GetGlobalMousePosition();
+
+        for (int i = 0; i < _line.Points.Length - 1; i++)
+        {
+            Vector2 closest =
+                Geometry2D.GetClosestPointToSegment(
+                    mousePos,
+                    _line.Points[i],
+                    _line.Points[i + 1]);
+                    
+            if (mousePos.DistanceTo(closest) < 10) /// This measures the distance between the segment of the bus lines and the user's mouse click. 
+            /// if it is less than 10 pixels away then this function will send the information to the InformationPanel and update the information
+            {
+                GD.Print($"Clicked {_busLine.ColorName}");
+                LevelState.InformationPanel.ShowBusLine(_busLine);
+                return;
+            }
+        }
+    }
+}
 }

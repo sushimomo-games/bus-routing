@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -7,12 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://dc2ns6w7uxuiu" path="res://ui/buttons/add-line/add-line-button.tscn" id="4_hn6xl"]
 [ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
 [ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/level-ui/BudgetLabel.cs" id="6_07au4"]
+[ext_resource type="Script" uid="uid://bydjv6i8bntvn" path="res://ui/level-ui/InformationPanel.cs" id="6_v72kp"]
 [ext_resource type="Script" uid="uid://bxwc5v3pghdtw" path="res://ui/buttons/EndBusLineButton.cs" id="8_te10w"]
 [ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
 
-[node name="LevelUI" type="Control"]
+[node name="LevelUI" type="Control" unique_id=675772360]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +23,14 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_1jth6")
 
-[node name="BusLinesListContainer" type="VBoxContainer" parent="."]
+[node name="AddStop" parent="." unique_id=234950786 instance=ExtResource("2_2q8no")]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 25.0
+offset_bottom = 25.0
+
+[node name="BusLinesListContainer" type="VBoxContainer" parent="." unique_id=1423430969]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.842
@@ -32,12 +40,12 @@ anchor_bottom = 0.602
 grow_horizontal = 0
 theme = ExtResource("3_r2dcs")
 
-[node name="BusLinesHeader" type="Control" parent="BusLinesListContainer"]
+[node name="BusLinesHeader" type="Control" parent="BusLinesListContainer" unique_id=2124172094]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.1
 
-[node name="ColorRect" type="ColorRect" parent="BusLinesListContainer/BusLinesHeader"]
+[node name="ColorRect" type="ColorRect" parent="BusLinesListContainer/BusLinesHeader" unique_id=1212902033]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,7 +55,7 @@ grow_vertical = 2
 color = Color(0.65, 0.65, 0.65, 0.78431374)
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="BusLinesListContainer/BusLinesHeader"]
+[node name="Label" type="Label" parent="BusLinesListContainer/BusLinesHeader" unique_id=724950018]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -60,14 +68,56 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 text = "Bus Lines"
 
-[node name="BusLineList" type="ItemList" parent="BusLinesListContainer"]
+[node name="AddLineButton" type="Button" parent="BusLinesListContainer/BusLinesHeader" unique_id=1925127304]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -15.5
+offset_right = -6.0
+offset_bottom = 15.5
+grow_horizontal = 0
+grow_vertical = 2
+text = " + "
+
+[node name="BusLineList" type="ItemList" parent="BusLinesListContainer" unique_id=1505861349]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("3_r2dcs")
 allow_reselect = true
 script = ExtResource("4_1jth6")
 
-[node name="ErrorMessage" parent="." instance=ExtResource("5_ftjap")]
+[node name="informationPanel" type="PanelContainer" parent="BusLinesListContainer" unique_id=893257126]
+layout_mode = 2
+script = ExtResource("6_v72kp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BusLinesListContainer/informationPanel" unique_id=1629897010]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="BusLinesListContainer/informationPanel/VBoxContainer" unique_id=2136343326]
+layout_mode = 2
+text = "No information
+"
+
+[node name="ButtonsRect" type="HBoxContainer" parent="BusLinesListContainer/informationPanel/VBoxContainer" unique_id=731952869]
+layout_mode = 2
+
+[node name="EditButton" type="Button" parent="BusLinesListContainer/informationPanel/VBoxContainer/ButtonsRect" unique_id=385417542]
+layout_mode = 2
+text = "Edit Stops:"
+
+[node name="DeleteButton" type="Button" parent="BusLinesListContainer/informationPanel/VBoxContainer/ButtonsRect" unique_id=472351978]
+layout_mode = 2
+text = "Delete Stops:"
+
+[node name="InfoText" type="Label" parent="BusLinesListContainer/informationPanel/VBoxContainer" unique_id=818670423]
+layout_mode = 2
+text = "Select a house, bus line, or bus stop to view the information."
+
+[node name="ErrorMessage" parent="." unique_id=1831841845 instance=ExtResource("5_ftjap")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -76,14 +126,14 @@ offset_left = -180.0
 offset_top = 10.0
 grow_horizontal = 2
 
-[node name="BudgetLabel" type="Label" parent="."]
+[node name="BudgetLabel" type="Label" parent="." unique_id=1103176643]
 modulate = Color(0.11858138, 0.11858138, 0.11858138, 1)
 layout_mode = 1
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("6_07au4")
 
-[node name="LineEditorStatusLabel" type="Label" parent="."]
+[node name="LineEditorStatusLabel" type="Label" parent="." unique_id=894925723]
 visible = false
 layout_mode = 1
 anchors_preset = 3
@@ -98,7 +148,7 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.73, 0, 0.19466649, 1)
 text = "● Creating new line"
 
-[node name="EndBusLineButton" type="Button" parent="."]
+[node name="EndBusLineButton" type="Button" parent="." unique_id=2115773269]
 visible = false
 layout_mode = 0
 anchor_left = 0.113715276
@@ -109,7 +159,7 @@ text = "End Bus Line"
 script = ExtResource("8_te10w")
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=684869705]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -124,31 +174,31 @@ grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
 
-[node name="AddStop" parent="HBoxContainer" instance=ExtResource("2_2q8no")]
+[node name="AddStop" parent="HBoxContainer" unique_id=203194922 instance=ExtResource("2_2q8no")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="AddLineButton" parent="HBoxContainer" instance=ExtResource("4_hn6xl")]
+[node name="AddLineButton" parent="HBoxContainer" unique_id=1999335848 instance=ExtResource("4_hn6xl")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="UndoButton" parent="HBoxContainer" instance=ExtResource("9_itewi")]
+[node name="UndoButton" parent="HBoxContainer" unique_id=1803169797 instance=ExtResource("9_itewi")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 
-[node name="RedoButton" parent="HBoxContainer" instance=ExtResource("10_gwjw8")]
+[node name="RedoButton" parent="HBoxContainer" unique_id=987613725 instance=ExtResource("10_gwjw8")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
+[node name="SliceButton" parent="HBoxContainer" unique_id=1943293511 instance=ExtResource("11_hn6xl")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3

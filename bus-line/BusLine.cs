@@ -10,7 +10,7 @@ using static LevelState;
 public partial class BusLine : Node
 {
     private static uint _nextID = 1;
-
+    
     public uint ID { get; private set; }
     public List<RoadNode> Path { get; set; } = [];
     public string ColorName { get; set; }
