@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=12 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
 [ext_resource type="Theme" uid="uid://bbd7hepk2p0vf" path="res://assets/ui-theme.tres" id="3_r2dcs"]
-[ext_resource type="Script" uid="uid://81xn8ckdt0nr" path="res://ui/level-ui/bus-line-list/BusLineList.cs" id="4_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dc2ns6w7uxuiu" path="res://ui/buttons/add-line/add-line-button.tscn" id="4_hn6xl"]
 [ext_resource type="PackedScene" uid="uid://cqtxsdj4bg4xn" path="res://ui/error-message/error-message.tscn" id="5_ftjap"]
 [ext_resource type="Script" uid="uid://cm0i2ufxmquap" path="res://ui/level-ui/BudgetLabel.cs" id="6_07au4"]
@@ -30,7 +29,7 @@ offset_top = 25.0
 offset_right = 25.0
 offset_bottom = 25.0
 
-[node name="BusLinesListContainer" type="VBoxContainer" parent="."]
+[node name="InfoPanelContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.842
@@ -40,80 +39,22 @@ anchor_bottom = 0.602
 grow_horizontal = 0
 theme = ExtResource("3_r2dcs")
 
-[node name="BusLinesHeader" type="Control" parent="BusLinesListContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.1
-
-[node name="ColorRect" type="ColorRect" parent="BusLinesListContainer/BusLinesHeader"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.65, 0.65, 0.65, 0.78431374)
-metadata/_edit_use_anchors_ = true
-
-[node name="Label" type="Label" parent="BusLinesListContainer/BusLinesHeader"]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 6.0
-offset_top = -11.5
-offset_right = 173.0
-offset_bottom = 11.5
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
-text = "Bus Lines"
-
-[node name="AddLineButton" type="Button" parent="BusLinesListContainer/BusLinesHeader"]
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -15.5
-offset_right = -6.0
-offset_bottom = 15.5
-grow_horizontal = 0
-grow_vertical = 2
-text = " + "
-
-[node name="BusLineList" type="ItemList" parent="BusLinesListContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme = ExtResource("3_r2dcs")
-allow_reselect = true
-script = ExtResource("4_1jth6")
-
-[node name="informationPanel" type="PanelContainer" parent="BusLinesListContainer"]
+[node name="informationPanel" type="PanelContainer" parent="InfoPanelContainer"]
 layout_mode = 2
 script = ExtResource("6_v72kp")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BusLinesListContainer/informationPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="InfoPanelContainer/informationPanel"]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="BusLinesListContainer/informationPanel/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
 text = "No information
 "
 
-[node name="ButtonsRect" type="HBoxContainer" parent="BusLinesListContainer/informationPanel/VBoxContainer"]
+[node name="ButtonsRect" type="HBoxContainer" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
 
-[node name="EditButton" type="Button" parent="BusLinesListContainer/informationPanel/VBoxContainer/ButtonsRect"]
-layout_mode = 2
-text = "Edit Stops:"
-
-[node name="DeleteButton" type="Button" parent="BusLinesListContainer/informationPanel/VBoxContainer/ButtonsRect"]
-layout_mode = 2
-text = "Delete Stops:"
-
-[node name="InfoText" type="Label" parent="BusLinesListContainer/informationPanel/VBoxContainer"]
+[node name="InfoText" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
 text = "Select a house, bus line, or bus stop to view the information."
 
@@ -132,6 +73,16 @@ layout_mode = 1
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("6_07au4")
+
+[node name="RedoButton" parent="." instance=ExtResource("10_gwjw8")]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 0
+offset_left = 625.0
+offset_top = 558.776
+offset_right = 715.0
+offset_bottom = 558.776
+size_flags_horizontal = 3
+size_flags_vertical = 4
 
 [node name="LineEditorStatusLabel" type="Label" parent="."]
 visible = false
@@ -192,17 +143,10 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 
-[node name="RedoButton" parent="HBoxContainer" instance=ExtResource("10_gwjw8")]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-
 [node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
