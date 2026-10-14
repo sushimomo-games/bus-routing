@@ -40,14 +40,30 @@ public partial class BusStop : RoadNode
         _walkRadiusSprite.Visible = false;
     }
 
+
+    /// <summary>
+    /// Counts how many houses are able to access bus stop.
+    /// Uses ReachableBusStop to check which houses are in radius of current Bus Stop.
+    /// Output is currently to terminal - will be hooked up with Information Panel.
+    /// </summary>
     private void _on_bus_stop_clicked(Node viewport,
         InputEvent @event,
         long shapeIdx)
     {
 
+        int _houseCount = 0;
+
+        foreach (House house in LevelState.AllHouses)
+        {
+            if (house.ReachableBusStop == this)
+            {
+                _houseCount++;
+            }
+        }
+
         if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
         {
-            GD.Print("Show info here");
+            GD.Print("House count: " + _houseCount);
         }
 
     }
