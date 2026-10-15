@@ -145,11 +145,14 @@ public partial class House : Building
 
         if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
         {
-            string commuteDetails = CurrentItinerary != null
-            ? $"Total Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
-            : "No commute available";
 
-            GD.Print(commuteDetails); //add to information panel!!!
+            string commuteDetails = CurrentItinerary != null
+            ? $"Bus Usage Probability: {BusUsageProbability:P1}\n\nItinerary:\nTotal Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
+            : "No commute available";   //Will add commute difference between car vs bus once data is available
+
+            LevelState.InformationPanel.ShowHouse(this, commuteDetails);
+
+            // GD.Print(commuteDetails);
 
         }
 

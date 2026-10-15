@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Linq;
 public partial class InformationPanel : Control
 {
@@ -22,6 +23,20 @@ public partial class InformationPanel : Control
 		_infoText.Text =
 		$"Number of stops: {stopCount}\n\n" +
 		$"Time to complete: {line.TimeToComplete:F2} minutes";
+	}
+
+	public void ShowHouse(House house, String displayInfo)
+	{
+		this.Visible = true;
+		_titleLabel.Text = house.BuildingColor + " House";
+		_infoText.Text = displayInfo;
+	}
+
+	public void ShowBusStop(BusStop stop, int count)
+	{
+		this.Visible = true;
+		_titleLabel.Text = "Bus Stop";
+		_infoText.Text = count + " residents have access to this stop";
 	}
 	
 }

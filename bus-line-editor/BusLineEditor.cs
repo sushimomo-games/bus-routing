@@ -190,8 +190,8 @@ public partial class BusLineEditor : Node
 		else
 		{
 			LevelState.AllBusLines.Add(_busLineInProgress);
-			var routeList = CurrentLevel.GetNode<ItemList>(BusLineListNode);
-			routeList.AddItem(_busLineInProgress.ColorName + " line");
+			// var routeList = CurrentLevel.GetNode<ItemList>(BusLineListNode);   References to BusLineList - no longer in use
+			// routeList.AddItem(_busLineInProgress.ColorName + " line");
 			UpdateAllHouseStatuses();
 			RefreshAllBusLineVisuals();
 			
