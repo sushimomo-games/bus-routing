@@ -25,9 +25,14 @@ public partial class LineEdit : AbstractEdit
         this.before = before;
         this.after = after;
     }
-    
+    /// <summary>
+    /// Reverts the last player action in the undo history by restoring the bus line segments to their state before the edit operation.
+    /// </summary>
+    /// <remarks>
+    /// Updates the global DraftLineSegments to the state captured in the 'before' snapshot, effectively undoing the changes made by the user.
+    /// </remarks>
     public override void Revert()
     {
-       
+       BusLineEditor.DraftLineSegments = before;
     }
 }

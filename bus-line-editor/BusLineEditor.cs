@@ -29,7 +29,7 @@ public partial class BusLineEditor : Node
     /// a portion of the bus line, allowing for flexible editing and
     /// visualization before finalizing the route.
     /// </summary>
-    public static List<DraftSegment> DraftLineSegments { get; private set; } = [];
+    public static List<DraftSegment> DraftLineSegments { get; set; } = [];
     private static bool _isEditingFromStart;
     public static bool IsEditingFromStart => _isEditingFromStart;
     private static Label _creatingNewLineLabel;
