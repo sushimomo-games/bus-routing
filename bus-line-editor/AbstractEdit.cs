@@ -11,7 +11,7 @@ public abstract partial class AbstractEdit : Node
     /// <remarks>
     /// This property is used for debugging purposes and is not intended to be modified by the user.
     /// Name is derived from the class name of the implementing class at runtime. 
-    /// For example, if a class named "StopEdit" implements IEdit, the Name property will return "StopEdit".
+    /// For example, if a class named "StopEdit" implements AbstractEdit, the Name property will return "StopEdit".
     /// </remarks>
     private string Name { 
         get{
