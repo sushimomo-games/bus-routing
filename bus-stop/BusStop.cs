@@ -63,8 +63,8 @@ public partial class BusStop : RoadNode
 
         if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
         {
+            House.DeselectHouses();
             LevelState.InformationPanel.ShowBusStop(this, _houseCount);
-            // GD.Print("House count: " + _houseCount);
         }
 
     }

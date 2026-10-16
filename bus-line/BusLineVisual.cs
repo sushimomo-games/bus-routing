@@ -290,6 +290,7 @@ public override void _UnhandledInput(InputEvent @event)
 			{
 				GD.Print($"Clicked {_busLine.ColorName}");
 				LevelState.InformationPanel.ShowBusLine(_busLine);
+				House.DeselectHouses();
 				return;
 			}
 		}
