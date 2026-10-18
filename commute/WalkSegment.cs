@@ -33,7 +33,7 @@ public class WalkSegment : CommuteSegment
     /// speed or difficulty. This is different from RawDistance in that it can
     /// be adjusted to reflect the actual time required to walk the distance.
     /// </summary>
-    public override float TimeMinutes => Weight * 2.5f; // Adjust the multiplier to represent walking speed or difficulty
+    public override float TimeMinutes => Weight * GlobalConstants.WalkMinutesPerPixel;
 
     /// <summary>
     /// The cost of the walk segment, which is equivalent to the time in
