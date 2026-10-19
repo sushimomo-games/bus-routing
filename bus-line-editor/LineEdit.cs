@@ -19,7 +19,7 @@ public partial class LineEdit : AbstractEdit
     /// <summary>
     /// After snapshot of saved state of the bus line segments after the user's edit operation.
     /// </summary>
-    private readonly List<List<RoadNode>> _after;
+    private readonly List<List<RoadNode>> _after; // does nothing for now, used to redo later
 
     public LineEdit(List<List<RoadNode>> before, List<List<RoadNode>> after)
     {
@@ -27,14 +27,25 @@ public partial class LineEdit : AbstractEdit
         _after = after;
     }
     /// <summary>
-    /// Reverts the last player action in the undo history by restoring the bus line segments to their state before the edit operation.
+    /// Undoes this edit by restoring the bus line segments to how they were before it.
     /// </summary>
     /// <remarks>
-    /// Updates the global DraftLineSegments to the state captured in the 'before' snapshot, effectively undoing the changes made by the user.
+    /// Passes the "before" snapshot to <see cref="BusLineEditor.RestoreSegments"/>,
+    /// which replaces the current draft segments with ones rebuilt from it.
     /// </remarks>
     public override void Revert() => BusLineEditor.RestoreSegments(_before);
 
-    // Needs XML Docs!!!
+    /// <summary>
+    /// Takes a snapshot of the given draft segments as plain lists of road nodes.
+    /// </summary>
+    /// <param name="segments">The draft segments to capture.</param>
+    /// <returns>
+    /// One list of road nodes per segment, in the same order as <paramref name="segments"/>.
+    /// </returns>
+    /// <remarks>
+    /// Each segment's node list is copied, so later changes to the segments do not
+    /// affect the snapshot. The road nodes themselves are not copied.
+    /// </remarks>
     public static List<List<RoadNode>> Snapshot(IEnumerable<DraftSegment> segments)
     {
         return segments.Select(s => new List<RoadNode>(s.Nodes)).ToList();
