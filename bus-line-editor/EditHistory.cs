@@ -1,4 +1,3 @@
-using Godot;
 using System.Collections.Generic;
 
 /// <summary>
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 /// <remarks>
 /// The edit history tracks edits through a linked list with additions/removals at the tail and the head.
 /// </remarks>
-public partial class EditHistory : Node
+public partial class EditHistory
 {
     /// <summary>
     /// The maximum amount of edits that will be tracked.

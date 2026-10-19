@@ -1,9 +1,7 @@
-using Godot;
-
 /// <summary>
 /// An abstract base class for all edit operations made via the bus line editor tool.
 /// </summary>
-public abstract partial class AbstractEdit : Node
+public abstract partial class AbstractEdit
 {
     /// <summary>
     /// Gets the name of the edit operation.
