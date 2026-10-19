@@ -54,6 +54,13 @@ public partial class EditorState : Node
     }
 
     /// <summary>
+    /// The shared undo history for the bus line editor.
+    /// Edits are added with <see cref="EditHistory.LogEdit"/>.
+    /// Edits are reverted with <see cref="EditHistory.Undo"/>.
+    /// </summary>
+    public static EditHistory History { get; } = new();
+
+    /// <summary>
     /// The busLine currently selected in the editor for inspection.
     /// </summary>
     public static BusLine SelectedBusLine { get; set; }
