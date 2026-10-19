@@ -427,4 +427,30 @@ public partial class BusLineEditor : Node
             }
         }
     }
+
+    public static void RestoreSegments(List<List<RoadNode>> snapshot)
+    {
+        // 1. free everything currently on screen
+        foreach (var seg in DraftLineSegments)
+            seg.QueueFree();
+        DraftLineSegments.Clear();
+        _mouseTrackingLine?.QueueFree();
+        _mouseTrackingLine = null;
+
+        // 2. rebuild segments from the plain data
+        foreach (var nodes in snapshot)
+        {
+            var seg = new DraftSegment(nodes[0], _busLineInProgress);
+            for (int i = 1; i < nodes.Count; i++)
+                seg.Append(nodes[i]);
+            _busLineInProgress.AddChild(seg);
+            DraftLineSegments.Add(seg);
+        }
+
+        // 3. repair the editor's cursor state
+        _activeSegment = DraftLineSegments.LastOrDefault();
+        _isEditingFromStart = false;
+        if (_activeSegment != null)
+            BeginMouseTrackingLineAt(_activeSegment.LastNode, _busLineInProgress.Color);
+    }
 }
