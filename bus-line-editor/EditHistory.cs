@@ -27,6 +27,9 @@ public partial class EditHistory : Node
     /// </value>
     public bool CanUndo => _undo.Count > 0;
 
+    // need XML docs!!!
+    public void Clear() => _undo.Clear();
+
     /// <summary>
     /// LogEdit adds an edit at the end of the linked list.
     /// </summary>
