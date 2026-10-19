@@ -133,18 +133,20 @@ public partial class BusLineEditor : Node
             // Restore the correct active mode
             CurrentBusLineCreationStep = previousStep;
 
-            StartNewSegment(nextNode);
+            Record(() => StartNewSegment(nextNode));
             _isEditingFromStart = false;
             BeginMouseTrackingLineAt(nextNode, _busLineInProgress.Color);
             return;
         }
 
-        if (_isEditingFromStart)
-            _activeSegment.Prepend(nextNode);
-        else
-            _activeSegment.Append(nextNode);
-
-        CheckAndMergeSegments();
+        Record(() =>
+        {
+            if (_isEditingFromStart)
+                _activeSegment.Prepend(nextNode);
+            else
+                _activeSegment.Append(nextNode);
+            CheckAndMergeSegments();
+        });
 
         var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
         
@@ -278,7 +280,7 @@ public partial class BusLineEditor : Node
         CurrentBusLineCreationStep = AddingSubsequentStops;
         _isEditingFromStart = false; 
 
-        StartNewSegment(startNode);
+        Record(() => StartNewSegment(startNode));
         _activeSegment = DraftLineSegments.Last();
 
         BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
@@ -369,6 +371,7 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
         _isEditingFromStart = false;
+        History.Clear();
     }
 
     /// <summary>
@@ -428,18 +431,21 @@ public partial class BusLineEditor : Node
         }
     }
 
+    // need XML docs!!!
     public static void RestoreSegments(List<List<RoadNode>> snapshot)
     {
-        // 1. free everything currently on screen
+        if (_busLineInProgress == null) return;
+
         foreach (var seg in DraftLineSegments)
             seg.QueueFree();
         DraftLineSegments.Clear();
         _mouseTrackingLine?.QueueFree();
         _mouseTrackingLine = null;
 
-        // 2. rebuild segments from the plain data
         foreach (var nodes in snapshot)
         {
+            if (nodes.Count == 0) continue;
+
             var seg = new DraftSegment(nodes[0], _busLineInProgress);
             for (int i = 1; i < nodes.Count; i++)
                 seg.Append(nodes[i]);
@@ -447,10 +453,21 @@ public partial class BusLineEditor : Node
             DraftLineSegments.Add(seg);
         }
 
-        // 3. repair the editor's cursor state
         _activeSegment = DraftLineSegments.LastOrDefault();
         _isEditingFromStart = false;
         if (_activeSegment != null)
+        {
+            CurrentBusLineCreationStep = AddingSubsequentStops;
             BeginMouseTrackingLineAt(_activeSegment.LastNode, _busLineInProgress.Color);
+        }
     }
+    // need XML docs!!!
+    private static void Record(System.Action mutate)
+    {
+        var before = LineEdit.Snapshot(DraftLineSegments);
+        mutate();
+        var after = LineEdit.Snapshot(DraftLineSegments);
+        History.LogEdit(new LineEdit(before, after));
+    }
+
 }
