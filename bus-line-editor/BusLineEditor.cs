@@ -431,7 +431,21 @@ public partial class BusLineEditor : Node
         }
     }
 
-    // need XML docs!!!
+    /// <summary>
+    /// Replaces the current draft segments with ones rebuilt from a snapshot,
+    /// then repairs the editor's cursor state so drawing can continue.
+    /// </summary>
+    /// <param name="snapshot">
+    /// The segments to restore, one list of road nodes per segment, as produced
+    /// by <see cref="LineEdit.Snapshot"/>. Empty lists are skipped.
+    /// </param>
+    /// <remarks>
+    /// Frees every existing draft segment and the mouse tracking line, then
+    /// creates new <see cref="DraftSegment"/> instances as children of the bus
+    /// line in progress. The last restored segment becomes the active segment,
+    /// editing direction is reset to the end of the segment, and the creation
+    /// step is set to <c>AddingSubsequentStops</c> so the tracking line resumes.
+    /// </remarks>
     public static void RestoreSegments(List<List<RoadNode>> snapshot)
     {
         if (_busLineInProgress == null) return;
@@ -461,7 +475,22 @@ public partial class BusLineEditor : Node
             BeginMouseTrackingLineAt(_activeSegment.LastNode, _busLineInProgress.Color);
         }
     }
-    // need XML docs!!!
+    
+    /// <summary>
+    /// Runs a change to the draft segments and logs it to the undo history as
+    /// a before and after snapshot.
+    /// </summary>
+    /// <param name="mutate">
+    /// The action that modifies <see cref="DraftLineSegments"/>. It runs exactly
+    /// once between the two snapshots.
+    /// </param>
+    /// <remarks>
+    /// All user-driven changes to the draft segments should go through this
+    /// method so that they can be undone. Setup code that creates the initial
+    /// segment, such as <see cref="StartBusLineCreation"/> and
+    /// <see cref="StartBusLineEdit"/>, deliberately does not, so the first
+    /// segment of a session is not undoable.
+    /// </remarks>
     private static void Record(System.Action mutate)
     {
         var before = LineEdit.Snapshot(DraftLineSegments);
