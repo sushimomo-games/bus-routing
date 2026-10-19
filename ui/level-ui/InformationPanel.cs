@@ -20,8 +20,15 @@ public partial class InformationPanel : Control
 		_titleLabel.Text = line.ColorName +" " +"busline"; //changes the color of the busline name
 		_titleLabel.AddThemeColorOverride("font_color", line.Color);
 		int stopCount = line.Path.OfType<BusStop>().Count();
+	
+		int totalResidents = 0;
+		foreach (BusStop stop in line.Path.OfType<BusStop>())
+		{
+			totalResidents += stop.GetHouseCount();
+			}
 		_infoText.Text =
 		$"Number of stops: {stopCount}\n\n" +
+		$"Residents served: {totalResidents}\n\n" +
 		$"Time to complete: {line.TimeToComplete:F2} minutes";
 	}
 
