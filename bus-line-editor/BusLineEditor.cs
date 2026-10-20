@@ -372,7 +372,7 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
         _isEditingFromStart = false;
-        History.Clear();
+        History.ClearLineEdits();
     }
 
     /// <summary>
