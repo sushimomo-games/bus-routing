@@ -44,6 +44,12 @@ public partial class EditHistory
         if (_undo.Count > MaxHistory)
         {
             _undo.RemoveFirst();
+            
+            foreach (var e in _undo)
+            {
+                System.Console.WriteLine("[DEBUG - Editor] Edit in history: " + e.GetType().Name);
+            }
+            System.Console.WriteLine("[DEBUG - Editor] number of edits in history: " + _undo.Count);
         }
     }
     
@@ -63,5 +69,7 @@ public partial class EditHistory
         AbstractEdit edit = _undo.Last.Value;
         _undo.RemoveLast();
         edit.Revert();
+        System.Console.WriteLine("[DEBUG - Editor] Undoing edit: " + edit.GetType().Name);
+        System.Console.WriteLine("[DEBUG - Editor] number of edits in history: " + _undo.Count);
     }
 }

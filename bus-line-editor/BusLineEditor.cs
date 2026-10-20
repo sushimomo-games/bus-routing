@@ -494,8 +494,10 @@ public partial class BusLineEditor : Node
     private static void Record(System.Action mutate)
     {
         var before = LineEdit.Snapshot(DraftLineSegments);
+        System.Console.WriteLine("[DEBUG - Editor] Recording edit: " + before.Count + " segments before, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
         mutate();
         var after = LineEdit.Snapshot(DraftLineSegments);
+        System.Console.WriteLine("[DEBUG - Editor] Recording edit: " + after.Count + " segments after, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
         History.LogEdit(new LineEdit(before, after));
     }
 
