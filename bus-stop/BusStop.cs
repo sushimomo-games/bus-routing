@@ -43,6 +43,5 @@ public partial class BusStop : RoadNode
     {
         LevelState.AllBusStops.Remove(this);
         LevelState.AllRoadNodes.Remove(this);
-        LevelState.Budget -= Cost.BusStopRemoval;
     }
 }
