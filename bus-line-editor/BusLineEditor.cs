@@ -288,6 +288,7 @@ public partial class BusLineEditor : Node
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
     {
+        History.Clear();
         IsInEditingMode = true;
         CurrentBusLineCreationStep = ContinuingEdit;
         GD.Print($"Starting to edit busLine: {busLine.ColorName}");
@@ -381,6 +382,7 @@ public partial class BusLineEditor : Node
     /// <param name="startNode">The node from which to start the bus line creation.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
+        History.Clear();
         _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
         _isEditingFromStart = false; 
