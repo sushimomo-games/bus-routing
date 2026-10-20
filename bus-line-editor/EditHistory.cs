@@ -87,6 +87,10 @@ public partial class EditHistory
         if (!CanUndo) { return; }
 
         AbstractEdit edit = _undo.Last.Value;
+
+        // Don't revert a stop while a line is being drawn: the draft segments may reference it.
+        if (edit is StopEdit && BusLineEditor.BusLineInProgress != null) { return; }
+
         _undo.RemoveLast();
         edit.Revert();
         GD.Print("[DEBUG - Editor] Undoing edit: " + edit.GetType().Name);
