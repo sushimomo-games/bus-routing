@@ -48,9 +48,14 @@ public partial class BusStopDeletor : Area2D
         A.RemoveNeighbor(busStop);
         B.RemoveNeighbor(busStop);
         
-        for (int i = busStop.ConnectedEdges.Count - 1; i >= 0; i--)
+        foreach (var connectedEdge in busStop.ConnectedEdges.ToArray())
         {
-            busStop.ConnectedEdges[i]?.QueueFree();
+            if (connectedEdge == null || !IsInstanceValid(connectedEdge)) continue;
+
+            if (connectedEdge.NodeA is BusStop a) a.ConnectedEdges.Remove(connectedEdge);
+            if (connectedEdge.NodeB is BusStop b) b.ConnectedEdges.Remove(connectedEdge);
+
+            connectedEdge.QueueFree();
         }
 
         Budget -= Cost.BusStopRemoval;

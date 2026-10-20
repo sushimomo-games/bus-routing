@@ -53,12 +53,19 @@ public partial class StopEdit : AbstractEdit {
             GodotObject.IsInstanceValid(e) && 
             ((e.NodeA == nodeA && e.NodeB == nodeB) || (e.NodeA == nodeB && e.NodeB == nodeA)));
 
+    private static void ForgetEdge (RoadEdge edge) {
+        if (edge.NodeA is BusStop a) a.ConnectedEdges.Remove(edge);
+        if (edge.NodeB is BusStop b) b.ConnectedEdges.Remove(edge);
+    }
+
 
     private void UndoPlacement() {
         if (_stop == null || !GodotObject.IsInstanceValid(_stop) || !GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return; 
 
         foreach (var edge in _stop.ConnectedEdges.ToArray()) {
-            if (GodotObject.IsInstanceValid(edge)) edge.QueueFree(); 
+            if (!GodotObject.IsInstanceValid(edge)) continue;
+            ForgetEdge(edge);
+            edge.QueueFree();
         }
 
         _nodeA.RemoveNeighbor(_stop); 
@@ -81,7 +88,11 @@ public partial class StopEdit : AbstractEdit {
         LevelState.CurrentLevel.AddChild(stop); 
         stop.GlobalPosition = _position; 
 
-        FindRoadEdge(_nodeA, _nodeB)?.QueueFree(); 
+        var oldEdge = FindRoadEdge(_nodeA, _nodeB);
+        if (oldEdge != null) {
+            ForgetEdge(oldEdge);
+            oldEdge.QueueFree();
+        }
 
         CreateRoadEdge(_nodeA, stop); 
         CreateRoadEdge(stop, _nodeB); 
