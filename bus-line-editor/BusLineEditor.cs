@@ -444,7 +444,8 @@ public partial class BusLineEditor : Node
     /// creates new <see cref="DraftSegment"/> instances as children of the bus
     /// line in progress. The last restored segment becomes the active segment,
     /// editing direction is reset to the end of the segment, and the creation
-    /// step is set to <c>AddingSubsequentStops</c> so the tracking line resumes.
+    /// step is set to <c>PausedCreation</c>. No mouse tracking line is started,
+    /// so nothing follows the cursor until the user clicks a segment endpoint.
     /// </remarks>
     public static void RestoreSegments(List<List<RoadNode>> snapshot)
     {
@@ -461,19 +462,17 @@ public partial class BusLineEditor : Node
             if (nodes.Count == 0) continue;
 
             var seg = new DraftSegment(nodes[0], _busLineInProgress);
+            _busLineInProgress.AddChild(seg);
             for (int i = 1; i < nodes.Count; i++)
                 seg.Append(nodes[i]);
-            _busLineInProgress.AddChild(seg);
             DraftLineSegments.Add(seg);
         }
 
         _activeSegment = DraftLineSegments.LastOrDefault();
         _isEditingFromStart = false;
+        
         if (_activeSegment != null)
-        {
-            CurrentBusLineCreationStep = AddingSubsequentStops;
-            BeginMouseTrackingLineAt(_activeSegment.LastNode, _busLineInProgress.Color);
-        }
+            CurrentBusLineCreationStep = PausedCreation;
     }
     
     /// <summary>
