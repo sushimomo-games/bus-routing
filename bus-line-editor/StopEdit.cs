@@ -14,40 +14,23 @@ using System.Collections.Generic;
 
 public partial class StopEdit : AbstractEdit { 
 
-    /// <summary> 
-    /// Before snapshotof saved state of bus stops before user's edit operation. 
-    /// </summary>     
-    private List<BusStop> _before;
-    /// <summary>
-    /// After snapshot of saved state of bus stop after the user's edit operation.
-    /// </summary>  
-    private List<BusStop> _after; 
-    /// <summary> 
-    /// Before snapshot of budget before edit operation. 
-    /// </summary> 
-    private uint _budgetBefore; 
-    /// <summary> 
-    /// After snapshot of budget after edit operation. 
-    /// </summary> 
-    private uint _budgetAfter; 
+    private readonly bool _wasPlacement; 
+    private readonly uint _budgetBefore; 
+    private readonly Vector2 _position; 
+    private readonly RoadNode _nodeA; 
+    private readonly RoadNode _nodeB; 
+    private BusStop _stop; 
 
-    public StopEdit(List<BusStop> before, List<BusStop> after, uint budgetBefore, uint budgetAfter) {
-        this._before = before; 
-        this._after = after; 
-        this._budgetBefore = budgetBefore; 
-        this._budgetAfter = budgetAfter; 
-    }  
+    public StopEdit () { } 
 
-    /// <summary> 
-    ///  Reverts the last player action in the undo history by restoring the bus stops to their state before edit operation. 
-    /// </summary>
-    /// <remarks>
-    /// Updates the global LevelState.AllBusStops to the state captured in the 'before' snapshot, effectively undoing the changes made by the user. 
-    /// Original budget value before state change is returned. 
-    /// </remarks>  
     public override void Revert() {
-        LevelState.AllBusStops = _before;
-        Budget = _budgetBefore;  
+        if (_wasPlacement) UndoPlacement(); 
+        else UndoRemoval(); 
+
+        LevelState.Budget = _budgetBefore; 
+        LevelState.UpdateAllHouseStatuses(); 
+        LevelState.RefreshAllBusLineVisuals();  
     }
+
     
 }
