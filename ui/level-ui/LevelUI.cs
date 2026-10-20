@@ -168,6 +168,7 @@ public partial class LevelUI : Control
             return;
         }
 
+        var budgetBefore = Budget;
         Budget -= Cost.BusStopPlacement;
 
         Vector2 p1 = roadEdge.NodeA.GlobalPosition;
@@ -176,7 +177,6 @@ public partial class LevelUI : Control
         Vector2 projectedPoint = Geometry2D.GetClosestPointToSegment(mousePosition, p1, p2);
 
         CurrentLevel.AddChild(busStop);
-        LevelState.AllBusStops.Add(busStop); 
         busStop.GlobalPosition = projectedPoint;
 
         var nodeA = roadEdge.NodeA;
@@ -191,5 +191,7 @@ public partial class LevelUI : Control
         busStop.AddNeighbor(nodeA);
         nodeB.AddNeighbor(busStop);
         busStop.AddNeighbor(nodeB);
+
+        EditorState.History.LogEdit(new StopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
 }
