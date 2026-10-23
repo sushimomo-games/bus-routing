@@ -135,8 +135,66 @@ public static class Pathfinder
             backtrackNode = lineage.Parent; 
         } 
         
-        segments.Reverse(); 
-        segments.Add(new WalkSegment(end, finalDestination)); 
-        return segments; 
-    } 
+        segments.Reverse();
+        segments.Add(new WalkSegment(end, finalDestination));
+        return segments;
+    }
+
+    /// <summary>
+    /// Uses Dijkstra's algorithm to find the shortest distance a car can drive
+    /// along the road network between two road nodes. Each road edge is
+    /// weighted by the straight-line distance between its two nodes.
+    /// </summary>
+    /// <param name="start">The road node that the car starts from.</param>
+    /// <param name="end">The road node that the car drives to.</param>
+    /// <returns>The shortest road distance in pixels, or null if there is no road path.</returns>
+    public static float? CalculateCarDistance(RoadNode start, RoadNode end)
+    {
+        var priorityQueue = new PriorityQueue<RoadNode, float>();
+        var distances = new Dictionary<RoadNode, float>();
+        var visited = new HashSet<RoadNode>();
+
+        priorityQueue.Enqueue(start, 0f);
+        distances[start] = 0f;
+
+        while (priorityQueue.Count > 0)
+        {
+            var current = priorityQueue.Dequeue();
+
+            // Skip stale queue entries
+            if (!visited.Add(current)) continue;
+
+            if (current == end)
+            {
+                return distances[current];
+            }
+
+            foreach (var neighbor in current.Neighbors)
+            {
+                if (neighbor == null) continue;
+
+                float newDistance = distances[current] + current.GlobalPosition.DistanceTo(neighbor.GlobalPosition);
+
+                if (!distances.ContainsKey(neighbor) || newDistance < distances[neighbor])
+                {
+                    distances[neighbor] = newDistance;
+                    priorityQueue.Enqueue(neighbor, newDistance);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Finds the road node in the current level that is closest to a building.
+    /// </summary>
+    /// <param name="building">The building to find the closest road node to.</param>
+    /// <returns>The closest road node, or null if the level has no road nodes.</returns>
+    public static RoadNode FindNearestRoadNode(Node2D building)
+    {
+        return LevelState.AllRoadNodes
+            .Where(node => node != null)
+            .MinBy(node => node.GlobalPosition.DistanceTo(building.GlobalPosition));
+    }
 }

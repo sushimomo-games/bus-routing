@@ -9,6 +9,22 @@ public class CommuteTests
 {
     private const float Tolerance = 0.0001f;
 
+    /// <summary>
+    /// Road nodes that a test added to LevelState, so they can be removed
+    /// after the test finishes.
+    /// </summary>
+    private readonly List<RoadNode> _registeredRoadNodes = [];
+
+    [AfterTest]
+    public void UnregisterRoadNodes()
+    {
+        foreach (var roadNode in _registeredRoadNodes)
+        {
+            LevelState.AllRoadNodes.Remove(roadNode);
+        }
+        _registeredRoadNodes.Clear();
+    }
+
     // SCENARIO: A resident walks to a bus stop, rides one bus line, then walks
     // from the last stop to their destination.
     [TestCase]
@@ -148,6 +164,244 @@ public class CommuteTests
         AssertFloat(farMilesWalked - nearMilesWalked).IsEqualApprox(80f / PixelsPerMile, Tolerance);
     }
 
+    // SCENARIO: A resident rides a bus that passes through several stops.
+    [TestCase]
+    public void GivenRideOverThreeStops_WhenRideTimeCalculated_ThenDwellTimeIsAddedForEachStop()
+    {
+        // GIVEN: A 300 px bus line with a stop every 100 px.
+        var boardingStop = CreateBusStop(new Vector2(0, 0));
+        var firstStop = CreateBusStop(new Vector2(100, 0));
+        var secondStop = CreateBusStop(new Vector2(200, 0));
+        var exitStop = CreateBusStop(new Vector2(300, 0));
+        var line = CreateBusLine([boardingStop, firstStop, secondStop, exitStop]);
+
+        var ride = new RideSegment(line, boardingStop, exitStop);
+
+        // WHEN: The time of the ride is calculated.
+        float rideMinutes = ride.TimeMinutes;
+
+        // THEN: The ride takes 3 dwell times longer than the driving time
+        // alone, one for each stop after boarding.
+        float drivingMinutes = 300f / BusPixelsPerMinute;
+        AssertInt(ride.StopsTraveled).IsEqual(3);
+        AssertFloat(rideMinutes).IsEqualApprox(drivingMinutes + 3 * DwellTimeMinutesPerStop, Tolerance);
+    }
+
+    // SCENARIO: Two bus lines cover the same distance, but one stops at every
+    // stop along the way while the other only passes through intersections.
+    [TestCase]
+    public void GivenSameDistance_WhenRideHasFewerStops_ThenRideIsFaster()
+    {
+        // GIVEN: Two 300 px bus lines. The local line stops 3 times, and the
+        // express line only stops where the rider gets off.
+        var localBoardingStop = CreateBusStop(new Vector2(0, 0));
+        var localExitStop = CreateBusStop(new Vector2(300, 0));
+        var localLine = CreateBusLine(
+        [
+            localBoardingStop,
+            CreateBusStop(new Vector2(100, 0)),
+            CreateBusStop(new Vector2(200, 0)),
+            localExitStop
+        ]);
+
+        var expressBoardingStop = CreateBusStop(new Vector2(0, 100));
+        var expressExitStop = CreateBusStop(new Vector2(300, 100));
+        var expressLine = CreateBusLine(
+        [
+            expressBoardingStop,
+            CreateRoadNode(new Vector2(100, 100)),
+            CreateRoadNode(new Vector2(200, 100)),
+            expressExitStop
+        ]);
+
+        var localRide = new RideSegment(localLine, localBoardingStop, localExitStop);
+        var expressRide = new RideSegment(expressLine, expressBoardingStop, expressExitStop);
+
+        // WHEN: The time of each ride is calculated.
+        float localMinutes = localRide.TimeMinutes;
+        float expressMinutes = expressRide.TimeMinutes;
+
+        // THEN: The express ride is faster by the dwell time of the 2 stops it
+        // skips.
+        AssertFloat(expressMinutes).IsLess(localMinutes);
+        AssertFloat(localMinutes - expressMinutes).IsEqualApprox(2 * DwellTimeMinutesPerStop, Tolerance);
+    }
+
+    // SCENARIO: A resident's commute ends at the destination that the bus
+    // route chose.
+    [TestCase]
+    public void GivenCommute_WhenBuilt_ThenDestinationIsLastWalkDestination()
+    {
+        // GIVEN: A commute that ends with a walk to a destination.
+        var house = CreateNode(new Vector2(0, 0));
+        var boardingStop = CreateBusStop(new Vector2(30, 0));
+        var exitStop = CreateBusStop(new Vector2(230, 0));
+        var destination = CreateNode(new Vector2(230, 70));
+        var line = CreateBusLine([boardingStop, exitStop]);
+
+        // WHEN: The commute is built.
+        var commute = new Commute(
+        [
+            new WalkSegment(house, boardingStop),
+            new RideSegment(line, boardingStop, exitStop),
+            new WalkSegment(exitStop, destination)
+        ]);
+
+        // THEN: The commute starts at the house and ends at the destination.
+        AssertObject(commute.Origin).IsSame(house);
+        AssertObject(commute.Destination).IsSame(destination);
+    }
+
+    // SCENARIO: A resident's bus time includes walking, riding, and the dwell
+    // time at each stop.
+    [TestCase]
+    public void GivenCommute_WhenBusMinutesCalculated_ThenAllSegmentsAndDwellTimeAreIncluded()
+    {
+        // GIVEN: A 30 px walk, a 200 px ride over 2 stops, and a 70 px walk.
+        var house = CreateNode(new Vector2(0, 0));
+        var boardingStop = CreateBusStop(new Vector2(30, 0));
+        var middleStop = CreateBusStop(new Vector2(130, 0));
+        var exitStop = CreateBusStop(new Vector2(230, 0));
+        var destination = CreateNode(new Vector2(230, 70));
+        var line = CreateBusLine([boardingStop, middleStop, exitStop]);
+
+        var commute = new Commute(
+        [
+            new WalkSegment(house, boardingStop),
+            new RideSegment(line, boardingStop, exitStop),
+            new WalkSegment(exitStop, destination)
+        ]);
+
+        // WHEN: The bus time of the commute is calculated.
+        float busMinutes = commute.BusMinutes;
+
+        // THEN: The bus time is the walking time, the driving time, and the
+        // dwell time at both stops after boarding.
+        float expectedMinutes = (30f + 70f) * WalkMinutesPerPixel
+            + 200f / BusPixelsPerMinute
+            + 2 * DwellTimeMinutesPerStop;
+        AssertFloat(busMinutes).IsEqualApprox(expectedMinutes, Tolerance);
+        AssertFloat(busMinutes).IsEqualApprox(commute.TotalTimeMinutes, Tolerance);
+    }
+
+    // SCENARIO: A resident could drive to their destination along the road
+    // network instead of taking the bus.
+    [TestCase]
+    public void GivenRoadNetwork_WhenCarMinutesCalculated_ThenCarFollowsShortestRoadPath()
+    {
+        // GIVEN: A house 10 px from one corner of a 300 px square of roads
+        // with a diagonal, and a destination 20 px from the opposite corner.
+        var house = CreateNode(new Vector2(-10, 0));
+        var destination = CreateNode(new Vector2(320, 300));
+        var topLeft = CreateRoadNode(new Vector2(0, 0));
+        var topRight = CreateRoadNode(new Vector2(300, 0));
+        var bottomRight = CreateRoadNode(new Vector2(300, 300));
+        var bottomLeft = CreateRoadNode(new Vector2(0, 300));
+        Connect(topLeft, topRight);
+        Connect(topRight, bottomRight);
+        Connect(bottomRight, bottomLeft);
+        Connect(bottomLeft, topLeft);
+        Connect(topLeft, bottomRight);
+        Register(topLeft, topRight, bottomRight, bottomLeft);
+
+        var boardingStop = CreateBusStop(new Vector2(0, 30));
+        var exitStop = CreateBusStop(new Vector2(300, 270));
+        var line = CreateBusLine([boardingStop, exitStop]);
+
+        // WHEN: The commute is built and its car time is calculated.
+        var commute = new Commute(
+        [
+            new WalkSegment(house, boardingStop),
+            new RideSegment(line, boardingStop, exitStop),
+            new WalkSegment(exitStop, destination)
+        ]);
+        float carMinutes = commute.CarMinutes;
+
+        // THEN: The car drives to the nearest road, takes the diagonal, then
+        // drives from the road to the destination.
+        float expectedPixels = 10f + 300f * Mathf.Sqrt2 + 20f;
+        AssertFloat(carMinutes).IsEqualApprox(expectedPixels / CarPixelsPerMinute, Tolerance);
+    }
+
+    // SCENARIO: A resident's house and destination are on roads that are
+    // not connected to each other.
+    [TestCase]
+    public void GivenNoRoadPath_WhenCarMinutesCalculated_ThenStraightLineDistanceIsUsed()
+    {
+        // GIVEN: A house and destination 500 px apart, each next to a
+        // separate road.
+        var house = CreateNode(new Vector2(0, 0));
+        var destination = CreateNode(new Vector2(300, 400));
+        var houseRoadStart = CreateRoadNode(new Vector2(0, 10));
+        var houseRoadEnd = CreateRoadNode(new Vector2(100, 10));
+        var destinationRoadStart = CreateRoadNode(new Vector2(300, 390));
+        var destinationRoadEnd = CreateRoadNode(new Vector2(200, 390));
+        Connect(houseRoadStart, houseRoadEnd);
+        Connect(destinationRoadStart, destinationRoadEnd);
+        Register(houseRoadStart, houseRoadEnd, destinationRoadStart, destinationRoadEnd);
+
+        var commute = new Commute(
+        [
+            new WalkSegment(house, destination)
+        ]);
+
+        // WHEN: The car time of the commute is calculated.
+        float carMinutes = commute.CarMinutes;
+
+        // THEN: The car time falls back to the straight-line distance.
+        AssertFloat(carMinutes).IsEqualApprox(500f / CarPixelsPerMinute, Tolerance);
+    }
+
+    // SCENARIO: A resident's bus commute is compared to driving the same trip.
+    [TestCase]
+    public void GivenCommute_WhenBusToCarTimeRatioCalculated_ThenRatioIsBusMinutesOverCarMinutes()
+    {
+        // GIVEN: A commute with a 30 px walk, a 400 px ride, and a 70 px walk.
+        var house = CreateNode(new Vector2(0, 0));
+        var boardingStop = CreateBusStop(new Vector2(30, 0));
+        var exitStop = CreateBusStop(new Vector2(430, 0));
+        var destination = CreateNode(new Vector2(430, 70));
+        var line = CreateBusLine([boardingStop, exitStop]);
+
+        var commute = new Commute(
+        [
+            new WalkSegment(house, boardingStop),
+            new RideSegment(line, boardingStop, exitStop),
+            new WalkSegment(exitStop, destination)
+        ]);
+
+        // WHEN: The bus-to-car time ratio is calculated.
+        float ratio = commute.BusToCarTimeRatio;
+
+        // THEN: The ratio is the bus time divided by the car time.
+        AssertFloat(commute.CarMinutes).IsGreater(0f);
+        AssertFloat(ratio).IsEqualApprox(commute.BusMinutes / commute.CarMinutes, Tolerance);
+    }
+
+    // SCENARIO: A resident's destination is right next to their house.
+    [TestCase]
+    public void GivenVeryShortTrip_WhenCarMinutesCalculated_ThenCarMinutesIsNeverBelowMinimum()
+    {
+        // GIVEN: A house and destination only 5 px apart, which would take
+        // far less than the minimum car time to drive.
+        var house = CreateNode(new Vector2(0, 0));
+        var destination = CreateNode(new Vector2(5, 0));
+
+        var commute = new Commute(
+        [
+            new WalkSegment(house, destination)
+        ]);
+
+        // WHEN: The car time and bus-to-car time ratio are calculated.
+        float carMinutes = commute.CarMinutes;
+        float ratio = commute.BusToCarTimeRatio;
+
+        // THEN: The car time is raised to the minimum, so the ratio is still a
+        // finite number.
+        AssertFloat(carMinutes).IsEqualApprox(MinimumCarMinutes, Tolerance);
+        AssertFloat(ratio).IsEqualApprox(commute.BusMinutes / MinimumCarMinutes, Tolerance);
+    }
+
     /// <summary>
     /// Creates a plain node at the given position to stand in for a house or
     /// destination building.
@@ -175,5 +429,38 @@ public class CommuteTests
     private static BusLine CreateBusLine(List<RoadNode> path)
     {
         return AutoFree(new BusLine { Path = path });
+    }
+
+    /// <summary>
+    /// Creates a road node at the given position to stand in for an
+    /// intersection.
+    /// </summary>
+    private static RoadNode CreateRoadNode(Vector2 position)
+    {
+        var roadNode = AutoFree(new RoadNode());
+        roadNode.GlobalPosition = position;
+        return roadNode;
+    }
+
+    /// <summary>
+    /// Connects two road nodes with a road that can be driven both ways.
+    /// </summary>
+    private static void Connect(RoadNode nodeA, RoadNode nodeB)
+    {
+        nodeA.AddNeighbor(nodeB);
+        nodeB.AddNeighbor(nodeA);
+    }
+
+    /// <summary>
+    /// Adds road nodes to LevelState so that the car route can be calculated
+    /// on them. They are removed after the test.
+    /// </summary>
+    private void Register(params RoadNode[] roadNodes)
+    {
+        foreach (var roadNode in roadNodes)
+        {
+            LevelState.AllRoadNodes.Add(roadNode);
+            _registeredRoadNodes.Add(roadNode);
+        }
     }
 }

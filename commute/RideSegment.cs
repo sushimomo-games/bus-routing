@@ -82,7 +82,14 @@ public class RideSegment : CommuteSegment
         } 
     }
 
-    public override float TimeMinutes => Weight / 100.0f; 
+    /// <summary>
+    /// The estimated time in minutes for the ride, including the time the bus
+    /// spends driving and the dwell time at every stop after boarding,
+    /// including the stop where the rider gets off.
+    /// </summary>
+    public override float TimeMinutes =>
+        Weight / GlobalConstants.BusPixelsPerMinute
+        + StopsTraveled * GlobalConstants.DwellTimeMinutesPerStop;
 
     public float Cost => TimeMinutes;
 
