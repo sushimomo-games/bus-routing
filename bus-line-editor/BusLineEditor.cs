@@ -192,6 +192,7 @@ public partial class BusLineEditor : Node
         else
         {
             LevelState.AllBusLines.Add(_busLineInProgress);
+            History.LogEdit(new FinalLineEdit(_busLineInProgress));
             var routeList = CurrentLevel.GetNode<ItemList>(BusLineListNode);
             routeList.AddItem(_busLineInProgress.ColorName + " line");
             UpdateAllHouseStatuses();
