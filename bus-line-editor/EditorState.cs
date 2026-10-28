@@ -61,6 +61,12 @@ public partial class EditorState : Node
     public static EditHistory History { get; } = new();
 
     /// <summary>
+    /// The undo history for the bus line currently being drawn or edited.
+    /// Holds only <see cref="LineEdit"/>s and is emptied when the line is finished or canceled.
+    /// </summary>
+    public static EditHistory DraftHistory { get; } = new();
+
+    /// <summary>
     /// The busLine currently selected in the editor for inspection.
     /// </summary>
     public static BusLine SelectedBusLine { get; set; }

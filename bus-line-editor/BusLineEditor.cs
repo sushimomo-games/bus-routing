@@ -288,7 +288,7 @@ public partial class BusLineEditor : Node
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
     {
-        History.ClearLineEdits();
+        DraftHistory.Clear();
         IsInEditingMode = true;
         CurrentBusLineCreationStep = ContinuingEdit;
         GD.Print($"Starting to edit busLine: {busLine.ColorName}");
@@ -372,7 +372,7 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
         _isEditingFromStart = false;
-        History.ClearLineEdits();
+        DraftHistory.Clear();
     }
 
     /// <summary>
@@ -382,7 +382,7 @@ public partial class BusLineEditor : Node
     /// <param name="startNode">The node from which to start the bus line creation.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
-        History.ClearLineEdits();
+        DraftHistory.Clear();
         _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
         _isEditingFromStart = false; 
@@ -499,7 +499,7 @@ public partial class BusLineEditor : Node
         mutate();
         var after = LineEdit.Snapshot(DraftLineSegments);
         GD.Print("[DEBUG - Editor] Recording edit: " + after.Count + " segments after, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
-        History.LogEdit(new LineEdit(before, after));
+        DraftHistory.LogEdit(new LineEdit(before, after));
     }
 
 }
