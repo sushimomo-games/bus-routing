@@ -74,16 +74,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("6_07au4")
 
-[node name="RedoButton" parent="." instance=ExtResource("10_gwjw8")]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 0
-offset_left = 625.0
-offset_top = 558.776
-offset_right = 715.0
-offset_bottom = 558.776
-size_flags_horizontal = 3
-size_flags_vertical = 4
-
 [node name="LineEditorStatusLabel" type="Label" parent="."]
 visible = false
 layout_mode = 1
@@ -144,6 +134,12 @@ size_flags_horizontal = 2
 size_flags_vertical = 4
 
 [node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="RedoButton" parent="HBoxContainer" instance=ExtResource("10_gwjw8")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
