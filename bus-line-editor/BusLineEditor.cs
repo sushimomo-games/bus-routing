@@ -214,6 +214,9 @@ public partial class BusLineEditor : Node
             _busLineInProgress.ColorName,
             _busLineInProgress.Color
         );
+        foreach (var segment in DraftLineSegments)
+            segment.QueueFree();
+        DraftLineSegments.Clear();
         ReturnBusLineColor(busLineInProgressColor);
         _busLineInProgress.QueueFree();
         ResetState();

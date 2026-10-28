@@ -66,7 +66,7 @@ public partial class LevelState : Node
         {
             return;
         }
-        _availableColors.Add(colorInfo);
+        _availableColors.Insert(0, colorInfo);
     }
 
     /// <summary>
