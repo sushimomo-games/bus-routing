@@ -60,8 +60,15 @@ public partial class StopEdit : AbstractEdit {
 
 
     private void UndoPlacement() {
-        if (_stop == null || !GodotObject.IsInstanceValid(_stop) || !GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return; 
+        if (!GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return;
 
+        // If the stop was deleted and then restored by undo, it's a new object.
+        // Find the stop that now sits between the same two road nodes.
+        if (_stop == null || !GodotObject.IsInstanceValid(_stop))
+            _stop = _nodeA.Neighbors.OfType<BusStop>().FirstOrDefault(s => _nodeB.Neighbors.Contains(s));
+        if (_stop == null) return;
+
+        
         foreach (var edge in _stop.ConnectedEdges.ToArray()) {
             if (!GodotObject.IsInstanceValid(edge)) continue;
             ForgetEdge(edge);
