@@ -133,13 +133,13 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 
-[node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
+[node name="RedoButton" parent="HBoxContainer" instance=ExtResource("10_gwjw8")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="RedoButton" parent="HBoxContainer" instance=ExtResource("10_gwjw8")]
+[node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
