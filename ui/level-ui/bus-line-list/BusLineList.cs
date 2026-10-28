@@ -40,6 +40,8 @@ public partial class BusLineList : ItemList
         {
             SelectedBusLine = LevelState.AllBusLines[index];
 
+            LevelState.InformationPanel.ShowBusLine(SelectedBusLine);
+
             if (OpenWindows.ContainsKey(SelectedBusLine.ID))
                 return;
 
