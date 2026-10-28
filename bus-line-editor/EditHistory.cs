@@ -31,25 +31,6 @@ public partial class EditHistory
     public void Clear() => _undo.Clear();
 
     /// <summary>
-    /// Removes every <see cref="LineEdit"/> from the history and keeps all other edits,
-    /// such as <see cref="StopEdit"/>.
-    /// </summary>
-    /// <remarks>
-    /// Called when a bus line session ends, since line edits are meaningless afterwards
-    /// but stop placements and removals can still be undone.
-    /// </remarks>
-    public void ClearLineEdits()
-    {
-        var node = _undo.First;
-        while (node != null)
-        {
-            var next = node.Next;
-            if (node.Value is LineEdit) _undo.Remove(node);
-            node = next;
-        }
-    }
-
-    /// <summary>
     /// LogEdit adds an edit at the end of the linked list.
     /// </summary>
     /// <remarks>
