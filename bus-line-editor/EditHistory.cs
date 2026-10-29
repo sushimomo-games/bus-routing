@@ -27,7 +27,9 @@ public partial class EditHistory
     /// </value>
     public bool CanUndo => _undo.Count > 0;
 
-    // need XML docs!!!
+    /// <summary>
+    /// Calls the Clear() method on the linked list
+    /// <summary>
     public void Clear() => _undo.Clear();
 
     /// <summary>
