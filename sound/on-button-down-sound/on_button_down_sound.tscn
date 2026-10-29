@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6uvx5aq0nnee"]
+
+[ext_resource type="Script" path="res://ui/buttons/OnPressedSound.cs" id="2_r2do6"]
+
+[node name="OnButtonDownSound" type="AudioStreamPlayer2D"]
+editor_description = "A component node that is meant to be a child of a button. This node emits the sound loaded in the Stream when the parent button is pressed."
+script = ExtResource("2_r2do6")
