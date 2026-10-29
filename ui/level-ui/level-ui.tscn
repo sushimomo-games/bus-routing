@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
+[ext_resource type="Script" uid="uid://c8a3fyhw73emf" path="res://ui/level-ui/SettingsMenu.cs" id="12_v72kp"]
 
 [sub_resource type="Gradient" id="Gradient_hn6xl"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -20,6 +21,9 @@ metadata/_snap_count = 4
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_v72kp"]
 gradient = SubResource("Gradient_hn6xl")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v72kp"]
+bg_color = Color(0.5689727, 0.56897277, 0.56897265, 1)
 
 [sub_resource type="Theme" id="Theme_hn6xl"]
 
@@ -161,5 +165,61 @@ custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+
+
+[node name="SettingsMenu" type="PanelContainer" parent="."]
+process_mode = 3
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v72kp")
+script = ExtResource("12_v72kp")
+
+[node name="SettingsVBox" type="VBoxContainer" parent="SettingsMenu"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="SettingsTitle" type="Label" parent="SettingsMenu/SettingsVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 31
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="VolumeContainer" type="VBoxContainer" parent="SettingsMenu/SettingsVBox"]
+layout_mode = 2
+
+[node name="VolumeLabel" type="Label" parent="SettingsMenu/SettingsVBox/VolumeContainer"]
+layout_mode = 2
+text = "Volume Adjustment"
+horizontal_alignment = 1
+
+[node name="VolumeSlider" type="HSlider" parent="SettingsMenu/SettingsVBox/VolumeContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+value = 50.0
+
+[node name="ExitGameButton" type="Button" parent="SettingsMenu/SettingsVBox"]
+custom_minimum_size = Vector2(50, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Exit Game"
+
+[node name="CloseMenuButton" type="Button" parent="SettingsMenu/SettingsVBox"]
+custom_minimum_size = Vector2(50, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Close Menu"
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
