@@ -48,7 +48,7 @@ public partial class Camera : Camera2D
         if (@event is InputEventMouseMotion mouseMotionEvent && isDragging)
         {
             Vector2 dragDelta = mouseMotionEvent.Relative;
-            
+
             Position -= dragDelta / Zoom; // Division by Zoom adjusts movement speed based on zoom level
         }
 

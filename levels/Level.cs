@@ -42,7 +42,7 @@ public partial class Level : Node2D
         }
 
         var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
-        
+
         foreach (Node node in intersectionNodes)
         {
             if (node is IntersectionNode intersectionNode)
