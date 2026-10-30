@@ -1,10 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://jf2a1v8x5v1v"]
+[gd_scene load_steps=5 format=3 uid="uid://jf2a1v8x5v1v"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_t5wrp"]
-[ext_resource type="Script" uid="uid://lt4aivqbvex3" path="res://ui/buttons/UndoButton.cs" id="2_4rvkd"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_4rvkd"]
-[ext_resource type="AudioStream" uid="uid://bxxhlqpl2kbl0" path="res://assets/audio/button-click.wav" id="4_3s884"]
-[ext_resource type="PackedScene" uid="uid://c6uvx5aq0nnee" path="res://sound/on_button_down_sound.tscn" id="4_e3oev"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_nwxmw"]
 device = -1
@@ -30,11 +27,5 @@ tooltip_text = "Undo"
 shortcut = SubResource("Shortcut_4rvkd")
 texture_normal = ExtResource("1_t5wrp")
 stretch_mode = 0
-script = ExtResource("2_4rvkd")
 
 [node name="HoverScaler" parent="TextureButton" instance=ExtResource("3_4rvkd")]
-
-[node name="OnButtonDownSound" parent="TextureButton" instance=ExtResource("4_e3oev")]
-stream = ExtResource("4_3s884")
-
-[connection signal="pressed" from="TextureButton" to="TextureButton" method="_on_pressed"]

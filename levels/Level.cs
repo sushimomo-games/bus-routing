@@ -20,8 +20,6 @@ public partial class Level : Node2D
         DrawRoadEdges();
 
         Budget = Cost.InitialBudget;
-        History.Clear();
-        DraftHistory.Clear();
     }
 
     public override void _Process(double delta)

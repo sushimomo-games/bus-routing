@@ -1,8 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://be8cl7jr4j0gc"]
+[gd_scene load_steps=5 format=3 uid="uid://be8cl7jr4j0gc"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_rt6l5"]
-[ext_resource type="PackedScene" uid="uid://c6uvx5aq0nnee" path="res://sound/on-button-down-sound/on_button_down_sound.tscn" id="2_sho3k"]
-[ext_resource type="AudioStream" uid="uid://bxxhlqpl2kbl0" path="res://assets/audio/button-down.wav" id="3_gq5t7"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_v5b5b"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_evff2"]
@@ -27,8 +25,5 @@ shortcut = SubResource("Shortcut_sho3k")
 texture_normal = ExtResource("1_rt6l5")
 stretch_mode = 0
 flip_h = true
-
-[node name="OnButtonDownSound" parent="TextureButton" instance=ExtResource("2_sho3k")]
-stream = ExtResource("3_gq5t7")
 
 [node name="HoverScaler" parent="TextureButton" instance=ExtResource("3_v5b5b")]
