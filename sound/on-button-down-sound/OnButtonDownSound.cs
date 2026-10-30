@@ -4,7 +4,7 @@ using System;
 /// <summary>
 /// Script for a component node that plays a sound when its parent button is pressed down.
 /// </summary>
-public partial class OnButtonDownSound : AudioStreamPlayer2D
+public partial class OnButtonDownSound : AudioStreamPlayer
 {
     public override void _Ready()
     {
