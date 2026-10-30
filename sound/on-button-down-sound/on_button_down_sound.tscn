@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6uvx5aq0nnee"]
+
+[ext_resource type="Script" uid="uid://dm7gdev66kafo" path="res://sound/on-button-down-sound/OnButtonDownSound.cs" id="1_6ruo5"]
+
+[node name="OnButtonDownSound" type="AudioStreamPlayer"]
+editor_description = "Attach this node to a Control to have it play the specified Stream on left click."
+script = ExtResource("1_6ruo5")

@@ -25,6 +25,9 @@ public partial class BusStopDeletor : Area2D
 
         var busStop = GetParent<BusStop>();
 
+        var budgetBefore = Budget;
+        var position = busStop.GlobalPosition;
+
         var affectedRoutes = AllBusLines.Where(busLine => busLine.ContainsNode(busStop)).ToList();
         foreach (var busLine in affectedRoutes)
         {
@@ -45,11 +48,17 @@ public partial class BusStopDeletor : Area2D
         A.RemoveNeighbor(busStop);
         B.RemoveNeighbor(busStop);
         
-        for (int i = busStop.ConnectedEdges.Count - 1; i >= 0; i--)
+        foreach (var connectedEdge in busStop.ConnectedEdges.ToArray())
         {
-            busStop.ConnectedEdges[i]?.QueueFree();
+            if (connectedEdge == null || !IsInstanceValid(connectedEdge)) continue;
+
+            if (connectedEdge.NodeA is BusStop a) a.ConnectedEdges.Remove(connectedEdge);
+            if (connectedEdge.NodeB is BusStop b) b.ConnectedEdges.Remove(connectedEdge);
+
+            connectedEdge.QueueFree();
         }
 
+        Budget -= Cost.BusStopRemoval;
         busStop.QueueFree(); // check _ExitTree() of the BusStop class to see side effects
 
         var roadEdgeScene = GD.Load<PackedScene>(RoadEdgeScene);
@@ -58,5 +67,8 @@ public partial class BusStopDeletor : Area2D
         edge.SetEndpoints(A, B);
 
         UpdateAllHouseStatuses();
+
+        if (affectedRoutes.Count == 0)
+            EditorState.History.LogEdit(new StopEdit(false, budgetBefore, position, A, B, null));
     }
 }
