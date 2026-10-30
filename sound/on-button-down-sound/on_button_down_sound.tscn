@@ -3,5 +3,5 @@
 [ext_resource type="Script" uid="uid://dm7gdev66kafo" path="res://sound/on-button-down-sound/OnButtonDownSound.cs" id="1_6ruo5"]
 
 [node name="OnButtonDownSound" type="AudioStreamPlayer"]
-editor_description = "A component node that is meant to be a child of a button. This node emits the sound loaded in the Stream when the parent button is pressed."
+editor_description = "Attach this node to a Control to have it play the specified Stream on left click."
 script = ExtResource("1_6ruo5")

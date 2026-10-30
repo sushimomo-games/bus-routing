@@ -1,30 +1,21 @@
 using Godot;
-using System;
 
 /// <summary>
-/// Script for a component node that plays a sound when its parent button is pressed down.
+/// Plays a sound when the left mouse button is clicked on the parent Control node.
 /// </summary>
 public partial class OnButtonDownSound : AudioStreamPlayer
 {
     public override void _Ready()
     {
-        Node parent = GetParent();
-
-        if (parent is BaseButton button)
-        {
-            button.ButtonDown += OnParentButtonDown;
-        }
+        if (GetParent() is Control control)
+            control.GuiInput += OnGuiInput;
         else
-        {
-            GD.PushWarning($"ButtonSoundPlayer attached to a non-button node: {parent.Name}");
-        }
+            GD.PushWarning($"{nameof(OnButtonDownSound)} needs a Control parent: {GetParent().Name}");
     }
 
-    /// <summary>
-    /// Plays the sound when the parent button is pressed down.
-    /// </summary>
-    private void OnParentButtonDown()
+    private void OnGuiInput(InputEvent @event)
     {
-        Play();
+        if (@event.IsLeftMouseClick())
+            Play();
     }
 }
