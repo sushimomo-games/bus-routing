@@ -57,18 +57,18 @@ public partial class LevelState : Node
 		return colorInfo;
 	}
 
-    /// <summary>
-    /// Returns a route color back to the pool of available colors.
-    /// Call this when a route is deleted.
-    /// </summary>
-    public static void ReturnBusLineColor(KeyValuePair<string, Color> colorInfo)
-    {
-        if (!BusLineColors.ColorList.Contains(colorInfo) || _availableColors.Contains(colorInfo))
-        {
-            return;
-        }
-        _availableColors.Insert(0, colorInfo);
-    }
+	/// <summary>
+	/// Returns a route color back to the pool of available colors.
+	/// Call this when a route is deleted.
+	/// </summary>
+	public static void ReturnBusLineColor(KeyValuePair<string, Color> colorInfo)
+	{
+		if (!BusLineColors.ColorList.Contains(colorInfo) || _availableColors.Contains(colorInfo))
+		{
+			return;
+		}
+		_availableColors.Add(colorInfo);
+	}
 
 	/// <summary>
 	/// Refreshes the visual representation of all routes.

@@ -69,19 +69,19 @@ public partial class BusStop : RoadNode
 
 	}
 	public int GetHouseCount() /// allows outside classes to use this method and logic of counting the houses. Done by Malachi
-    {
-        int houseCount = 0;
+{
+	int houseCount = 0;
 
-        foreach (House house in LevelState.AllHouses)
-        {
-            if (house.ReachableBusStop == this)
-            {
-                houseCount++;
-            }
-        }
+	foreach (House house in LevelState.AllHouses)
+	{
+		if (house.ReachableBusStop == this)
+		{
+			houseCount++;
+		}
+	}
 
-        return houseCount;
-    }
+	return houseCount;
+}
 
 	public override void _ExitTree()
 	{
