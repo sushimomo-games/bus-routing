@@ -2,7 +2,7 @@ using GdUnit4;
 using Godot;
 using System.Linq;
 using static GdUnit4.Assertions;
-    
+
 [TestSuite]
 
 public class BusStopInformationPanelTests
@@ -15,15 +15,15 @@ public class BusStopInformationPanelTests
     [TestCase]
     public void GivenHousesHaveDifferentBusStopAccess_WhenBusStopIsClicked_ThenInformationPanelShowsHouseCount()
     {
-        
+
         // GIVEN: Two houses can access a single bus stop. Another house can access a
         // second bus stop. A fourth house cannot access any bus stop.
         var busStopScene = GD.Load<PackedScene>(Path.BusStopScene);
         var busStop = busStopScene.Instantiate<BusStop>();
         var otherBusStop = busStopScene.Instantiate<BusStop>();
 
-        var accessibleHouseOne = new HouseWithReachableBusStop{ AccessibleStop = busStop };
-        var accessibleHouseTwo = new HouseWithReachableBusStop{ AccessibleStop = busStop };
+        var accessibleHouseOne = new HouseWithReachableBusStop { AccessibleStop = busStop };
+        var accessibleHouseTwo = new HouseWithReachableBusStop { AccessibleStop = busStop };
         var houseAtOtherStop = new HouseWithReachableBusStop { AccessibleStop = otherBusStop };
         var houseWithoutAccess = new HouseWithReachableBusStop { AccessibleStop = null };
 

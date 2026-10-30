@@ -116,7 +116,7 @@ public partial class LevelUI : Control
         }
         CleanupPreview();
     }
-    
+
     /// <summary>
     /// Cleans up the preview bus stop and resets the state after a drop operation.
     /// This includes removing the preview bus stop, clearing highlighted stops, and stopping _Process().
@@ -161,7 +161,7 @@ public partial class LevelUI : Control
     /// Creates a bus stop on the specified road edge at the mouse position.
     /// </summary>
     private void CreateBusStopOnEdge(RoadEdge roadEdge, BusStop busStop)
-    {   
+    {
         if (Budget < Cost.BusStopPlacement)
         {
             _errorMessage.DisplayMessage("Insufficient budget to place bus stop.");
@@ -176,7 +176,7 @@ public partial class LevelUI : Control
         Vector2 projectedPoint = Geometry2D.GetClosestPointToSegment(mousePosition, p1, p2);
 
         CurrentLevel.AddChild(busStop);
-        LevelState.AllBusStops.Add(busStop); 
+        LevelState.AllBusStops.Add(busStop);
         busStop.GlobalPosition = projectedPoint;
 
         var nodeA = roadEdge.NodeA;

@@ -34,10 +34,10 @@ public partial class MouseTracker : Node
         // Handle error coloring
         if (EditorState.HoveredNode != null && EditorState.HoveredNode != activeNode)
         {
-            if (BusLineEditor.DraftLineSegments.DoesEdgeExistBetween(activeNode, EditorState.HoveredNode) || 
+            if (BusLineEditor.DraftLineSegments.DoesEdgeExistBetween(activeNode, EditorState.HoveredNode) ||
                 !activeNode.Neighbors.Contains(EditorState.HoveredNode))
             {
-                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             }
         }
 

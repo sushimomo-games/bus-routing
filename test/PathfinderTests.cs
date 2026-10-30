@@ -19,7 +19,7 @@ public class PathfinderTests
         startStop.GlobalPosition = new Vector2(0, 0);
         var endStop = busStopScene.Instantiate<BusStop>();
         endStop.GlobalPosition = new Vector2(100, 0);
-        
+
         var houseScene = GD.Load<PackedScene>(Path.HouseScene);
         var house = houseScene.Instantiate<House>();
         house.GlobalPosition = new Vector2(5, 0);
@@ -54,7 +54,7 @@ public class PathfinderTests
 
         // WHEN: The player deletes the previously optimal route and adds a new 
         // route that is more optimal than the remaining route.
-        LevelState.AllBusLines.Remove(lineA); 
+        LevelState.AllBusLines.Remove(lineA);
 
         var midStop = busStopScene.Instantiate<BusStop>();
         midStop.GlobalPosition = new Vector2(50, 0);
@@ -70,7 +70,7 @@ public class PathfinderTests
         var newRoute = Pathfinder.CalculateBestRoute(startStop, validDestinations);
 
         AssertObject(newRoute).IsNotNull();
-        
+
         var newRide = newRoute[0] as RideSegment;
         AssertObject(newRide).IsNotNull();
         AssertObject(newRide.Line).IsEqual(newOptimalLine);

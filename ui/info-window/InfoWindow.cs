@@ -39,7 +39,7 @@ public partial class InfoWindow : Control
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
-        
+
         _closeButton = _topBarRect.GetNode<Button>("CloseButton");
 
         if (BusLine != null)
