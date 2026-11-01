@@ -8,12 +8,12 @@ using System.Collections.Generic;
 /// This class handles the case in which undoing a segment in a bus line, removes the whole
 /// bus line, and does not leave disjointed segments. 
 /// </remarks>  
-public partial class FinalLineEdit : AbstractEdit {
+public partial class FinalizeBusLineEdit : AbstractEdit {
 
     private readonly List<BusLine> _group =[];  
-    public FinalLineEdit () { }
+    public FinalizeBusLineEdit () { }
 
-    public FinalLineEdit (BusLine line) {
+    public FinalizeBusLineEdit (BusLine line) {
         AddToGroup(line);
     }
 
