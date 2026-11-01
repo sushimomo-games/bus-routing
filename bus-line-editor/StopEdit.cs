@@ -30,7 +30,13 @@ public partial class StopEdit : AbstractEdit {
         this._stop = stop; 
      } 
 
-
+    /// <summary> 
+    /// Performs inverse operation of previous state change action. 
+    /// </summary> 
+    /// <remarks> 
+    /// Is called by <see cref="EditHistory.cs"/> when state object is 
+    /// popped from stack. 
+    /// </remarks> 
     public override void Revert() {
         if (_wasPlacement) UndoPlacement(); 
         else UndoRemoval(); 
@@ -39,7 +45,11 @@ public partial class StopEdit : AbstractEdit {
         LevelState.UpdateAllHouseStatuses(); 
         LevelState.RefreshAllBusLineVisuals();  
     }
-
+    
+    /// <summary> 
+    /// Creates and returns a new RoadEdge object between two 
+    /// existing RoadNodes. 
+    /// <summary/> 
     private static RoadEdge CreateRoadEdge (RoadNode nodeA, RoadNode nodeB) {
         var scene = GD.Load<PackedScene>(Path.RoadEdgeScene); 
         var edge = scene.Instantiate<RoadEdge>(); 
@@ -47,18 +57,29 @@ public partial class StopEdit : AbstractEdit {
         edge.SetEndpoints(nodeA, nodeB); 
         return edge; 
     }
+    
 
+    /// <summary> 
+    /// Returns existing RoadEdge object if found within <see cref="LevelState.AllRoadEdges"/> 
+    /// </summary> 
     private static RoadEdge FindRoadEdge (RoadNode nodeA, RoadNode nodeB) =>
         LevelState.AllRoadEdges.FirstOrDefault (e => 
             GodotObject.IsInstanceValid(e) && 
             ((e.NodeA == nodeA && e.NodeB == nodeB) || (e.NodeA == nodeB && e.NodeB == nodeA)));
-
+    
+    /// <summary> 
+    /// Detaches RoadEdge object from BusStops. 
+    /// </summary> 
     private static void ForgetEdge (RoadEdge edge) {
         if (edge.NodeA is BusStop a) a.ConnectedEdges.Remove(edge);
         if (edge.NodeB is BusStop b) b.ConnectedEdges.Remove(edge);
     }
 
-
+    /// <summary> 
+    /// Performs inverse operation on a BusStop placement action. 
+    /// Removes and destroys old edges created to attach the previously placed
+    /// BusStops, and creates a single new edge.   
+    /// </summary> 
     private void UndoPlacement() {
         if (!GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return;
 
@@ -87,7 +108,14 @@ public partial class StopEdit : AbstractEdit {
         _stop.QueueFree(); 
         _stop = null;  
     }
+    
 
+    /// <summary> 
+    /// Performs inverse operation of previous BusStop removal state change. 
+    /// Old Edge that replaced removed BusStop is detached from RoadNodes A and B. 
+    /// The previously removed BusStop is reinstantiated, and reattached to RoadNodes 
+    /// A and B with new created RoadEdges. 
+    /// </summary> 
     private void UndoRemoval() {
         if (!GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return; 
 
