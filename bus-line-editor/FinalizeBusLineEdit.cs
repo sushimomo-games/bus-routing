@@ -62,6 +62,9 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
 
         LevelState.AllBusLines.RemoveAt(index); 
 
+        LevelState.ReturnBusLineColor(
+          new KeyValuePair<string, Color>(line.ColorName, line.Color));
+
         if(busLineList != null && index < busLineList.ItemCount) {
             bool wasBlocking = busLineList.IsBlockingSignals(); 
             busLineList.SetBlockSignals(true); 
