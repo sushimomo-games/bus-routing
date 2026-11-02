@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=17 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -22,10 +22,10 @@ metadata/_snap_count = 4
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_v72kp"]
 gradient = SubResource("Gradient_hn6xl")
 
+[sub_resource type="Theme" id="Theme_hn6xl"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v72kp"]
 bg_color = Color(0.5689727, 0.56897277, 0.56897265, 1)
-
-[sub_resource type="Theme" id="Theme_hn6xl"]
 
 [node name="LevelUI" type="Control"]
 layout_mode = 3
@@ -166,7 +166,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-
 [node name="SettingsMenu" type="PanelContainer" parent="."]
 process_mode = 3
 custom_minimum_size = Vector2(300, 300)
@@ -210,16 +209,32 @@ layout_mode = 2
 size_flags_horizontal = 4
 value = 50.0
 
+[node name="Save Button" type="Button" parent="SettingsMenu/SettingsVBox"]
+custom_minimum_size = Vector2(50, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Save"
+
+[node name="Reset Button" type="Button" parent="SettingsMenu/SettingsVBox"]
+custom_minimum_size = Vector2(60, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Reset"
+autowrap_mode = 3
+autowrap_trim_flags = 0
+
+[node name="Close Menu" type="Button" parent="SettingsMenu/SettingsVBox"]
+custom_minimum_size = Vector2(50, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Close Menu"
+
 [node name="ExitGameButton" type="Button" parent="SettingsMenu/SettingsVBox"]
 custom_minimum_size = Vector2(50, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Exit Game"
 
-[node name="CloseMenuButton" type="Button" parent="SettingsMenu/SettingsVBox"]
-custom_minimum_size = Vector2(50, 30)
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Close Menu"
-
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
+[connection signal="pressed" from="SettingsMenu/SettingsVBox/Save Button" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="SettingsMenu/SettingsVBox/Reset Button" to="." method="_on_reset_button_pressed"]
