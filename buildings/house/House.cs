@@ -29,14 +29,6 @@ public partial class House : Building
                 _checkSprite.Visible = value;
 
             }
-            if (value && _busUsageProbability < 0.05f)
-            {
-                _busUsageProbability = 0.05f;
-            }
-            else if (!value)
-            {
-                _busUsageProbability = 0.0f;
-            }
         }
     }
 
@@ -85,13 +77,27 @@ public partial class House : Building
         // }
     }
 
+    /// <summary>
+    /// Recalculates the resident's commute, whether the house is connected,
+    /// and the probability that the resident uses the bus.
+    /// </summary>
     public void UpdateCheckStatus()
+    {
+        CurrentItinerary = FindCommute();
+        IsChecked = CurrentItinerary != null;
+        BusUsageProbability = BusUsageModel.CalculateProbability(CurrentItinerary);
+    }
+
+    /// <summary>
+    /// Finds the best bus commute from this house to a destination of the
+    /// same color.
+    /// </summary>
+    /// <returns>The commute, or null if no destination can be reached by bus.</returns>
+    private Commute FindCommute()
     {
         if (ReachableBusStop is not BusStop startStop)
         {
-            IsChecked = false;
-            CurrentItinerary = null;
-            return;
+            return null;
         }
 
         var validDestinations = LevelState.AllDestinations
@@ -101,25 +107,18 @@ public partial class House : Building
 
         if (validDestinations.Count == 0)
         {
-            IsChecked = false;
-            CurrentItinerary = null;
-            return;
+            return null;
         }
 
         var transitSegments = Pathfinder.CalculateBestRoute(startStop, validDestinations);
 
-        if (transitSegments != null)
+        if (transitSegments == null)
         {
-            transitSegments.Insert(0, new WalkSegment(this, startStop));
+            return null;
+        }
 
-            CurrentItinerary = new Commute(transitSegments);
-            IsChecked = true;
-        }
-        else
-        {
-            CurrentItinerary = null;
-            IsChecked = false;
-        }
+        transitSegments.Insert(0, new WalkSegment(this, startStop));
+        return new Commute(transitSegments);
     }
 
     /* ORIGINAL CODE FOR POP-UP WINDOW: No longer visible to user, replaced with information panel (InformationPanel.cs)
