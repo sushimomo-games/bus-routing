@@ -179,6 +179,7 @@ public partial class LevelUI : Control
 		LevelState.AllBusStops.Add(busStop); 
 		busStop.GlobalPosition = projectedPoint;
 
+
 		var nodeA = roadEdge.NodeA;
 		var nodeB = roadEdge.NodeB;
 

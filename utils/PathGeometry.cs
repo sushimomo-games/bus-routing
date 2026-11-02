@@ -27,14 +27,14 @@ public static class PathGeometry
 
         Vector2 diff = line2Start - line1Start;
         float t = diff.Cross(dir2) / det;
-        
+
         Vector2 intersection = line1Start + dir1 * t;
 
         // Clamp extreme corners
         if (intersection.DistanceTo(currentPos) > 30.0f)
         {
-             // Fallback to non-intersecting point avoiding extreme spikes
-             return currentPos + perp1 * offset1;
+            // Fallback to non-intersecting point avoiding extreme spikes
+            return currentPos + perp1 * offset1;
         }
 
         return intersection;

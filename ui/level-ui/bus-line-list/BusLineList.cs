@@ -14,7 +14,7 @@ public partial class BusLineList : ItemList
             var colorInfo = new KeyValuePair<string, Color>(SelectedBusLine.ColorName, SelectedBusLine.Color);
             DeleteBusLine(SelectedBusLine);
             LevelState.ReturnBusLineColor(colorInfo);
-            AcceptEvent(); 
+            AcceptEvent();
         }
     }
 
@@ -47,7 +47,7 @@ public partial class BusLineList : ItemList
 
             var window = InfoWindowScene.Instantiate<InfoWindow>();
             window.BusLine = SelectedBusLine;
-            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer"); 
+            var canvasLayer = GetTree().CurrentScene.GetNode<CanvasLayer>("CanvasLayer");
             canvasLayer.AddChild(window);
             OpenWindows[SelectedBusLine.ID] = window;
         }

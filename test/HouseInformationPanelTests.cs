@@ -19,9 +19,9 @@ public class HouseInformationPanelTests
         // GIVEN: A house is near a bus stop with one route to a destination.
         var busStopScene = GD.Load<PackedScene>(Path.BusStopScene);
         var startStop = busStopScene.Instantiate<BusStop>();
-        startStop.GlobalPosition = new Vector2(0,0);
+        startStop.GlobalPosition = new Vector2(0, 0);
         var endStop = busStopScene.Instantiate<BusStop>();
-        endStop.GlobalPosition = new Vector2(100,0);
+        endStop.GlobalPosition = new Vector2(100, 0);
 
         var houseScene = GD.Load<PackedScene>(Path.HouseScene);
         var house = houseScene.Instantiate<House>();
@@ -31,7 +31,7 @@ public class HouseInformationPanelTests
 
         var destination = new DestinationStub(endStop)
         {
-            GlobalPosition = new Vector2(105,0),
+            GlobalPosition = new Vector2(105, 0),
             Modulate = Colors.Red
         };
 
