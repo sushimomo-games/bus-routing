@@ -85,8 +85,7 @@ public partial class InfoWindow : Control
 
     private void _on_delete_button_pressed()
     {
-        _busLineList.RemoveItem(AllBusLines.IndexOf(BusLine));
-        BusLine.Delete();
+        GetTree().CurrentScene.GetNode<BusLineList>(Path.BusLineListNode).DeleteBusLine(BusLine, undoable: true);
         QueueFree();
     }
 

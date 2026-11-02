@@ -11,14 +11,20 @@ public partial class BusLineList : ItemList
     {
         if (SelectedBusLine != null && @event.IsActionPressed("ui_text_delete")) // "ui_cancel" is usually the Escape or Delete key
         {
-            var colorInfo = new KeyValuePair<string, Color>(SelectedBusLine.ColorName, SelectedBusLine.Color);
-            DeleteBusLine(SelectedBusLine);
-            LevelState.ReturnBusLineColor(colorInfo);
-            AcceptEvent(); 
+            DeleteBusLine(SelectedBusLine, undoable: true);
+            AcceptEvent();
         }
     }
 
-    public void DeleteBusLine(BusLine busLine)
+    /// <summary>
+    /// Removes a bus line from the level and the list.
+    /// </summary>
+    /// <param name="undoable">
+    /// If true the line is only detached and a <see cref="DeleteBusLineEdit"/> is logged so the
+    /// delete can be undone. If false (e.g. the line was invalidated by deleting a bus stop) the
+    /// line is freed immediately.
+    /// </param>
+    public void DeleteBusLine(BusLine busLine, bool undoable = false)
     {
         GD.Print($"Deleting busLine: {busLine.ColorName}");
 
@@ -28,7 +34,15 @@ public partial class BusLineList : ItemList
             RemoveItem(itemIndex);
         }
 
-        busLine.Delete();
+        if (undoable)
+        {
+            busLine.Detach();
+            History.LogEdit(new DeleteBusLineEdit(busLine, itemIndex));
+        }
+        else
+        {
+            busLine.Delete();
+        }
 
         SelectedBusLine = null;
         LevelState.UpdateAllHouseStatuses();
