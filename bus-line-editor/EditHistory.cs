@@ -30,7 +30,11 @@ public partial class EditHistory
     /// <summary>
     /// Calls the Clear() method on the linked list
     /// <summary>
-    public void Clear() => _undo.Clear();
+    public void Clear()
+    {
+        foreach (var edit in _undo) edit.OnDiscarded();
+        _undo.Clear();
+    }
 
     /// <summary>
     /// LogEdit adds an edit at the end of the linked list.
@@ -46,8 +50,9 @@ public partial class EditHistory
 
         if (_undo.Count > MaxHistory)
         {
+            _undo.First.Value.OnDiscarded();
             _undo.RemoveFirst();
-            
+
             foreach (var e in _undo)
             {
                 GD.Print("[DEBUG - Editor] Edit in history: " + e.GetType().Name);

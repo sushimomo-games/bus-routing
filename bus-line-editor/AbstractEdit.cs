@@ -21,6 +21,11 @@ public abstract partial class AbstractEdit
     /// </summary>
     public abstract void Revert();
     /// <summary>
+    /// Called when the edit is dropped from the history without being reverted,
+    /// so it can free any nodes it kept alive for undo.
+    /// </summary>
+    public virtual void OnDiscarded() { }
+    /// <summary>
     /// Applies the player action asociated with the instance.
     /// </summary>
     /// <remarks>
