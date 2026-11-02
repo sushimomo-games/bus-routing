@@ -70,6 +70,15 @@ public partial class LevelState : Node
     }
 
     /// <summary>
+    /// Removes a specific route color from the pool of available colors.
+    /// Call this when a previously deleted route is restored (e.g. undo).
+    /// </summary>
+    public static void ReserveBusLineColor(KeyValuePair<string, Color> colorInfo)
+    {
+        _availableColors.Remove(colorInfo);
+    }
+
+    /// <summary>
     /// Refreshes the visual representation of all routes.
     /// Call this when routes are added, removed, or modified to ensure
     /// proper offset calculations for shared road segments.
