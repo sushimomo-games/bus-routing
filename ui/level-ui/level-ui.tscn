@@ -236,5 +236,3 @@ size_flags_horizontal = 4
 text = "Exit Game"
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
-[connection signal="pressed" from="SettingsMenu/SettingsVBox/Save Button" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="SettingsMenu/SettingsVBox/Reset Button" to="." method="_on_reset_button_pressed"]
