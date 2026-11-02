@@ -9,7 +9,7 @@ public abstract partial class AbstractEdit
     /// <remarks>
     /// This property is used for debugging purposes and is not intended to be modified by the user.
     /// Name is derived from the class name of the implementing class at runtime. 
-    /// For example, if a class named "StopEdit" implements AbstractEdit, the Name property will return "StopEdit".
+    /// For example, if a class named "BusStopEdit" implements AbstractEdit, the Name property will return "BusStopEdit".
     /// </remarks>
     private string Name { 
         get{

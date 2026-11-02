@@ -12,7 +12,7 @@ using System.Collections.Generic;
 /// This allows undo/redo functionality in the bus line editor. 
 /// </remarks
 
-public partial class StopEdit : AbstractEdit { 
+public partial class BusStopEdit : AbstractEdit { 
 
     private readonly bool _wasPlacement; 
     private readonly uint _budgetBefore; 
@@ -21,7 +21,7 @@ public partial class StopEdit : AbstractEdit {
     private readonly RoadNode _nodeB; 
     private BusStop _stop; 
 
-    public StopEdit (bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop) {
+    public BusStopEdit (bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop) {
         this._wasPlacement = wasPlacement; 
         this._budgetBefore = budgetBefore; 
         this._position = position; 

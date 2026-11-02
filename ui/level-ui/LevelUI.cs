@@ -192,6 +192,6 @@ public partial class LevelUI : Control
         nodeB.AddNeighbor(busStop);
         busStop.AddNeighbor(nodeB);
 
-        EditorState.History.LogEdit(new StopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
+        EditorState.History.LogEdit(new BusStopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
 }

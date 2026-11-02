@@ -77,7 +77,7 @@ public partial class EditHistory
         AbstractEdit edit = _undo.Last.Value;
 
         // Don't revert a stop while a line is being drawn: the draft segments may reference it.
-        if (edit is StopEdit && BusLineEditor.BusLineInProgress != null) { return; }
+        if (edit is BusStopEdit && BusLineEditor.BusLineInProgress != null) { return; }
 
         _undo.RemoveLast();
         edit.Revert();
