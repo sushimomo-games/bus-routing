@@ -160,6 +160,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
+[node name="SliceButton" parent="HBoxContainer" instance=ExtResource("11_hn6xl")]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
 [node name="SettingsMenu" type="PanelContainer" parent="."]
 process_mode = 3
 custom_minimum_size = Vector2(300, 300)
@@ -228,12 +234,6 @@ custom_minimum_size = Vector2(50, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Exit Game"
-
-[node name="SliceButton" parent="SettingsMenu" instance=ExtResource("11_hn6xl")]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
 [connection signal="pressed" from="SettingsMenu/SettingsVBox/Save Button" to="." method="_on_save_button_pressed"]
