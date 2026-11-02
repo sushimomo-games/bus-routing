@@ -192,13 +192,5 @@ public partial class LevelUI : Control
 		nodeB.AddNeighbor(busStop);
 		busStop.AddNeighbor(nodeB);
 	}
-	public void _on_save_button_pressed()
-{
-	GD.Print("Save clicked!");
-}
 
-public void _on_reset_button_pressed()
-{
-	GD.Print("Reset clicked!");
-}
 }
