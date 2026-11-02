@@ -9,7 +9,7 @@ public partial class BusLineVisual : Node2D
     private Line2D _line;
     private Line2D _highlightLine;
     private Tween _highlightTween;
-    
+
     public float LineWidth { get; set; } = 8.0f;
     public float LineSpacing { get; set; } = 8.0f;
 
@@ -58,7 +58,7 @@ public partial class BusLineVisual : Node2D
     public void UpdateVisualFromPath(List<RoadNode> path)
     {
         _line.ClearPoints();
-        
+
         if (path == null || path.Count == 0) return;
         if (path.Count == 1)
         {
@@ -69,7 +69,7 @@ public partial class BusLineVisual : Node2D
         for (int i = 0; i < path.Count; i++)
         {
             Vector2 currentPos = path[i].GlobalPosition;
-            
+
             if (i == 0)
             {
                 Vector2 dir = (path[1].GlobalPosition - currentPos).Normalized();
@@ -96,13 +96,13 @@ public partial class BusLineVisual : Node2D
         Vector2 currentPos = path[nodeIndex].GlobalPosition;
         Vector2 prevPos = path[nodeIndex - 1].GlobalPosition;
         Vector2 nextPos = path[nodeIndex + 1].GlobalPosition;
-        
+
         Vector2 dirBefore = (currentPos - prevPos).Normalized();
         Vector2 dirAfter = (nextPos - currentPos).Normalized();
-        
+
         Vector2 perpBefore = new Vector2(-dirBefore.Y, dirBefore.X);
         Vector2 perpAfter = new Vector2(-dirAfter.Y, dirAfter.X);
-        
+
         float offsetBefore = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex - 1], path[nodeIndex], LineSpacing);
         float offsetAfter = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex], path[nodeIndex + 1], LineSpacing);
 
@@ -170,7 +170,7 @@ public partial class BusLineVisual : Node2D
         for (int i = 0; i < pathNodes.Count; i++)
         {
             Vector2 currentPos = pathNodes[i].GlobalPosition;
-            
+
             if (i == 0)
             {
                 Vector2 dir = (pathNodes[1].GlobalPosition - currentPos).Normalized();
@@ -201,16 +201,16 @@ public partial class BusLineVisual : Node2D
     private void AddPointsAtIntersectionForHighlight(int nodeIndex, List<RoadNode> path)
     {
         Vector2 currentPos = path[nodeIndex].GlobalPosition;
-    
+
         Vector2 prevPos = path[nodeIndex - 1].GlobalPosition;
         Vector2 nextPos = path[nodeIndex + 1].GlobalPosition;
-        
+
         Vector2 dirBefore = (currentPos - prevPos).Normalized();
         Vector2 dirAfter = (nextPos - currentPos).Normalized();
-        
+
         Vector2 perpBefore = new Vector2(-dirBefore.Y, dirBefore.X);
         Vector2 perpAfter = new Vector2(-dirAfter.Y, dirAfter.X);
-        
+
         float offsetBefore = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex - 1], path[nodeIndex], LineSpacing);
         float offsetAfter = LevelState.CalculateSegmentOffsetAmount(_busLine, path[nodeIndex], path[nodeIndex + 1], LineSpacing);
 
@@ -249,5 +249,51 @@ public partial class BusLineVisual : Node2D
                        .SetTrans(Tween.TransitionType.Sine)
                        .SetEase(Tween.EaseType.Out);
         _highlightTween.TweenCallback(Callable.From(_highlightLine.ClearPoints));
+    }
+    /* public override void _UnhandledInput(InputEvent @event)
+ {
+     if (@event is InputEventMouseButton mouse &&
+         mouse.Pressed &&
+         mouse.ButtonIndex == MouseButton.Left)
+     {
+         Vector2 mousePos = GetGlobalMousePosition();
+
+         foreach (Vector2 point in _line.Points)
+         {
+             if (mousePos.DistanceTo(point) < 15)
+             {
+                 GD.Print($"Bus line {_busLine.ColorName} clicked!");
+                 break;
+             }
+         }
+     }
+ }*/
+    /// This is what makes the buslines actually clickable 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton mouse &&
+            mouse.Pressed &&
+            mouse.ButtonIndex == MouseButton.Left)
+        {
+            Vector2 mousePos = GetGlobalMousePosition();
+
+            for (int i = 0; i < _line.Points.Length - 1; i++)
+            {
+                Vector2 closest =
+                    Geometry2D.GetClosestPointToSegment(
+                        mousePos,
+                        _line.Points[i],
+                        _line.Points[i + 1]);
+
+                if (mousePos.DistanceTo(closest) < 10) /// This measures the distance between the segment of the bus lines and the user's mouse click. 
+                                                       /// if it is less than 10 pixels away then this function will send the information to the InformationPanel and update the information
+                {
+                    GD.Print($"Clicked {_busLine.ColorName}");
+                    LevelState.InformationPanel.ShowBusLine(_busLine);
+                    House.DeselectHouses();
+                    return;
+                }
+            }
+        }
     }
 }

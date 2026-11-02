@@ -34,7 +34,7 @@ public class RideSegment : CommuteSegment
         Line = line;
         BoardingStop = boardingStop;
         ExitStop = exitStop;
-        
+
         CalculateRideStats();
     }
 
@@ -42,25 +42,25 @@ public class RideSegment : CommuteSegment
     {
         // Filter the BusLine's path to only actual BusStops
         var stopsOnLine = Line.Path.OfType<BusStop>().ToList();
-        
+
         int startIndex = stopsOnLine.IndexOf(BoardingStop);
         int endIndex = stopsOnLine.IndexOf(ExitStop);
-        
+
         StopsTraveled = Mathf.Abs(endIndex - startIndex);
     }
-    
+
     // For RideSegment, distance along nodes
-    protected override float Weight 
-    { 
-        get 
+    protected override float Weight
+    {
+        get
         {
             float totalDist = 0;
             bool counting = false;
-            foreach(var node in Line.Path)
+            foreach (var node in Line.Path)
             {
-                if(node == BoardingStop || node == ExitStop)
+                if (node == BoardingStop || node == ExitStop)
                 {
-                    if(counting)
+                    if (counting)
                     {
                         // We hit the end node
                         break;
@@ -71,15 +71,15 @@ public class RideSegment : CommuteSegment
                         counting = true;
                     }
                 }
-                
-                if(counting)
+
+                if (counting)
                 {
                     var nextNode = Line.Path[Line.Path.IndexOf(node) + 1];
                     totalDist += node.GlobalPosition.DistanceTo(nextNode.GlobalPosition);
                 }
             }
             return totalDist;
-        } 
+        }
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public class RideSegment : CommuteSegment
                     adding = true;
                 }
             }
-            
+
             if (adding)
             {
                 nodes.Add(node);

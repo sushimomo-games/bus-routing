@@ -13,9 +13,9 @@ public partial class DraftSegment : Node2D
     public DraftSegment(RoadNode startNode, BusLine associatedBusLine)
     {
         Nodes = [startNode];
-        
+
         _visual = new BusLineVisual(associatedBusLine);
-        
+
         AddChild(_visual);
         UpdateVisuals();
     }
@@ -52,7 +52,7 @@ public partial class DraftSegment : Node2D
             LastNode == other.FirstNode ||
             LastNode == other.LastNode;
     }
-    
+
     public void MergeWith(DraftSegment other)
     {
         if (LastNode == other.FirstNode)
@@ -78,6 +78,6 @@ public partial class DraftSegment : Node2D
             Nodes.InsertRange(0, other.Nodes);
         }
 
-        UpdateVisuals(); 
+        UpdateVisuals();
     }
 }
