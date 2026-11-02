@@ -41,10 +41,10 @@ public partial class BusStopDeletor : Area2D
         var B = busStop.Neighbors[1];
         A.AddNeighbor(B);
         B.AddNeighbor(A);
-        
+
         A.RemoveNeighbor(busStop);
         B.RemoveNeighbor(busStop);
-        
+
         for (int i = busStop.ConnectedEdges.Count - 1; i >= 0; i--)
         {
             busStop.ConnectedEdges[i]?.QueueFree();

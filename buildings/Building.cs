@@ -83,7 +83,7 @@ public abstract partial class Building : Node2D
         }
 
         _currentThickness = Mathf.Lerp(_currentThickness, _targetThickness, (float)(delta * _lerpSpeed));
-        
+
         if (_buildingSprite?.Material is ShaderMaterial shaderMat)
         {
             shaderMat.SetShaderParameter("line_thickness", _currentThickness);

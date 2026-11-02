@@ -1,43 +1,43 @@
-using Godot; 
-using System.Collections.Generic; 
-using System.Linq; 
+using Godot;
+using System.Collections.Generic;
+using System.Linq;
 
-public static class Pathfinder 
-{ 
+public static class Pathfinder
+{
     /// <summary>
     /// Uses Dijkstra's algorithm to find the most time-efficient commute
     /// for a house.
     /// </summary>
-    public static List<CommuteSegment> CalculateBestRoute(BusStop start, HashSet<Destination> validDestinations) 
-    { 
-        var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet(); 
-        var priorityQueue = new PriorityQueue<BusStop, float>(); 
-        var costs = new Dictionary<BusStop, float>(); 
-        var lineageMap = new Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)>(); 
-        var visited = new HashSet<BusStop>(); 
-        
-        priorityQueue.Enqueue(start, 0f); 
-        costs[start] = 0f; 
-        
-        while (priorityQueue.Count > 0) 
-        { 
-            var current = priorityQueue.Dequeue(); 
-            
+    public static List<CommuteSegment> CalculateBestRoute(BusStop start, HashSet<Destination> validDestinations)
+    {
+        var validDestinationStops = validDestinations.Select(d => (BusStop)d.ReachableBusStop).ToHashSet();
+        var priorityQueue = new PriorityQueue<BusStop, float>();
+        var costs = new Dictionary<BusStop, float>();
+        var lineageMap = new Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)>();
+        var visited = new HashSet<BusStop>();
+
+        priorityQueue.Enqueue(start, 0f);
+        costs[start] = 0f;
+
+        while (priorityQueue.Count > 0)
+        {
+            var current = priorityQueue.Dequeue();
+
             // Skip stale queue entries 
-            if (!visited.Add(current)) continue; 
-            
-            if (validDestinationStops.Contains(current)) 
-            { 
-                var destinationNode = validDestinations.First(d => d.ReachableBusStop == current); 
-                return BuildTransitItinerary(start, current, destinationNode, lineageMap); 
-            } 
+            if (!visited.Add(current)) continue;
+
+            if (validDestinationStops.Contains(current))
+            {
+                var destinationNode = validDestinations.First(d => d.ReachableBusStop == current);
+                return BuildTransitItinerary(start, current, destinationNode, lineageMap);
+            }
 
             EvaluateBusConnections(current, costs, lineageMap, priorityQueue);
             EvaluateWalkConnections(current, costs, lineageMap, priorityQueue);
-        } 
-        
-        return null; 
-    } 
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// Evaluates all possible bus connections from the current bus stop and
@@ -49,9 +49,9 @@ public static class Pathfinder
     /// <param name="priorityQueue"></param>
     private static void EvaluateBusConnections
     (
-        BusStop current, 
-        Dictionary<BusStop, float> costs, 
-        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap, 
+        BusStop current,
+        Dictionary<BusStop, float> costs,
+        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap,
         PriorityQueue<BusStop, float> priorityQueue)
     {
         foreach (var busLine in LevelState.AllBusLines)
@@ -87,25 +87,25 @@ public static class Pathfinder
     /// <param name="priorityQueue"></param>
     private static void EvaluateWalkConnections
     (
-        BusStop current, 
-        Dictionary<BusStop, float> costs, 
-        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap, 
+        BusStop current,
+        Dictionary<BusStop, float> costs,
+        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap,
         PriorityQueue<BusStop, float> priorityQueue)
     {
-        foreach (var nearbyStop in current.GetNearbyBusStops()) 
-        { 
-            if (!LevelState.AllBusLines.Any(r => r.Path.Contains(nearbyStop))) continue; 
-            
+        foreach (var nearbyStop in current.GetNearbyBusStops())
+        {
+            if (!LevelState.AllBusLines.Any(r => r.Path.Contains(nearbyStop))) continue;
+
             var walkSegment = new WalkSegment(current, nearbyStop);
-            float newCost = costs[current] + walkSegment.Cost; 
-            
-            if (!costs.ContainsKey(nearbyStop) || newCost < costs[nearbyStop]) 
-            { 
-                costs[nearbyStop] = newCost; 
-                lineageMap[nearbyStop] = (current, walkSegment); 
-                priorityQueue.Enqueue(nearbyStop, newCost); 
-            } 
-        } 
+            float newCost = costs[current] + walkSegment.Cost;
+
+            if (!costs.ContainsKey(nearbyStop) || newCost < costs[nearbyStop])
+            {
+                costs[nearbyStop] = newCost;
+                lineageMap[nearbyStop] = (current, walkSegment);
+                priorityQueue.Enqueue(nearbyStop, newCost);
+            }
+        }
     }
 
     /// <summary>
@@ -119,24 +119,24 @@ public static class Pathfinder
     /// <param name="lineageMap">A map containing the parent and segment information for each bus stop.</param>
     /// <returns>A list of commute segments representing the itinerary from start to the final destination.</returns>
     internal static List<CommuteSegment> BuildTransitItinerary
-    ( 
-        BusStop start, 
-        BusStop end, 
-        Destination finalDestination, 
-        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap) 
-    { 
-        var segments = new List<CommuteSegment>(); 
-        var backtrackNode = end; 
-        
-        while (backtrackNode != start) 
-        { 
-            var lineage = lineageMap[backtrackNode]; 
-            segments.Add(lineage.Segment); 
-            backtrackNode = lineage.Parent; 
-        } 
-        
-        segments.Reverse(); 
-        segments.Add(new WalkSegment(end, finalDestination)); 
-        return segments; 
-    } 
+    (
+        BusStop start,
+        BusStop end,
+        Destination finalDestination,
+        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap)
+    {
+        var segments = new List<CommuteSegment>();
+        var backtrackNode = end;
+
+        while (backtrackNode != start)
+        {
+            var lineage = lineageMap[backtrackNode];
+            segments.Add(lineage.Segment);
+            backtrackNode = lineage.Parent;
+        }
+
+        segments.Reverse();
+        segments.Add(new WalkSegment(end, finalDestination));
+        return segments;
+    }
 }

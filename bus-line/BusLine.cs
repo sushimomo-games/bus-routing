@@ -36,7 +36,7 @@ public partial class BusLine : Node
     public BusLine()
     {
         ID = _nextID++;
-        
+
         var colorInfo = LevelState.GetNextBusLineColor();
         if (colorInfo.HasValue)
         {
@@ -91,9 +91,10 @@ public partial class BusLine : Node
         LevelState.AllBusLines.Remove(this);
         LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
         Visual?.QueueFree();
-        UpdateAllHouseStatuses(); 
-        
+        UpdateAllHouseStatuses();
+
         OnDeleted?.Invoke();
         QueueFree();
     }
+
 }

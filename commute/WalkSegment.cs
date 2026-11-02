@@ -51,7 +51,7 @@ public class WalkSegment : CommuteSegment
     public override string GetInstruction()
     {
         string destName = Destination is BusStop ? "the bus stop" : "your destination";
-        
+
         int roundedMinutes = Mathf.Max(1, Mathf.RoundToInt(TimeMinutes));
         return $"Walk {roundedMinutes} min ({DistanceMiles:F1} mi).";
     }
