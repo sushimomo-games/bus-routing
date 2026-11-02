@@ -27,8 +27,8 @@ public partial class StopEdit : AbstractEdit {
         this._position = position; 
         this._nodeA = nodeA; 
         this._nodeB = nodeB; 
-        this._stop = stop; 
-     } 
+        this._stop = stop;
+    }
 
     /// <summary> 
     /// Performs inverse operation of previous state change action. 
