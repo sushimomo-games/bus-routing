@@ -30,22 +30,15 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
     /// <remarks>
     /// <p>
     ///  Every valid bus line in the group is treated as a part of the
-    ///  same finalized line. REmoving it from <see cref="LevelState.AllBusLines"/>
+    ///  same finalized line. Removing it from <see cref="LevelState.AllBusLines"/>
     ///  removes all of the line's segments at once instead of leaving disjointed
     ///  segments behind.
     /// </p>
     /// <p>
-    ///  The corresponding entry in BusLineList is removed and if the
-    ///  line is selected <see cref="EditorState.SelectedBusLine"/> is cleared.
+    ///  If the line is selected <see cref="EditorState.SelectedBusLine"/> is cleared.
     ///  The bus line node is detached from its parent instead of
     ///  freeing with <c>QueueFree()</c>, which allows redo to reinstantiate the
     ///  undone line.
-    /// </p>
-    /// <p>
-    ///  It's important to note that <see cref="EditorState.SelectedBusLine"/> will
-    ///  still point to a previously detached bus line. This is why it is being cleared
-    ///  so that undefined behavior doesn't occure when editing a line that was removed from
-    ///  the scene tree.
     /// </p>
     /// </remarks>
     public override void Revert () => Remove();
@@ -54,53 +47,33 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
     /// Removes every line in the group from the level (the body of <see cref="Revert"/>).
     /// </summary>
     protected void Remove () {
+      foreach (var line in _group) {
+        if (line == null || !GodotObject.IsInstanceValid(line)) continue; 
 
-        var busLineList = LevelState.CurrentLevel?.GetNodeOrNull<BusLineList>(Path.BusLineListNode);
-
-        foreach (var line in _group) {
-            if (line == null || !GodotObject.IsInstanceValid(line)) continue;
-
-            int index = LevelState.AllBusLines.IndexOf(line);
-            if (index < 0) {
-                line.GetParent()?.RemoveChild(line);
-                continue;
-            }
-
-            if (EditorState.SelectedBusLine == line) {
-                EditorState.SelectedBusLine = null;
-                busLineList?.DeselectAll();
-            }
-
-            LevelState.AllBusLines.RemoveAt(index);
-            _indices[line] = index;
-
-            LevelState.ReturnBusLineColor(
-                new KeyValuePair<string, Color>(line.ColorName, line.Color));
-
-            if (busLineList != null && index < busLineList.ItemCount) {
-                bool wasBlocking = busLineList.IsBlockingSignals();
-                busLineList.SetBlockSignals(true);
-                busLineList.RemoveItem(index);
-                busLineList.SetBlockSignals(wasBlocking);
-            }
-            line.GetParent()?.RemoveChild(line);
+        int index = LevelState.AllBusLines.IndexOf(line); 
+        if (index < 0) {
+          line.GetParent()?.RemoveChild(line); 
+          continue; 
         }
 
-        if (EditorState.SelectedBusLine != null && GodotObject.IsInstanceValid(EditorState.SelectedBusLine)) {
-            int selectedIndex = LevelState.AllBusLines.IndexOf(EditorState.SelectedBusLine);
-            if (selectedIndex >= 0) busLineList?.Select(selectedIndex);
-            else {
-                EditorState.SelectedBusLine = null;
-                busLineList?.DeselectAll();
-            }
-        }
-        else {
-            EditorState.SelectedBusLine = null;
-            busLineList?.DeselectAll();
-        }
+        if (EditorState.SelectedBusLine == line) EditorState.SelectedBusLine = null; 
+        LevelState.AllBusLines.RemoveAt(index); 
+        _indices[line] = index; 
 
-        LevelState.UpdateAllHouseStatuses();
-        LevelState.RefreshAllBusLineVisuals();
+        LevelState.ReturnBusLineColor (
+          new KeyValuePair<string, Color>(line.ColorName, line.Color)
+        );
+        line.GetParent()?.RemoveChild(line); 
+      }
+
+      if (EditorState.SelectedBusLine != null &&
+      (!GodotObject.IsInstanceValid(EditorState.SelectedBusLine) ||
+      !LevelState.AllBusLines.Contains(EditorState.SelectedBusLine))) {
+        EditorState.SelectedBusLine = null; 
+      }
+        
+      LevelState.UpdateAllHouseStatuses();
+      LevelState.RefreshAllBusLineVisuals();
     }
 
     /// <summary>
@@ -108,7 +81,6 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
     /// and takes its color out of the pool again. The inverse of <see cref="Remove"/>.
     /// </summary>
     protected void Restore () {
-        var busLineList = LevelState.CurrentLevel?.GetNodeOrNull<BusLineList>(Path.BusLineListNode);
 
         foreach (var line in _group) {
             if (line == null || !GodotObject.IsInstanceValid(line)) continue;
@@ -121,10 +93,10 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
             LevelState.AllBusLines.Insert(index, line);
             if (line.GetParent() == null) LevelState.CurrentLevel.AddChild(line);
 
-            if (busLineList != null) {
-                busLineList.AddItem(line.ColorName + " line");
-                busLineList.MoveItem(busLineList.ItemCount - 1, index);
-            }
+            LevelState.AllBusLines.Insert(index, line); 
+
+            if (line.GetParent() == null) LevelState.CurrentLevel.AddChild(line); 
+            
         }
 
         LevelState.UpdateAllHouseStatuses();
