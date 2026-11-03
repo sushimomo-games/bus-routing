@@ -42,6 +42,13 @@ public partial class LevelUI : Control
     {
         if (_previewBusStop != null)
         {
+            if (!Input.IsMouseButtonPressed(MouseButton.Left))
+            {
+                GetViewport().GuiCancelDrag();
+                CleanupPreview();
+                return;
+            }
+
             _previewBusStop.GlobalPosition = _camera.GetGlobalMousePosition();
             _isValidPlacement = _previewPlacementArea.HasOverlappingAreas()
             && !_previewBusStop.IntersectionDetector.HasOverlappingAreas();
