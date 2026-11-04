@@ -175,6 +175,8 @@ public partial class LevelUI : Control
             return;
         }
 
+        var budgetBefore = Budget;
+
         Budget -= Cost.BusStopPlacement;
 
         Vector2 p1 = roadEdge.NodeA.GlobalPosition;
@@ -198,5 +200,7 @@ public partial class LevelUI : Control
         busStop.AddNeighbor(nodeA);
         nodeB.AddNeighbor(busStop);
         busStop.AddNeighbor(nodeB);
+
+        EditorState.History.LogEdit(new BusStopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
 }
