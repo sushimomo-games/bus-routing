@@ -42,6 +42,13 @@ public partial class LevelUI : Control
     {
         if (_previewBusStop != null)
         {
+            if (!Input.IsMouseButtonPressed(MouseButton.Left))
+            {
+                GetViewport().GuiCancelDrag();
+                CleanupPreview();
+                return;
+            }
+
             _previewBusStop.GlobalPosition = _camera.GetGlobalMousePosition();
             _isValidPlacement = _previewPlacementArea.HasOverlappingAreas()
             && !_previewBusStop.IntersectionDetector.HasOverlappingAreas();
@@ -116,7 +123,7 @@ public partial class LevelUI : Control
         }
         CleanupPreview();
     }
-    
+
     /// <summary>
     /// Cleans up the preview bus stop and resets the state after a drop operation.
     /// This includes removing the preview bus stop, clearing highlighted stops, and stopping _Process().
@@ -161,12 +168,14 @@ public partial class LevelUI : Control
     /// Creates a bus stop on the specified road edge at the mouse position.
     /// </summary>
     private void CreateBusStopOnEdge(RoadEdge roadEdge, BusStop busStop)
-    {   
+    {
         if (Budget < Cost.BusStopPlacement)
         {
             _errorMessage.DisplayMessage("Insufficient budget to place bus stop.");
             return;
         }
+
+        var budgetBefore = Budget;
 
         Budget -= Cost.BusStopPlacement;
 
@@ -176,7 +185,7 @@ public partial class LevelUI : Control
         Vector2 projectedPoint = Geometry2D.GetClosestPointToSegment(mousePosition, p1, p2);
 
         CurrentLevel.AddChild(busStop);
-        LevelState.AllBusStops.Add(busStop); 
+        LevelState.AllBusStops.Add(busStop);
         busStop.GlobalPosition = projectedPoint;
 
         var nodeA = roadEdge.NodeA;
@@ -191,5 +200,7 @@ public partial class LevelUI : Control
         busStop.AddNeighbor(nodeA);
         nodeB.AddNeighbor(busStop);
         busStop.AddNeighbor(nodeB);
+
+        EditorState.History.LogEdit(new BusStopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
 }

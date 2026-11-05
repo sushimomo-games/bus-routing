@@ -39,7 +39,7 @@ public partial class InfoWindow : Control
         _topBarRect = GetNode<ColorRect>("VBoxContainer/TopBarRect");
         _deleteButton = GetNode<Button>("VBoxContainer/ButtonsRect/DeleteButton");
         _infoText = GetNode<Label>("VBoxContainer/PanelContainer/InfoText");
-        
+
         _closeButton = _topBarRect.GetNode<Button>("CloseButton");
 
         if (BusLine != null)
@@ -85,8 +85,7 @@ public partial class InfoWindow : Control
 
     private void _on_delete_button_pressed()
     {
-        _busLineList.RemoveItem(AllBusLines.IndexOf(BusLine));
-        BusLine.Delete();
+        GetTree().CurrentScene.GetNode<BusLineList>(Path.BusLineListNode).DeleteBusLine(BusLine, undoable: true);
         QueueFree();
     }
 

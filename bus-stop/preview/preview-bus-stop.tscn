@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c5dqou2q7scf7"]
 
 [ext_resource type="Script" uid="uid://htt2571rjh6r" path="res://bus-stop/preview/PreviewBusStop.cs" id="1_p0ic7"]
-[ext_resource type="Texture2D" uid="uid://btvj3err7vmtr" path="res://assets/bus-stop.png" id="2_p0ic7"]
+[ext_resource type="Texture2D" uid="uid://uhvh86snav6" path="res://assets/bus-stop.svg" id="2_p0ic7"]
 [ext_resource type="PackedScene" uid="uid://jxdx0w5h5cxi" path="res://bus-stop/walk_radius.tscn" id="3_p0ic7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_63k7h"]

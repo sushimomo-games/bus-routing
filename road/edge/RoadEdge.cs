@@ -6,7 +6,7 @@ public partial class RoadEdge : Area2D
     private CollisionShape2D _collisionShape;
     public CollisionShape2D CollisionShape => _collisionShape;
     private SegmentShape2D _segmentShape;
-    
+
     private Line2D _lineVisual;
 
     public RoadNode NodeA { get; private set; }
@@ -56,7 +56,7 @@ public partial class RoadEdge : Area2D
     {
         _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
         _segmentShape = _collisionShape.Shape as SegmentShape2D;
-        
+
         _lineVisual = new Line2D
         {
             Width = 10.0f,

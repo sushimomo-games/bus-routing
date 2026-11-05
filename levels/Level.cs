@@ -20,6 +20,8 @@ public partial class Level : Node2D
         DrawRoadEdges();
 
         Budget = Cost.InitialBudget;
+        History.Clear();
+        DraftHistory.Clear();
     }
 
     public override void _Process(double delta)
@@ -42,7 +44,7 @@ public partial class Level : Node2D
         }
 
         var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
-        
+
         foreach (Node node in intersectionNodes)
         {
             if (node is IntersectionNode intersectionNode)
