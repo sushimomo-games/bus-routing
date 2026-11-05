@@ -4,33 +4,33 @@ using System;
 public partial class Camera : Camera2D
 {
     /// <summary>
-    /// Indicates whether the camera is currently being dragged.
+    /// Indicates whether the camera is currently being dragged with the middle mouse button.
     /// </summary>
     private bool isDragging = false;
 
     /// <summary>
-    /// The position where the drag started.
+    /// Stores the position of the mouse when the middle mouse button was
+    /// pressed, used to calculate drag movement.
     /// </summary>
     private Vector2 dragStartPosition;
 
     /// <summary>
-    /// Zooms the camera in by the specified factor.
+    /// Multiplies the current zoom by the factor, keeping the world point
+    /// under the mouse cursor stationary on screen.
     /// </summary>
-    /// <param name="factor">The factor by which to zoom in.</param>
-    private void ZoomIn(float factor)
+    private void ZoomAtCursor(float factor)
     {
-        float z = Math.Min(5f, Zoom.X * factor);
-        Zoom = new Vector2(z, z);
-    }
+        Vector2 oldZoom = Zoom;
+        float z = Math.Clamp(oldZoom.X * factor, 0.2f, 5f);
+        Vector2 newZoom = new Vector2(z, z);
 
-    /// <summary>
-    /// Zooms the camera out by the specified factor.
-    /// </summary>
-    /// <param name="factor">The factor by which to zoom out.</param>
-    private void ZoomOut(float factor)
-    {
-        float z = Math.Max(0.2f, Zoom.X * factor);
-        Zoom = new Vector2(z, z);
+        if (newZoom == oldZoom)
+            return;
+
+        Vector2 offsetFromCenter = GetViewport().GetMousePosition() - GetViewportRect().Size / 2f;
+
+        Position += offsetFromCenter / oldZoom - offsetFromCenter / newZoom;
+        Zoom = newZoom;
     }
 
     public override void _Input(InputEvent @event)
@@ -47,18 +47,16 @@ public partial class Camera : Camera2D
 
         if (@event is InputEventMouseMotion mouseMotionEvent && isDragging)
         {
-            Vector2 dragDelta = mouseMotionEvent.Relative;
-
-            Position -= dragDelta / Zoom; // Division by Zoom adjusts movement speed based on zoom level
+            Position -= mouseMotionEvent.Relative / Zoom;
         }
 
         if (@event.IsMouseWheelDown())
         {
-            ZoomOut(0.95f);
+            ZoomAtCursor(0.95f);
         }
         else if (@event.IsMouseWheelUp())
         {
-            ZoomIn(1.05f);
+            ZoomAtCursor(1.05f);
         }
     }
 }

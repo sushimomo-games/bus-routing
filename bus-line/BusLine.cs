@@ -83,17 +83,27 @@ public partial class BusLine : Node
     }
 
     /// <summary>
+    /// Removes the busLine from the level and returns its color to the pool,
+    /// but keeps the node alive (detached from the scene tree) so the removal
+    /// can be undone.
+    /// </summary>
+    public void Detach()
+    {
+        LevelState.AllBusLines.Remove(this);
+        LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
+        GetParent()?.RemoveChild(this);
+        UpdateAllHouseStatuses();
+
+        OnDeleted?.Invoke();
+    }
+
+    /// <summary>
     /// Use this instead of QueueFree() directly on the bus line to properly clean
     /// up the busLine and return its color to the pool.
     /// </summary>
     public void Delete()
     {
-        LevelState.AllBusLines.Remove(this);
-        LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
-        Visual?.QueueFree();
-        UpdateAllHouseStatuses();
-
-        OnDeleted?.Invoke();
+        Detach();
         QueueFree();
     }
 

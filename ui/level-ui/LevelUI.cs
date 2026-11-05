@@ -42,6 +42,13 @@ public partial class LevelUI : Control
     {
         if (_previewBusStop != null)
         {
+            if (!Input.IsMouseButtonPressed(MouseButton.Left))
+            {
+                GetViewport().GuiCancelDrag();
+                CleanupPreview();
+                return;
+            }
+
             _previewBusStop.GlobalPosition = _camera.GetGlobalMousePosition();
             _isValidPlacement = _previewPlacementArea.HasOverlappingAreas()
             && !_previewBusStop.IntersectionDetector.HasOverlappingAreas();
@@ -168,6 +175,8 @@ public partial class LevelUI : Control
             return;
         }
 
+        var budgetBefore = Budget;
+
         Budget -= Cost.BusStopPlacement;
 
         Vector2 p1 = roadEdge.NodeA.GlobalPosition;
@@ -191,5 +200,7 @@ public partial class LevelUI : Control
         busStop.AddNeighbor(nodeA);
         nodeB.AddNeighbor(busStop);
         busStop.AddNeighbor(nodeB);
+
+        EditorState.History.LogEdit(new BusStopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
 }
