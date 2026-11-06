@@ -188,6 +188,7 @@ public partial class LevelUI : Control
         LevelState.AllBusStops.Add(busStop);
         busStop.GlobalPosition = projectedPoint;
 
+
         var nodeA = roadEdge.NodeA;
         var nodeB = roadEdge.NodeB;
 
@@ -203,4 +204,5 @@ public partial class LevelUI : Control
 
         EditorState.History.LogEdit(new BusStopEdit(true, budgetBefore, projectedPoint, nodeA, nodeB, busStop));
     }
+
 }
