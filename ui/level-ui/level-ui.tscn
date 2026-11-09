@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
-[ext_resource type="PackedScene" path="res://ui/settings-menu/settings-menu.tscn" id="12_settings"]
+[ext_resource type="PackedScene" uid="uid://jofckxx88jrf" path="res://ui/settings-menu/settings-menu.tscn" id="12_settings"]
 
 [sub_resource type="Gradient" id="Gradient_hn6xl"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -53,8 +53,7 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
-text = "No information
-"
+text = "No information"
 
 [node name="ButtonsRect" type="HBoxContainer" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
@@ -62,6 +61,16 @@ layout_mode = 2
 [node name="InfoText" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
 text = "Select a house, bus line, or bus stop to view the information."
+
+[node name="EditBtn" type="Button" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Edit"
+
+[node name="DeleteBtn" type="Button" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Delete"
 
 [node name="ErrorMessage" parent="." instance=ExtResource("5_ftjap")]
 layout_mode = 1
@@ -164,6 +173,5 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 
 [node name="SettingsMenu" parent="." instance=ExtResource("12_settings")]
-layout_mode = 1
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
