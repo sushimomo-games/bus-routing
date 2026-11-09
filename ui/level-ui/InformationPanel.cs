@@ -54,6 +54,10 @@ public partial class InformationPanel : Control
         $"Time to complete: {line.TimeToComplete:F2} minutes";
     }
 
+    /// <summary>
+    /// Allows user to edit bus line from the information panel. Indicates to user
+    /// which bus line is currently being edited.
+    /// </summary>
     public void _onEditLineBtnPressed()
     {
         SelectedBusLine = _currentLine;
@@ -65,6 +69,10 @@ public partial class InformationPanel : Control
         this.Visible = false;
     }
 
+    /// <summary>
+    /// Removes bus line from list of existing bus lines using Delete() of
+    /// BusLine class.
+    /// </summary>
     public void _onDeleteLineBtnPressed()
     {
         this.Visible = false;
