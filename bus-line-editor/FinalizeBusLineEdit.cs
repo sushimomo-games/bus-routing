@@ -42,6 +42,10 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
     /// </p>
     /// </remarks>
     public override void Revert () => Remove();
+    /// <summary>
+    /// Redoes the finalize: puts the detached bus line back in the level.
+    /// </summary>
+    public override void Apply() => Restore();
 
     /// <summary>
     /// Removes every line in the group from the level (the body of <see cref="Revert"/>).
