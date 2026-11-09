@@ -65,7 +65,7 @@ public partial class InformationPanel : Control
         _lineEditorStatusLabel.Text = $"● Editing bus line: {_currentLine.ColorName}";
 
         _endBusLineButton.Visible = true;
-        _lineEditorStatusLabel.Visible = true;    
+        _lineEditorStatusLabel.Visible = true;
         this.Visible = false;
     }
 
