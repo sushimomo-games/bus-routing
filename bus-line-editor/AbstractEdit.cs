@@ -30,7 +30,7 @@ public abstract partial class AbstractEdit
     /// </summary>
     /// <remarks>
     /// This method is called when the player wants to redo an action that was previously undone.
-    /// Applies the changes made in the redo history
+    /// Applies the last player undo in the redo history
     /// </remarks>
     public abstract void Apply();
      
