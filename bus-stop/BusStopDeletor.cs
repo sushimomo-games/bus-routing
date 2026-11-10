@@ -74,6 +74,6 @@ public partial class BusStopDeletor : Area2D
         UpdateAllHouseStatuses();
 
         if (affectedRoutes.Count == 0)
-            EditorState.History.LogEdit(new BusStopEdit(false, budgetBefore, position, A, B, null));
+            EditorState.History.LogEdit(new BusStopEdit(false, budgetBefore, position, A, B, null, busStop.PurchasedUpgrades.ToList()));
     }
 }

@@ -19,15 +19,17 @@ public partial class BusStopEdit : AbstractEdit {
     private readonly Vector2 _position; 
     private readonly RoadNode _nodeA; 
     private readonly RoadNode _nodeB; 
-    private BusStop _stop; 
+    private readonly IReadOnlyCollection<BusStopUpgrade> _upgrades;
+    private BusStop _stop;
 
-    public BusStopEdit (bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop) {
+    public BusStopEdit (bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop, IReadOnlyCollection<BusStopUpgrade> upgrades = null) {
         this._wasPlacement = wasPlacement; 
         this._budgetBefore = budgetBefore; 
         this._position = position; 
         this._nodeA = nodeA; 
         this._nodeB = nodeB; 
         this._stop = stop;
+        this._upgrades = upgrades;
     }
 
     /// <summary> 
@@ -121,7 +123,8 @@ public partial class BusStopEdit : AbstractEdit {
 
         var stop = GD.Load<PackedScene>(Path.BusStopScene).Instantiate<BusStop>(); 
         LevelState.CurrentLevel.AddChild(stop); 
-        stop.GlobalPosition = _position; 
+        stop.GlobalPosition = _position;
+        if (_upgrades != null) stop.SetUpgrades(_upgrades);
 
         var oldEdge = FindRoadEdge(_nodeA, _nodeB);
         if (oldEdge != null) {
