@@ -16,5 +16,5 @@ public partial class SliceEdit : AbstractEdit
     {
         
     }
-    // public override void Apply () {}
+    public override void Apply(){}
 }

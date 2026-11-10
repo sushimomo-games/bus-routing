@@ -45,6 +45,14 @@ public partial class BusStopEdit : AbstractEdit {
         LevelState.UpdateAllHouseStatuses(); 
         LevelState.RefreshAllBusLineVisuals();  
     }
+    /// <summary> 
+    /// Performs the redo operation of the previous state change action.
+    /// </summary> 
+    /// <remarks> 
+    /// Is called by <see cref="EditHistory.cs"/> when state object is 
+    /// popped from redo stack.
+    /// </remarks>
+    public override void Apply(){}
     
     /// <summary> 
     /// Creates and returns a new RoadEdge object between two 
