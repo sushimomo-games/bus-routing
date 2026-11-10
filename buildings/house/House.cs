@@ -168,6 +168,7 @@ public partial class House : Building
 
         if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
         {
+            UpdateCheckStatus();
             UpdateOutlineColor(Colors.Red);
 
             string commuteDetails = CurrentItinerary != null
