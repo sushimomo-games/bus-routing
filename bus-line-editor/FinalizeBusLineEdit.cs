@@ -47,6 +47,15 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
     /// </summary>
     public override void Apply() => Restore();
 
+    public override void OnDiscarded () {
+      foreach (var line in _group) {
+        if (GodotObject.IsInstanceValid(line) && !LevelState.AllBusLines.Contains(line)) {
+          line.QueueFree(); 
+        }
+      }
+    }
+
+
     /// <summary>
     /// Removes every line in the group from the level (the body of <see cref="Revert"/>).
     /// </summary>
@@ -61,13 +70,8 @@ public partial class FinalizeBusLineEdit : AbstractEdit {
         }
 
         if (EditorState.SelectedBusLine == line) EditorState.SelectedBusLine = null; 
-        LevelState.AllBusLines.RemoveAt(index); 
         _indices[line] = index; 
-
-        LevelState.ReturnBusLineColor (
-          new KeyValuePair<string, Color>(line.ColorName, line.Color)
-        );
-        line.GetParent()?.RemoveChild(line); 
+        line.Detach(); 
       }
 
       if (EditorState.SelectedBusLine != null &&
