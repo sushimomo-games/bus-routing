@@ -9,48 +9,48 @@ using static BusLineCreationStep;
 
 public partial class BusLineEditor : Node
 {
-    private static Line2D _mouseTrackingLine { get; set; }
-    public static Line2D MouseTrackingLine => _mouseTrackingLine;
+	private static Line2D _mouseTrackingLine { get; set; }
+	public static Line2D MouseTrackingLine => _mouseTrackingLine;
 
-    /// <summary>
-    /// The bus line that is currently being created or edited.
-    /// </summary>
-    private static BusLine _busLineInProgress;
-    public static BusLine BusLineInProgress => _busLineInProgress;
+	/// <summary>
+	/// The bus line that is currently being created or edited.
+	/// </summary>
+	private static BusLine _busLineInProgress;
+	public static BusLine BusLineInProgress => _busLineInProgress;
 
-    /// <summary>
-    /// Tracks which disjointed segment the user is actively drawing from.
-    /// </summary>
-    private static DraftSegment _activeSegment;
+	/// <summary>
+	/// Tracks which disjointed segment the user is actively drawing from.
+	/// </summary>
+	private static DraftSegment _activeSegment;
 
-    /// <summary>
-    /// Tracks all the (disjointed) segments that make up the bus line currently
-    /// being created or edited. Each segment is a temporary representation of
-    /// a portion of the bus line, allowing for flexible editing and
-    /// visualization before finalizing the route.
-    /// </summary>
-    public static List<DraftSegment> DraftLineSegments { get; set; } = [];
-    private static bool _isEditingFromStart;
-    public static bool IsEditingFromStart => _isEditingFromStart;
-    private static Label _creatingNewLineLabel;
+	/// <summary>
+	/// Tracks all the (disjointed) segments that make up the bus line currently
+	/// being created or edited. Each segment is a temporary representation of
+	/// a portion of the bus line, allowing for flexible editing and
+	/// visualization before finalizing the route.
+	/// </summary>
+	public static List<DraftSegment> DraftLineSegments { get; set; } = [];
+	private static bool _isEditingFromStart;
+	public static bool IsEditingFromStart => _isEditingFromStart;
+	private static Label _creatingNewLineLabel;
 
-    public static bool IsInEditingMode { get; private set; }
+	public static bool IsInEditingMode { get; private set; }
 
-    /// <summary>
-    /// Obtains the road node to begin the the mouse tracking from, and what
-    /// color the line should be drawn in.
-    /// </summary>
-    /// <param name="node">Starting node for the mouse tracking line</param>
-    /// <param name="color">Color for the mouse tracking line</param>
-    private static void BeginMouseTrackingLineAt(RoadNode node, Color color)
-    {
-        _mouseTrackingLine = CreateLineAt(node.GlobalPosition);
-        _mouseTrackingLine.DefaultColor = color;
-        CurrentLevel.AddChild(_mouseTrackingLine);
-    }
+	/// <summary>
+	/// Obtains the road node to begin the the mouse tracking from, and what
+	/// color the line should be drawn in.
+	/// </summary>
+	/// <param name="node">Starting node for the mouse tracking line</param>
+	/// <param name="color">Color for the mouse tracking line</param>
+	private static void BeginMouseTrackingLineAt(RoadNode node, Color color)
+	{
+		_mouseTrackingLine = CreateLineAt(node.GlobalPosition);
+		_mouseTrackingLine.DefaultColor = color;
+		CurrentLevel.AddChild(_mouseTrackingLine);
+	}
 
-    /// <summary>
-    /// Draws a line that follows the user's cursor, providing visual feedback
+	/// <summary>
+	/// Draws a line that follows the user's cursor, providing visual feedback
     /// during the bus line creation process. This method is called every
     /// frame while the user is actively creating a bus line, allowing them to
     /// see where the next segment will be drawn as they move the mouse.
@@ -202,241 +202,241 @@ public partial class BusLineEditor : Node
     /// <summary>
     /// Cleans up the current bus line in progress if the creation process
     /// fails due to validation errors (e.g., not enough stops, not
-    /// starting/ending at bus stops). This method returns the bus line's color
-    /// to the pool and frees the temporary bus line.
-    /// </summary>
-    private static void CleanupFailedBusLine()
-    {
-        var busLineInProgressColor = new KeyValuePair<string, Color>
-        (
-            _busLineInProgress.ColorName,
-            _busLineInProgress.Color
-        );
-        foreach (var segment in DraftLineSegments)
-            segment.QueueFree();
-        DraftLineSegments.Clear();
-        ReturnBusLineColor(busLineInProgressColor);
-        _busLineInProgress.QueueFree();
-        ResetState();
-    }
+	/// starting/ending at bus stops). This method returns the bus line's color
+	/// to the pool and frees the temporary bus line.
+	/// </summary>
+	private static void CleanupFailedBusLine()
+	{
+		var busLineInProgressColor = new KeyValuePair<string, Color>
+		(
+			_busLineInProgress.ColorName,
+			_busLineInProgress.Color
+		);
+		foreach (var segment in DraftLineSegments)
+			segment.QueueFree();
+		DraftLineSegments.Clear();
+		ReturnBusLineColor(busLineInProgressColor);
+		_busLineInProgress.QueueFree();
+		ResetState();
+	}
 
-    /// <summary>
-    /// Finalizes the current draft segment, removing the mouse tracking line
-    /// and pauses bus line creation until the user clicks on a node to resume.
-    /// This method is called when the user completes a segment.
-    /// </summary>
-    public static void FinalizeDraftSegment()
-    {
-        if (_busLineInProgress == null) return;
+	/// <summary>
+	/// Finalizes the current draft segment, removing the mouse tracking line
+	/// and pauses bus line creation until the user clicks on a node to resume.
+	/// This method is called when the user completes a segment.
+	/// </summary>
+	public static void FinalizeDraftSegment()
+	{
+		if (_busLineInProgress == null) return;
 
-        CurrentBusLineCreationStep = PausedCreation;
-        _mouseTrackingLine?.QueueFree();
-        _mouseTrackingLine = null;
-    }
+		CurrentBusLineCreationStep = PausedCreation;
+		_mouseTrackingLine?.QueueFree();
+		_mouseTrackingLine = null;
+	}
 
-    public static bool CanResumeBusLineCreation(RoadNode clickedNode)
-    {
-        if (_busLineInProgress == null || CurrentBusLineCreationStep != PausedCreation)
-            return false;
+	public static bool CanResumeBusLineCreation(RoadNode clickedNode)
+	{
+		if (_busLineInProgress == null || CurrentBusLineCreationStep != PausedCreation)
+			return false;
 
-        // Loop through ALL draft segments to see if we clicked an endpoint
-        foreach (var segment in DraftLineSegments)
-        {
-            if (clickedNode == segment.FirstNode)
-            {
-                _activeSegment = segment;
-                _isEditingFromStart = true;
-                CurrentBusLineCreationStep = AddingSubsequentStops;
-                BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
-                return true;
-            }
-            else if (clickedNode == segment.LastNode)
-            {
-                _activeSegment = segment;
-                _isEditingFromStart = false;
-                CurrentBusLineCreationStep = AddingSubsequentStops;
-                BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
-                return true;
-            }
-        }
+		// Loop through ALL draft segments to see if we clicked an endpoint
+		foreach (var segment in DraftLineSegments)
+		{
+			if (clickedNode == segment.FirstNode)
+			{
+				_activeSegment = segment;
+				_isEditingFromStart = true;
+				CurrentBusLineCreationStep = AddingSubsequentStops;
+				BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
+				return true;
+			}
+			else if (clickedNode == segment.LastNode)
+			{
+				_activeSegment = segment;
+				_isEditingFromStart = false;
+				CurrentBusLineCreationStep = AddingSubsequentStops;
+				BeginMouseTrackingLineAt(clickedNode, _busLineInProgress.Color);
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /// <summary>
-    /// Starts a completely new disjointed segment while the editor is in a paused state.
-    /// </summary>
-    public static void BeginNewDisjointedSegment(RoadNode startNode)
-    {
-        if (_busLineInProgress == null) return;
+	/// <summary>
+	/// Starts a completely new disjointed segment while the editor is in a paused state.
+	/// </summary>
+	public static void BeginNewDisjointedSegment(RoadNode startNode)
+	{
+		if (_busLineInProgress == null) return;
 
-        if (DraftLineSegments.IsNodeInternal(startNode))
-        {
-            GD.Print("Cannot branch off the middle of an existing route.");
-            return; 
-        }
+		if (DraftLineSegments.IsNodeInternal(startNode))
+		{
+			GD.Print("Cannot branch off the middle of an existing route.");
+			return; 
+		}
 
-        GD.Print($"[DEBUG - Editor] Jumping to start new segment at {startNode.Name}");
-        
-        CurrentBusLineCreationStep = AddingSubsequentStops;
-        _isEditingFromStart = false; 
+		GD.Print($"[DEBUG - Editor] Jumping to start new segment at {startNode.Name}");
+		
+		CurrentBusLineCreationStep = AddingSubsequentStops;
+		_isEditingFromStart = false; 
 
-        Record(() => StartNewSegment(startNode));
-        _activeSegment = DraftLineSegments.Last();
+		Record(() => StartNewSegment(startNode));
+		_activeSegment = DraftLineSegments.Last();
 
-        BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
-    }
+		BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
+	}
 
-    public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
-    {
-        DraftHistory.Clear();
-        IsInEditingMode = true;
-        CurrentBusLineCreationStep = ContinuingEdit;
-        GD.Print($"Starting to edit busLine: {busLine.ColorName}");
+	public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
+	{
+		DraftHistory.Clear();
+		IsInEditingMode = true;
+		CurrentBusLineCreationStep = ContinuingEdit;
+		GD.Print($"Starting to edit busLine: {busLine.ColorName}");
 
-        _busLineInProgress = new BusLine
-        {
-            ColorName = busLine.ColorName,
-            Color = busLine.Color
-        };
-        CurrentLevel.AddChild(_busLineInProgress);
-        
-        // Push the existing path into a draft segment so it can be edited
-        StartNewSegment(busLine.Path[0]);
-        for (int i = 1; i < busLine.Path.Count; i++)
-        {
-            DraftLineSegments[0].Append(busLine.Path[i]);
-        }
+		_busLineInProgress = new BusLine
+		{
+			ColorName = busLine.ColorName,
+			Color = busLine.Color
+		};
+		CurrentLevel.AddChild(_busLineInProgress);
+		
+		// Push the existing path into a draft segment so it can be edited
+		StartNewSegment(busLine.Path[0]);
+		for (int i = 1; i < busLine.Path.Count; i++)
+		{
+			DraftLineSegments[0].Append(busLine.Path[i]);
+		}
 
-        _activeSegment = DraftLineSegments[0];
-        _isEditingFromStart = _activeSegment.FirstNode == clickedNode;
+		_activeSegment = DraftLineSegments[0];
+		_isEditingFromStart = _activeSegment.FirstNode == clickedNode;
 
-        BeginMouseTrackingLineAt(clickedNode, busLine.Color);
-    }
+		BeginMouseTrackingLineAt(clickedNode, busLine.Color);
+	}
 
-    public static void FinalizeBusLineEdit()
-    {
-        var editedBusLine = SelectedBusLine;
-        ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
+	public static void FinalizeBusLineEdit()
+	{
+		var editedBusLine = SelectedBusLine;
+		ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
 
-        if (DraftLineSegments.Count > 1)
-        {
-            errorMessage.DisplayMessage("Connect all route segments before finalizing edit.");
-            return; 
-        }
+		if (DraftLineSegments.Count > 1)
+		{
+			errorMessage.DisplayMessage("Connect all route segments before finalizing edit.");
+			return; 
+		}
 
-        // Apply the modified draft segment to the temporary bus line path
-        _busLineInProgress.SetPath(DraftLineSegments[0].Nodes);
+		// Apply the modified draft segment to the temporary bus line path
+		_busLineInProgress.SetPath(DraftLineSegments[0].Nodes);
 
-        var firstNode = _busLineInProgress.Path.First();
-        var lastNode = _busLineInProgress.Path.Last();
+		var firstNode = _busLineInProgress.Path.First();
+		var lastNode = _busLineInProgress.Path.Last();
 
-        if (_busLineInProgress.Path.Count < 2)
-        {
-            errorMessage.DisplayMessage("BusLine must have at least 2 stops");
-        }
-        else if (firstNode is not BusStop || lastNode is not BusStop)
-        {
-            errorMessage.DisplayMessage("BusLine must start and end at a bus stop");
-        }
-        else
-        {
-            GD.Print($"BusLine edit successful. New path: {string.Join(", ", _busLineInProgress.Path.Select(node => node.Name))}.");
-            SelectedBusLine.SetPath(_busLineInProgress.Path);
-            UpdateAllHouseStatuses();
-        }
-        
-        // Clean up the draft segments
-        DraftLineSegments[0].QueueFree();
-        DraftLineSegments.Clear();
-        
-        LevelState.RefreshAllBusLineVisuals();
-        _busLineInProgress.QueueFree(); // Clean up the temporary editing duplicate
-        _busLineInProgress = null;
-        ResetState();
-    }
+		if (_busLineInProgress.Path.Count < 2)
+		{
+			errorMessage.DisplayMessage("BusLine must have at least 2 stops");
+		}
+		else if (firstNode is not BusStop || lastNode is not BusStop)
+		{
+			errorMessage.DisplayMessage("BusLine must start and end at a bus stop");
+		}
+		else
+		{
+			GD.Print($"BusLine edit successful. New path: {string.Join(", ", _busLineInProgress.Path.Select(node => node.Name))}.");
+			SelectedBusLine.SetPath(_busLineInProgress.Path);
+			UpdateAllHouseStatuses();
+		}
+		
+		// Clean up the draft segments
+		DraftLineSegments[0].QueueFree();
+		DraftLineSegments.Clear();
+		
+		LevelState.RefreshAllBusLineVisuals();
+		_busLineInProgress.QueueFree(); // Clean up the temporary editing duplicate
+		_busLineInProgress = null;
+		ResetState();
+	}
 
-    /// <summary>
-    /// Resets the editor state to its default values, clearing any temporary
-    /// data and hiding UI elements related to bus line creation or editing.
-    /// This method is called after a bus line creation or edit process is
-    /// completed or canceled.
-    /// </summary>
-    public static void ResetState()
-    {
-        IsInEditingMode = false;
-        CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode).Visible = false;
-        CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = false;
-        _busLineInProgress = null;
-        _activeSegment = null;
-        _mouseTrackingLine?.QueueFree();
-        _mouseTrackingLine = null;
-        EditorState.ActiveTool = EditorTool.None;
-        _isEditingFromStart = false;
-        DraftHistory.Clear();
-    }
+	/// <summary>
+	/// Resets the editor state to its default values, clearing any temporary
+	/// data and hiding UI elements related to bus line creation or editing.
+	/// This method is called after a bus line creation or edit process is
+	/// completed or canceled.
+	/// </summary>
+	public static void ResetState()
+	{
+		IsInEditingMode = false;
+		CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode).Visible = false;
+		CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = false;
+		_busLineInProgress = null;
+		_activeSegment = null;
+		_mouseTrackingLine?.QueueFree();
+		_mouseTrackingLine = null;
+		EditorState.ActiveTool = EditorTool.None;
+		_isEditingFromStart = false;
+		DraftHistory.Clear();
+	}
 
-    /// <summary>
-    /// Begins a new bus line creation process starting from the specified node.
-    /// This method initializes the necessary state and visual elements for the user to start defining a new bus route.
-    /// </summary>
-    /// <param name="startNode">The node from which to start the bus line creation.</param>
-    public static void StartBusLineCreation(RoadNode startNode)
-    {
-        DraftHistory.Clear();
-        _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
-        CurrentBusLineCreationStep = AddingSubsequentStops;
-        _isEditingFromStart = false; 
-        _busLineInProgress = new BusLine();
-        CurrentLevel.AddChild(_busLineInProgress);
-        
-        _creatingNewLineLabel.Text = $"● Creating {_busLineInProgress.ColorName} Line";
+	/// <summary>
+	/// Begins a new bus line creation process starting from the specified node.
+	/// This method initializes the necessary state and visual elements for the user to start defining a new bus route.
+	/// </summary>
+	/// <param name="startNode">The node from which to start the bus line creation.</param>
+	public static void StartBusLineCreation(RoadNode startNode)
+	{
+		DraftHistory.Clear();
+		_creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
+		CurrentBusLineCreationStep = AddingSubsequentStops;
+		_isEditingFromStart = false; 
+		_busLineInProgress = new BusLine();
+		CurrentLevel.AddChild(_busLineInProgress);
+		
+		_creatingNewLineLabel.Text = $"● Creating {_busLineInProgress.ColorName} Line";
 
-        StartNewSegment(startNode);
-        _activeSegment = DraftLineSegments.Last();
+		StartNewSegment(startNode);
+		_activeSegment = DraftLineSegments.Last();
 
-        BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
-    }
+		BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
+	}
 
-    /// <summary>
-    /// Checks all draft segments to see if any can be merged together.
-    /// </summary>
-    private static void CheckAndMergeSegments()
-    {
-        var segments = DraftLineSegments;
-        
-        for (int i = 0; i < segments.Count; i++)
-        {
-            for (int j = i + 1; j < segments.Count; j++)
-            {
-                if (segments[i].CanMergeWith(segments[j]))
-                {
-                    GD.Print($"[DEBUG - Editor] Collision detected between segment {i} and {j}!");
-                    
-                    var segmentToAbsorb = segments[j];
-                    
-                    // Check if EITHER the absorbed segment or the absorbing segment was active
-                    bool wasActive = _activeSegment == segmentToAbsorb || _activeSegment == segments[i];
-                    
-                    segments[i].MergeWith(segmentToAbsorb);
-                    
-                    segmentToAbsorb.QueueFree();
-                    segments.RemoveAt(j);
-                    
-                    if (wasActive) 
-                    {
-                        FinalizeDraftSegment();
-                    }
-                    
-                    return; 
-                }
-            }
-        }
-    }
+	/// <summary>
+	/// Checks all draft segments to see if any can be merged together.
+	/// </summary>
+	private static void CheckAndMergeSegments()
+	{
+		var segments = DraftLineSegments;
+		
+		for (int i = 0; i < segments.Count; i++)
+		{
+			for (int j = i + 1; j < segments.Count; j++)
+			{
+				if (segments[i].CanMergeWith(segments[j]))
+				{
+					GD.Print($"[DEBUG - Editor] Collision detected between segment {i} and {j}!");
+					
+					var segmentToAbsorb = segments[j];
+					
+					// Check if EITHER the absorbed segment or the absorbing segment was active
+					bool wasActive = _activeSegment == segmentToAbsorb || _activeSegment == segments[i];
+					
+					segments[i].MergeWith(segmentToAbsorb);
+					
+					segmentToAbsorb.QueueFree();
+					segments.RemoveAt(j);
+					
+					if (wasActive) 
+					{
+						FinalizeDraftSegment();
+					}
+					
+					return; 
+				}
+			}
+		}
+	}
 
-    /// <summary>
-    /// Replaces the current draft segments with ones rebuilt from a snapshot,
-    /// then repairs the editor's cursor state so drawing can continue.
+	/// <summary>
+	/// Replaces the current draft segments with ones rebuilt from a snapshot,
+	/// then repairs the editor's cursor state so drawing can continue.
     /// </summary>
     /// <param name="snapshot">
     /// The segments to restore, one list of road nodes per segment, as produced

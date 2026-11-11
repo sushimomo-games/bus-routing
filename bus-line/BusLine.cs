@@ -9,68 +9,68 @@ using static LevelState;
 /// </summary>
 public partial class BusLine : Node
 {
-    private static uint _nextID = 1;
+	private static uint _nextID = 1;
 
-    public uint ID { get; private set; }
-    public List<RoadNode> Path { get; set; } = [];
-    public string ColorName { get; set; }
-    public Color Color { get; set; }
-    public BusLineVisual Visual { get; private set; }
+	public uint ID { get; private set; }
+	public List<RoadNode> Path { get; set; } = [];
+	public string ColorName { get; set; }
+	public Color Color { get; set; }
+	public BusLineVisual Visual { get; private set; }
 
-    public event Action OnPathChanged;
-    public event Action OnDeleted;
+	public event Action OnPathChanged;
+	public event Action OnDeleted;
 
-    public float TimeToComplete
-    {
-        get
-        {
-            float total = 0f;
-            for (int i = 0; i < Path.Count - 1; i++)
-            {
-                total += Path[i].GlobalPosition.DistanceTo(Path[i + 1].GlobalPosition);
-            }
-            return total;
-        }
-    }
+	public float TimeToComplete
+	{
+		get
+		{
+			float total = 0f;
+			for (int i = 0; i < Path.Count - 1; i++)
+			{
+				total += Path[i].GlobalPosition.DistanceTo(Path[i + 1].GlobalPosition);
+			}
+			return total;
+		}
+	}
 
-    public BusLine()
-    {
-        ID = _nextID++;
+	public BusLine()
+	{
+		ID = _nextID++;
 
-        var colorInfo = LevelState.GetNextBusLineColor();
-        if (colorInfo.HasValue)
-        {
-            ColorName = colorInfo.Value.Key;
-            Color = colorInfo.Value.Value;
-        }
-        else
-        {
-            ColorName = "Default";
-            Color = Colors.White;
-        }
+		var colorInfo = LevelState.GetNextBusLineColor();
+		if (colorInfo.HasValue)
+		{
+			ColorName = colorInfo.Value.Key;
+			Color = colorInfo.Value.Value;
+		}
+		else
+		{
+			ColorName = "Default";
+			Color = Colors.White;
+		}
 
-        Visual = new BusLineVisual(this);
-        AddChild(Visual);
-    }
+		Visual = new BusLineVisual(this);
+		AddChild(Visual);
+	}
 
-    public void SetPath(List<RoadNode> newPath)
-    {
-        Path = new List<RoadNode>(newPath);
-        Visual?.UpdateVisual();
-        OnPathChanged?.Invoke();
-    }
+	public void SetPath(List<RoadNode> newPath)
+	{
+		Path = new List<RoadNode>(newPath);
+		Visual?.UpdateVisual();
+		OnPathChanged?.Invoke();
+	}
 
-    public void ClearPath()
-    {
-        Path.Clear();
-        Visual?.ClearPoints();
-        OnPathChanged?.Invoke();
-    }
+	public void ClearPath()
+	{
+		Path.Clear();
+		Visual?.ClearPoints();
+		OnPathChanged?.Invoke();
+	}
 
-    public bool ContainsNode(RoadNode node) => Path.Contains(node);
+	public bool ContainsNode(RoadNode node) => Path.Contains(node);
 
-    /// <summary>
-    /// Removes a node from the busLine's path and updates the visual line.
+	/// <summary>
+	/// Removes a node from the busLine's path and updates the visual line.
     /// </summary>
     /// <param name="node">The RoadNode to remove from the path.</param>
     public void RemoveNode(RoadNode node)
