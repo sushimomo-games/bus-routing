@@ -7,78 +7,78 @@ using System.Linq;
 [Tool]
 public partial class House : Building
 {
-    private Sprite2D _checkSprite;
-    public Sprite2D _houseSprite;
-    private bool _isChecked;
-    private static House _houseSelected;
-    public Color _outlineColor;
-    private float _newOutlineWeight = 7.0f;
-    // private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);   //Info Pop-Up no longer in use
-    // private Control _infoPopup;
+	private Sprite2D _checkSprite;
+	public Sprite2D _houseSprite;
+	private bool _isChecked;
+	private static House _houseSelected;
+	public Color _outlineColor;
+	private float _newOutlineWeight = 7.0f;
+	// private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);   //Info Pop-Up no longer in use
+	// private Control _infoPopup;
 
-    public Commute CurrentItinerary { get; private set; }
+	public Commute CurrentItinerary { get; private set; }
 
-    public bool IsChecked
-    {
-        get => _isChecked;
-        private set
-        {
-            _isChecked = value;
-            if (_checkSprite != null)
-            {
-                _checkSprite.Visible = value;
+	public bool IsChecked
+	{
+		get => _isChecked;
+		private set
+		{
+			_isChecked = value;
+			if (_checkSprite != null)
+			{
+				_checkSprite.Visible = value;
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    private float _busUsageProbability = 0.0f;
+	private float _busUsageProbability = 0.0f;
 
-    public float BusUsageProbability
-    {
-        get => _busUsageProbability;
-        set => _busUsageProbability = Mathf.Clamp(value, 0.0f, 1.0f);
-    }
+	public float BusUsageProbability
+	{
+		get => _busUsageProbability;
+		set => _busUsageProbability = Mathf.Clamp(value, 0.0f, 1.0f);
+	}
 
-    public override void _Ready()
-    {
-        base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
-        _checkSprite = GetNode<Sprite2D>("Check");
-        _checkSprite.Visible = _isChecked;
+	public override void _Ready()
+	{
+		base._Ready(); // Calls _Ready() of the base class, Building. Yes, we need this.
+		_checkSprite = GetNode<Sprite2D>("Check");
+		_checkSprite.Visible = _isChecked;
 
-        _houseSprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+		_houseSprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 
-        ///Each house has ShaderMaterial so as to manipulate its independent outline
-        if (_houseSprite?.Material is ShaderMaterial material)
-        {
-            _houseSprite.Material = material.Duplicate() as ShaderMaterial;
-            _houseSprite.SetInstanceShaderParameter("line_thickness", 4.0f);
-        }
+		///Each house has ShaderMaterial so as to manipulate its independent outline
+		if (_houseSprite?.Material is ShaderMaterial material)
+		{
+			_houseSprite.Material = material.Duplicate() as ShaderMaterial;
+			_houseSprite.SetInstanceShaderParameter("line_thickness", 4.0f);
+		}
 
-        // _infoPopup = GetNode<Control>("InfoPopup");  //Info Pop-up no longer in use
+		// _infoPopup = GetNode<Control>("InfoPopup");  //Info Pop-up no longer in use
 
-        LevelState.AllHouses.Add(this);
-    }
+		LevelState.AllHouses.Add(this);
+	}
 
-    public override void _Process(double delta)
-    {
-        base._Process(delta); // Yes, we need this too.
+	public override void _Process(double delta)
+	{
+		base._Process(delta); // Yes, we need this too.
 
-        ///If this house is selected...change line color and weight to indicate selection
-        if (_houseSelected == this && _houseSprite?.Material is ShaderMaterial shaderMat)
-        {
-            shaderMat.SetShaderParameter("line_thickness", _newOutlineWeight);
-            shaderMat.SetShaderParameter("line_color", _outlineColor);
-        }
+		///If this house is selected...change line color and weight to indicate selection
+		if (_houseSelected == this && _houseSprite?.Material is ShaderMaterial shaderMat)
+		{
+			shaderMat.SetShaderParameter("line_thickness", _newOutlineWeight);
+			shaderMat.SetShaderParameter("line_color", _outlineColor);
+		}
 
-        // if (_infoPopup != null)  //Info Pop-up no longer in use
-        // {
-        //     _infoPopup.GlobalPosition = GetViewport().GetMousePosition() + new Vector2(15, 15);
-        // }
-    }
+		// if (_infoPopup != null)  //Info Pop-up no longer in use
+		// {
+		//     _infoPopup.GlobalPosition = GetViewport().GetMousePosition() + new Vector2(15, 15);
+		// }
+	}
 
-    /// <summary>
-    /// Recalculates the resident's commute, whether the house is connected,
+	/// <summary>
+	/// Recalculates the resident's commute, whether the house is connected,
     /// and the probability that the resident uses the bus.
     /// </summary>
     public void UpdateCheckStatus()
@@ -209,30 +209,30 @@ public partial class House : Building
     }
 
     /// <summary>
-    /// Resets house outline to original 4.0f weight and black color. Won't be visible
-    /// unless bus stop is placed/already exists close enough to house
-    /// </summary>
-    public static void ResetHouseOutline(ShaderMaterial prevMat)
-    {
-        prevMat.SetShaderParameter("line_thickness", 4.0f);
-        prevMat.SetShaderParameter("line_color", Colors.Black);
-    }
+	/// Resets house outline to original 4.0f weight and black color. Won't be visible
+	/// unless bus stop is placed/already exists close enough to house
+	/// </summary>
+	public static void ResetHouseOutline(ShaderMaterial prevMat)
+	{
+		prevMat.SetShaderParameter("line_thickness", 4.0f);
+		prevMat.SetShaderParameter("line_color", Colors.Black);
+	}
 
-    /// <summary>
-    /// Called by BusStop.cs, BusLine.cs when a bus stop or bus line is selected.
-    /// Deselects houses so as to remove outlines, now that it is no longer selected.
-    /// </summary>
-    public static void DeselectHouses()
-    {
-        if (_houseSelected == null) { return; }
-        else
-        {
-            if (_houseSelected._houseSprite?.Material is ShaderMaterial deselectMat)
-            {
-                ResetHouseOutline(deselectMat);
-            }
-            _houseSelected = null;
-        }
-    }
+	/// <summary>
+	/// Called by BusStop.cs, BusLine.cs when a bus stop or bus line is selected.
+	/// Deselects houses so as to remove outlines, now that it is no longer selected.
+	/// </summary>
+	public static void DeselectHouses()
+	{
+		if (_houseSelected == null) { return; }
+		else
+		{
+			if (_houseSelected._houseSprite?.Material is ShaderMaterial deselectMat)
+			{
+				ResetHouseOutline(deselectMat);
+			}
+			_houseSelected = null;
+		}
+	}
 
 }
