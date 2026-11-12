@@ -10,11 +10,11 @@ public partial class SliceEdit : AbstractEdit
     /// <remarks>
     /// Godot script classes require a parameterless contructor.
     /// </remarks>
-    public SliceEdit() {}
+    public SliceEdit() { }
 
     public override void Revert()
     {
-        
+
     }
-    public override void Apply(){}
+    public override void Apply() { }
 }

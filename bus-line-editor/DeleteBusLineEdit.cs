@@ -24,5 +24,5 @@ public partial class DeleteBusLineEdit : FinalizeBusLineEdit
     /// <summary>
     /// Frees the detached bus lines once the delete can no longer be undone.
     /// </summary>
-    public override void Apply() => Remove();  
+    public override void Apply() => Remove();
 }
