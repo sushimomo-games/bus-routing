@@ -160,6 +160,11 @@ public partial class House : Building
         }
     */
 
+    /// <summary>
+    /// Allows for the user to click on houses. Once a house is clicked, its itinerary
+    /// will be displayed in the information panel, its outline will change so as to
+    /// indicate that it's been clicked, and its route (if valid) will be highlighted
+    /// </summary>
     private void _on_house_clicked(
         Node viewport,
         InputEvent @event,
@@ -174,6 +179,14 @@ public partial class House : Building
             string commuteDetails = CurrentItinerary != null
             ? $"Bus Usage Probability: {BusUsageProbability:P1}\n\nItinerary:\nTotal Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
             : "No commute available";   //Will add commute difference between car vs bus once data is available
+
+            if (CurrentItinerary != null)
+            {
+                foreach (var segment in CurrentItinerary.Itinerary.OfType<RideSegment>())
+                {
+                    segment.Line.Visual.HighlightPath(segment.GetPathNodes());
+                }
+            }
 
             LevelState.InformationPanel.ShowHouse(this, commuteDetails);
         }
@@ -210,17 +223,36 @@ public partial class House : Building
 
     /// <summary>
     /// Resets house outline to original 4.0f weight and black color. Won't be visible
-    /// unless bus stop is placed/already exists close enough to house
+    /// unless bus stop is placed/already exists close enough to house.
+    /// Also resets route highlight, if the house selected had a valid itinerary.
     /// </summary>
     public static void ResetHouseOutline(ShaderMaterial prevMat)
     {
         prevMat.SetShaderParameter("line_thickness", 4.0f);
         prevMat.SetShaderParameter("line_color", Colors.Black);
+
+        if (_houseSelected.CurrentItinerary != null)
+        {
+            ResetRouteHighlight();
+        }
+    }
+
+    /// <summary>
+    /// Resets the route to its original color should the user click on another house,
+    /// bus stop, or bus line.
+    /// </summary>
+    public static void ResetRouteHighlight()
+    {
+        foreach (var segment in _houseSelected.CurrentItinerary.Itinerary.OfType<RideSegment>())
+        {
+            segment.Line.Visual.ClearHighlight();
+        }
     }
 
     /// <summary>
     /// Called by BusStop.cs, BusLine.cs when a bus stop or bus line is selected.
-    /// Deselects houses so as to remove outlines, now that it is no longer selected.
+    /// Deselects houses so as to remove outlines and route highlight, now that it
+    /// is no longer selected.
     /// </summary>
     public static void DeselectHouses()
     {
@@ -230,6 +262,7 @@ public partial class House : Building
             if (_houseSelected._houseSprite?.Material is ShaderMaterial deselectMat)
             {
                 ResetHouseOutline(deselectMat);
+                ResetRouteHighlight();
             }
             _houseSelected = null;
         }
