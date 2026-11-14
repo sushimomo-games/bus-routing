@@ -235,4 +235,13 @@ public partial class House : Building
         }
     }
 
+    public String GetDisplayInfo()
+    {
+        string commuteDetails = CurrentItinerary != null
+        ? $"Bus Usage Probability: {BusUsageProbability:P1}\n\nItinerary:\nTotal Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
+        : "No commute available";
+
+        return commuteDetails;
+    }
+
 }
