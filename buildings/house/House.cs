@@ -264,7 +264,7 @@ public partial class House : Building
                 ResetHouseOutline(deselectMat);
                 if (_houseSelected.CurrentItinerary != null)
                 {
-                    ResetRouteHighlight();                    
+                    ResetRouteHighlight();
                 }
             }
             _houseSelected = null;
