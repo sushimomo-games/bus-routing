@@ -8,7 +8,7 @@ public partial class InformationPanel : Control
     private Label _infoText;
     private Label TitleLabel => _titleLabel ??= GetNode<Label>("VBoxContainer/TitleLabel");
     private Label InfoText => _infoText ??= GetNode<Label>("VBoxContainer/InfoText");
-    private Button _deleteLineBtn, _editLineBtn;
+    private Button _deleteBtn, _editLineBtn;
     private Button _endBusLineButton;
     private Label _lineEditorStatusLabel;
 
@@ -36,12 +36,12 @@ public partial class InformationPanel : Control
         _titleLabel = GetNode<Label>("VBoxContainer/TitleLabel");
         _infoText = GetNode<Label>("VBoxContainer/InfoText");
         _editLineBtn = GetNode<Button>("VBoxContainer/EditBtn");
-        _deleteLineBtn = GetNode<Button>("VBoxContainer/DeleteBtn");
+        _deleteBtn = GetNode<Button>("VBoxContainer/DeleteBtn");
         _endBusLineButton = GetTree().CurrentScene.GetNode<Button>(Path.EndBusLineButtonNode);
         _lineEditorStatusLabel = GetTree().CurrentScene.GetNode<Label>(Path.LineEditorStatusLabelNode);
 
         _editLineBtn.Pressed += _onEditLineBtnPressed;
-        _deleteLineBtn.Pressed += _onDeleteLineBtnPressed;
+        _deleteBtn.Pressed += _onDeleteBtnPressed;
 
         _currentType = InfoPanelType.None;
     }
@@ -54,16 +54,33 @@ public partial class InformationPanel : Control
                 this.Visible = false;
                 break;
             case InfoPanelType.BusLine:
-                if (_currentLine != SelectedBusLine && SelectedBusLine != null && CurrentBusLineCreationStep == BusLineCreationStep.ContinuingEdit)
+                if (_currentLine != SelectedBusLine && SelectedBusLine != null)
                 {
                     ShowBusLine(SelectedBusLine);
                 }
                 break;
             case InfoPanelType.House:
-                ShowHouse(_currentHouse);
+                if (_currentHouse != null)
+                {
+                    InfoText.Text = _currentHouse.GetDisplayInfo();
+                }
+                else
+                {
+                    _currentType = InfoPanelType.None;
+                    this.Visible = false;
+                }
                 break;
             case InfoPanelType.BusStop:
-                ShowBusStop(_currentStop);
+                if (_currentStop != null)
+                {
+                    int liveCount = _currentStop.GetHouseCount();
+                    InfoText.Text = liveCount + " residents have access to this stop";
+                }
+                else
+                {
+                    _currentType = InfoPanelType.None;
+                    this.Visible = false;
+                }
                 break;
         }
     }
@@ -73,7 +90,7 @@ public partial class InformationPanel : Control
         if (_currentLine != null)
         {
             _currentLine.OnPathChanged -= OnBusLinePathChanged;
-            _currentLine.OnDeleted += OnBusLineDeleted;
+            _currentLine.OnDeleted -= OnBusLineDeleted;
         }
         RefreshBusLineDisplay();
     }
@@ -98,8 +115,12 @@ public partial class InformationPanel : Control
     {
         UnsubscribeBusLineEvents();
 
+        SelectedBusLine = line;
         _currentType = InfoPanelType.BusLine;
         _currentLine = line;
+
+        _currentHouse = null;
+        _currentStop = null;
 
         if (_currentLine != null)
         {
@@ -116,7 +137,7 @@ public partial class InformationPanel : Control
 
         this.Visible = true;
         _editLineBtn.Visible = true;
-        _deleteLineBtn.Visible = true;
+        _deleteBtn.Visible = true;
 
         TitleLabel.Text = _currentLine.ColorName + " " + "busline"; //changes the color of the busline name
         TitleLabel.AddThemeColorOverride("font_color", _currentLine.Color);
@@ -152,35 +173,52 @@ public partial class InformationPanel : Control
     /// Removes bus line from list of existing bus lines using Delete() of
     /// BusLine class.
     /// </summary>
-    public void _onDeleteLineBtnPressed()
+    public void _onDeleteBtnPressed()
     {
         this.Visible = false;
         _currentLine.Delete();
+        if (_currentType == InfoPanelType.BusLine && _currentLine != null)
+        {
+            _currentLine.Delete();
+            _currentType = InfoPanelType.None;
+        }else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
+        {
+            //Bus Stop deletion will be handled here
+            _currentType = InfoPanelType.None;
+        }
     }
 
     public void ShowHouse(House house, String displayInfo = null)
     {
+        UnsubscribeBusLineEvents();
+
         _currentType = InfoPanelType.House;
         _currentHouse = house;
         _currentHouseDisplay = displayInfo;
+
+        _currentLine = null;
 
         this.Visible = true;
         _hideButtons();
 
         TitleLabel.Text = house.BuildingColor + " House";
-        string liveDisplayInfo = house.GetDisplayInfo();
+        InfoText.Text = house.GetDisplayInfo();
 
-        InfoText.Text = liveDisplayInfo;
     }
 
     public void ShowBusStop(BusStop stop, int count = 0)
     {
+        UnsubscribeBusLineEvents();
+
         _currentType = InfoPanelType.BusStop;
         _currentStop = stop;
 
+        _currentLine = null;
+
         //check, if count turns to 0, then maybe wait a few seconds before cutting off display?
         this.Visible = true;
-        _hideButtons();
+        _deleteBtn.Visible = true;
+        _editLineBtn.Visible = false;
 
         int liveCount = stop.GetHouseCount();
 
@@ -191,7 +229,7 @@ public partial class InformationPanel : Control
     private void _hideButtons()
     {
         _editLineBtn.Visible = false;
-        _deleteLineBtn.Visible = false;
+        _deleteBtn.Visible = false;
     }
 
 }
