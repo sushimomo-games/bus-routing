@@ -39,7 +39,7 @@ public class BusStopUpgradePanelTests
 
     // SCENARIO: The player selects a stop that is on a bus line.
     [TestCase]
-    public void GivenStopOnLine_WhenShowBusStop_ThenBothTilesUncheckedAndEnabled()
+    public void GivenStopOnLine_WhenShowBusStop_ThenBothTilesUncheckedAndClickable()
     {
         // GIVEN: A stop on a line and the information panel.
         var stop = CreateStop(onLine: true);
@@ -48,18 +48,18 @@ public class BusStopUpgradePanelTests
         // WHEN: The panel shows the stop.
         panel.ShowBusStop(stop, 0);
 
-        // THEN: The upgrades section is visible with both tiles unchecked and enabled.
+        // THEN: The upgrades section is visible with both tiles unchecked and clickable.
         AssertBool(GetUpgradesContainer(panel).Visible).IsTrue();
         foreach (var upgrade in new[] { BusStopUpgrade.Bench, BusStopUpgrade.Roof })
         {
             AssertBool(GetCheckBox(panel, upgrade).ButtonPressed).IsFalse();
-            AssertBool(GetCheckBox(panel, upgrade).Disabled).IsFalse();
+            AssertBool(GetTile(panel, upgrade).CanPurchase).IsTrue();
         }
     }
 
     // SCENARIO: The player selects a stop that is on no bus line.
     [TestCase]
-    public void GivenStopOnNoLine_WhenShowBusStop_ThenBothTilesDisabled()
+    public void GivenStopOnNoLine_WhenShowBusStop_ThenBothTilesNotClickable()
     {
         // GIVEN: A stop on no line.
         var stop = CreateStop(onLine: false);
@@ -68,14 +68,14 @@ public class BusStopUpgradePanelTests
         // WHEN: The panel shows the stop.
         panel.ShowBusStop(stop, 0);
 
-        // THEN: Both tiles are disabled.
-        AssertBool(GetCheckBox(panel, BusStopUpgrade.Bench).Disabled).IsTrue();
-        AssertBool(GetCheckBox(panel, BusStopUpgrade.Roof).Disabled).IsTrue();
+        // THEN: Neither tile is clickable.
+        AssertBool(GetTile(panel, BusStopUpgrade.Bench).CanPurchase).IsFalse();
+        AssertBool(GetTile(panel, BusStopUpgrade.Roof).CanPurchase).IsFalse();
     }
 
-    // SCENARIO: The player checks the bench box with enough budget.
+    // SCENARIO: The player clicks the bench tile with enough budget.
     [TestCase]
-    public void GivenEnoughBudget_WhenBenchToggled_ThenBenchBoughtAndTileDisabled()
+    public void GivenEnoughBudget_WhenBenchTileClicked_ThenBenchBoughtAndBoxChecked()
     {
         // GIVEN: A stop on a line, shown in the panel, and enough budget.
         var stop = CreateStop(onLine: true);
@@ -83,18 +83,18 @@ public class BusStopUpgradePanelTests
         LevelState.Budget = 50;
         panel.ShowBusStop(stop, 0);
 
-        // WHEN: The player checks the bench box.
-        GetCheckBox(panel, BusStopUpgrade.Bench).ButtonPressed = true;
+        // WHEN: The player clicks the bench tile.
+        ClickTile(panel, BusStopUpgrade.Bench);
 
-        // THEN: The bench is bought, and the box stays checked and disabled.
+        // THEN: The bench is bought, and the box shows checked and the tile can no longer be bought.
         AssertBool(stop.HasUpgrade(BusStopUpgrade.Bench)).IsTrue();
         AssertBool(GetCheckBox(panel, BusStopUpgrade.Bench).ButtonPressed).IsTrue();
-        AssertBool(GetCheckBox(panel, BusStopUpgrade.Bench).Disabled).IsTrue();
+        AssertBool(GetTile(panel, BusStopUpgrade.Bench).CanPurchase).IsFalse();
     }
 
-    // SCENARIO: The player checks the bench box without enough budget.
+    // SCENARIO: The player clicks the bench tile without enough budget.
     [TestCase]
-    public void GivenTooLittleBudget_WhenBenchToggled_ThenBoxUncheckedAndNothingBought()
+    public void GivenTooLittleBudget_WhenBenchTileClicked_ThenBoxUncheckedAndNothingBought()
     {
         // GIVEN: A stop on a line, shown in the panel, and a budget below the cost.
         var stop = CreateStop(onLine: true);
@@ -102,8 +102,8 @@ public class BusStopUpgradePanelTests
         LevelState.Budget = Cost.BenchUpgrade - 1;
         panel.ShowBusStop(stop, 0);
 
-        // WHEN: The player checks the bench box.
-        GetCheckBox(panel, BusStopUpgrade.Bench).ButtonPressed = true;
+        // WHEN: The player clicks the bench tile.
+        ClickTile(panel, BusStopUpgrade.Bench);
 
         // THEN: The box is unchecked again and the stop has no bench.
         AssertBool(stop.HasUpgrade(BusStopUpgrade.Bench)).IsFalse();
@@ -135,14 +135,14 @@ public class BusStopUpgradePanelTests
         var panel = CreatePanel();
         LevelState.Budget = 50;
         panel.ShowBusStop(stop, 0);
-        GetCheckBox(panel, BusStopUpgrade.Bench).ButtonPressed = true;
+        ClickTile(panel, BusStopUpgrade.Bench);
 
         // WHEN: The player undoes the purchase.
         EditorState.History.Undo();
 
-        // THEN: The bench tile is unchecked and enabled again.
+        // THEN: The bench tile is unchecked and clickable again.
         AssertBool(GetCheckBox(panel, BusStopUpgrade.Bench).ButtonPressed).IsFalse();
-        AssertBool(GetCheckBox(panel, BusStopUpgrade.Bench).Disabled).IsFalse();
+        AssertBool(GetTile(panel, BusStopUpgrade.Bench).CanPurchase).IsTrue();
     }
 
     private BusStop CreateStop(bool onLine)
@@ -170,7 +170,18 @@ public class BusStopUpgradePanelTests
     private static Control GetUpgradesContainer(InformationPanel panel) =>
         panel.GetNode<Control>("VBoxContainer/UpgradesContainer");
 
+    private static UpgradeTile GetTile(InformationPanel panel, BusStopUpgrade upgrade) =>
+        panel.GetNode<UpgradeTile>($"VBoxContainer/UpgradesContainer/{upgrade}Tile");
+
     private static CheckBox GetCheckBox(InformationPanel panel, BusStopUpgrade upgrade) =>
-        panel.GetNode<CheckBox>(
-            $"VBoxContainer/UpgradesContainer/{upgrade}Tile/VBoxContainer/CheckBox");
+        GetTile(panel, upgrade).GetNode<CheckBox>("VBoxContainer/CheckBox");
+
+    /// <summary>
+    /// Sends a left click to the tile of the given upgrade.
+    /// </summary>
+    private static void ClickTile(InformationPanel panel, BusStopUpgrade upgrade)
+    {
+        var click = new InputEventMouseButton { ButtonIndex = MouseButton.Left, Pressed = true };
+        GetTile(panel, upgrade).EmitSignal(Control.SignalName.GuiInput, click);
+    }
 }
