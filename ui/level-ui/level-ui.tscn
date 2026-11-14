@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=18format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
 [ext_resource type="PackedScene" uid="uid://jofckxx88jrf" path="res://ui/settings-menu/settings-menu.tscn" id="12_settings"]
+[ext_resource type="PackedScene" path="res://ui/level-ui/upgrade-tile/upgrade-tile.tscn" id="13_tile"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v72kp"]
 content_margin_left = 2.0
@@ -84,6 +85,22 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 10
 text = "Delete"
+
+[node name="UpgradesLabel" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Upgrades"
+
+[node name="UpgradesContainer" type="HBoxContainer" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="BenchTile" parent="InfoPanelContainer/informationPanel/VBoxContainer/UpgradesContainer" instance=ExtResource("13_tile")]
+layout_mode = 2
+
+[node name="RoofTile" parent="InfoPanelContainer/informationPanel/VBoxContainer/UpgradesContainer" instance=ExtResource("13_tile")]
+layout_mode = 2
+Upgrade = 1
 
 [node name="ErrorMessage" parent="." instance=ExtResource("5_ftjap")]
 layout_mode = 1
