@@ -60,7 +60,7 @@ public partial class EditHistory
             GD.Print("[DEBUG - Editor] number of edits in history: " + _undo.Count);
         }
     }
-    
+
     /// <summary>
     /// Reverts the last player action in the undo history.
     /// </summary>

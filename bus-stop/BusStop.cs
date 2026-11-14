@@ -93,6 +93,15 @@ public partial class BusStop : RoadNode
     }
 
     /// <summary>
+    /// Adds an upgrade without charging or logging an edit.
+    /// Used by redo.
+    /// </summary>
+    internal void AddUpgrade(BusStopUpgrade upgrade)
+    {
+        if (_purchasedUpgrades.Add(upgrade)) UpgradesChanged?.Invoke();
+    }
+
+    /// <summary>
     /// Removes an upgrade without refunding or logging an edit.
     /// Used by undo.
     /// </summary>

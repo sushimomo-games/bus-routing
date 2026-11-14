@@ -119,22 +119,22 @@ public static class Pathfinder
     /// <param name="lineageMap">A map containing the parent and segment information for each bus stop.</param>
     /// <returns>A list of commute segments representing the itinerary from start to the final destination.</returns>
     internal static List<CommuteSegment> BuildTransitItinerary
-    ( 
-        BusStop start, 
-        BusStop end, 
-        Destination finalDestination, 
-        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap) 
-    { 
-        var segments = new List<CommuteSegment>(); 
-        var backtrackNode = end; 
-        
-        while (backtrackNode != start) 
-        { 
-            var lineage = lineageMap[backtrackNode]; 
-            segments.Add(lineage.Segment); 
-            backtrackNode = lineage.Parent; 
-        } 
-        
+    (
+        BusStop start,
+        BusStop end,
+        Destination finalDestination,
+        Dictionary<BusStop, (BusStop Parent, CommuteSegment Segment)> lineageMap)
+    {
+        var segments = new List<CommuteSegment>();
+        var backtrackNode = end;
+
+        while (backtrackNode != start)
+        {
+            var lineage = lineageMap[backtrackNode];
+            segments.Add(lineage.Segment);
+            backtrackNode = lineage.Parent;
+        }
+
         segments.Reverse();
         segments.Add(new WalkSegment(end, finalDestination));
         return segments;

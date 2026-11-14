@@ -157,7 +157,7 @@ public class BusStopUpgradeTests
         var upgrades = new[] { BusStopUpgrade.Roof };
 
         // WHEN: The removal of that stop is undone.
-        var edit = new BusStopEdit(false, 50, new Vector2(10, 0), nodeA, nodeB, null, upgrades);
+        var edit = new BusStopEdit(false, 50, new Vector2(10, 0), nodeA, nodeB, null, upgrades: upgrades);
         edit.Revert();
 
         // THEN: The restored stop has the roof.

@@ -71,7 +71,7 @@ public partial class BusLineEditor : Node
         {
             if (DraftLineSegments.DoesEdgeExistBetween(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
             {
-                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             }
         }
 
@@ -92,10 +92,10 @@ public partial class BusLineEditor : Node
     public static void StartNewSegment(RoadNode startNode)
     {
         if (startNode == null || _busLineInProgress == null) return;
-        
+
         var newSegment = new DraftSegment(startNode, _busLineInProgress);
         _busLineInProgress.AddChild(newSegment); // Keeps it grouped visually under the bus line node
-        
+
         DraftLineSegments.Add(newSegment);
         _activeSegment = newSegment;
     }
@@ -119,7 +119,7 @@ public partial class BusLineEditor : Node
             GD.Print("Invalid route: Cannot traverse the same road twice.");
             ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
             errorMessage.DisplayMessage("Cannot route a bus over the same road twice.");
-            return; 
+            return;
         }
 
         if (!activeNode.Neighbors.Contains(nextNode))
@@ -128,7 +128,7 @@ public partial class BusLineEditor : Node
             var previousStep = CurrentBusLineCreationStep;
 
             // This safely terminates the line visual, but overrides state to PausedCreation
-            FinalizeDraftSegment(); 
+            FinalizeDraftSegment();
 
             // Restore the correct active mode
             CurrentBusLineCreationStep = previousStep;
@@ -149,7 +149,7 @@ public partial class BusLineEditor : Node
         });
 
         var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
-        
+
         _mouseTrackingLine?.QueueFree();
         BeginMouseTrackingLineAt(newActiveNode, _busLineInProgress.Color);
     }
@@ -194,7 +194,7 @@ public partial class BusLineEditor : Node
             LevelState.AllBusLines.Add(_busLineInProgress);
             History.LogEdit(new FinalizeBusLineEdit(_busLineInProgress));
             RefreshAllBusLineVisuals();
-            
+
             ResetState();
         }
     }
@@ -273,13 +273,13 @@ public partial class BusLineEditor : Node
         if (DraftLineSegments.IsNodeInternal(startNode))
         {
             GD.Print("Cannot branch off the middle of an existing route.");
-            return; 
+            return;
         }
 
         GD.Print($"[DEBUG - Editor] Jumping to start new segment at {startNode.Name}");
-        
+
         CurrentBusLineCreationStep = AddingSubsequentStops;
-        _isEditingFromStart = false; 
+        _isEditingFromStart = false;
 
         Record(() => StartNewSegment(startNode));
         _activeSegment = DraftLineSegments.Last();
@@ -300,7 +300,7 @@ public partial class BusLineEditor : Node
             Color = busLine.Color
         };
         CurrentLevel.AddChild(_busLineInProgress);
-        
+
         // Push the existing path into a draft segment so it can be edited
         StartNewSegment(busLine.Path[0]);
         for (int i = 1; i < busLine.Path.Count; i++)
@@ -322,7 +322,7 @@ public partial class BusLineEditor : Node
         if (DraftLineSegments.Count > 1)
         {
             errorMessage.DisplayMessage("Connect all route segments before finalizing edit.");
-            return; 
+            return;
         }
 
         // Apply the modified draft segment to the temporary bus line path
@@ -345,11 +345,11 @@ public partial class BusLineEditor : Node
             SelectedBusLine.SetPath(_busLineInProgress.Path);
             UpdateAllHouseStatuses();
         }
-        
+
         // Clean up the draft segments
         DraftLineSegments[0].QueueFree();
         DraftLineSegments.Clear();
-        
+
         LevelState.RefreshAllBusLineVisuals();
         _busLineInProgress.QueueFree(); // Clean up the temporary editing duplicate
         _busLineInProgress = null;
@@ -386,10 +386,10 @@ public partial class BusLineEditor : Node
         DraftHistory.Clear();
         _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
-        _isEditingFromStart = false; 
+        _isEditingFromStart = false;
         _busLineInProgress = new BusLine();
         CurrentLevel.AddChild(_busLineInProgress);
-        
+
         _creatingNewLineLabel.Text = $"● Creating {_busLineInProgress.ColorName} Line";
 
         StartNewSegment(startNode);
@@ -404,7 +404,7 @@ public partial class BusLineEditor : Node
     private static void CheckAndMergeSegments()
     {
         var segments = DraftLineSegments;
-        
+
         for (int i = 0; i < segments.Count; i++)
         {
             for (int j = i + 1; j < segments.Count; j++)
@@ -412,23 +412,23 @@ public partial class BusLineEditor : Node
                 if (segments[i].CanMergeWith(segments[j]))
                 {
                     GD.Print($"[DEBUG - Editor] Collision detected between segment {i} and {j}!");
-                    
+
                     var segmentToAbsorb = segments[j];
-                    
+
                     // Check if EITHER the absorbed segment or the absorbing segment was active
                     bool wasActive = _activeSegment == segmentToAbsorb || _activeSegment == segments[i];
-                    
+
                     segments[i].MergeWith(segmentToAbsorb);
-                    
+
                     segmentToAbsorb.QueueFree();
                     segments.RemoveAt(j);
-                    
-                    if (wasActive) 
+
+                    if (wasActive)
                     {
                         FinalizeDraftSegment();
                     }
-                    
-                    return; 
+
+                    return;
                 }
             }
         }
@@ -473,11 +473,11 @@ public partial class BusLineEditor : Node
 
         _activeSegment = DraftLineSegments.LastOrDefault();
         _isEditingFromStart = false;
-        
+
         if (_activeSegment != null)
             CurrentBusLineCreationStep = PausedCreation;
     }
-    
+
     /// <summary>
     /// Runs a change to the draft segments and logs it to the undo history as
     /// a before and after snapshot.

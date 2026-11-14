@@ -10,6 +10,7 @@ using System.Linq;
 public partial class BusStopUpgradeEdit : AbstractEdit
 {
     private readonly uint _budgetBefore;
+    private readonly uint _budgetAfter;
     private readonly Vector2 _position;
     private readonly BusStopUpgrade _upgrade;
     private BusStop _stop;
@@ -26,6 +27,7 @@ public partial class BusStopUpgradeEdit : AbstractEdit
         _position = stop.GlobalPosition;
         _upgrade = upgrade;
         _budgetBefore = budgetBefore;
+        _budgetAfter = budgetBefore - BusStopUpgradeInfo.GetCost(upgrade);
     }
 
     /// <summary>
@@ -37,16 +39,35 @@ public partial class BusStopUpgradeEdit : AbstractEdit
     /// </remarks>
     public override void Revert()
     {
+        FindStop()?.RemoveUpgrade(_upgrade);
+
+        LevelState.Budget = _budgetBefore;
+        LevelState.UpdateAllHouseStatuses();
+    }
+
+    /// <summary>
+    /// Buys the upgrade again after it was undone, without logging a new edit.
+    /// </summary>
+    public override void Apply()
+    {
+        FindStop()?.AddUpgrade(_upgrade);
+
+        LevelState.Budget = _budgetAfter;
+        LevelState.UpdateAllHouseStatuses();
+    }
+
+    /// <summary>
+    /// Returns the upgraded stop, finding it again by position if the
+    /// original object is no longer valid.
+    /// </summary>
+    private BusStop FindStop()
+    {
         if (_stop == null || !GodotObject.IsInstanceValid(_stop))
         {
             _stop = LevelState.AllBusStops
                 .OfType<BusStop>()
                 .FirstOrDefault(s => GodotObject.IsInstanceValid(s) && s.GlobalPosition == _position);
         }
-
-        _stop?.RemoveUpgrade(_upgrade);
-
-        LevelState.Budget = _budgetBefore;
-        LevelState.UpdateAllHouseStatuses();
+        return _stop;
     }
 }

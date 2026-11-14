@@ -24,12 +24,5 @@ public partial class DeleteBusLineEdit : FinalizeBusLineEdit
     /// <summary>
     /// Frees the detached bus lines once the delete can no longer be undone.
     /// </summary>
-    public override void OnDiscarded()
-    {
-        foreach (var line in _group)
-        {
-            if (GodotObject.IsInstanceValid(line) && !LevelState.AllBusLines.Contains(line))
-                line.QueueFree();
-        }
-    }
+    public override void Apply() => Remove();
 }
