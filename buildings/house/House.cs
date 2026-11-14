@@ -262,7 +262,10 @@ public partial class House : Building
             if (_houseSelected._houseSprite?.Material is ShaderMaterial deselectMat)
             {
                 ResetHouseOutline(deselectMat);
-                ResetRouteHighlight();
+                if (_houseSelected.CurrentItinerary != null)
+                {
+                    ResetRouteHighlight();                    
+                }
             }
             _houseSelected = null;
         }
