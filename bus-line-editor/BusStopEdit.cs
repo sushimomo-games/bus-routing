@@ -23,8 +23,9 @@ public partial class BusStopEdit : AbstractEdit
     private readonly RoadNode _nodeB;
     private BusStop _stop;
     private readonly List<AbstractEdit> _lineEdits;
+    private readonly IReadOnlyCollection<BusStopUpgrade> _upgrades;
 
-    public BusStopEdit(bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop, List<AbstractEdit> lineEdits = null)
+    public BusStopEdit(bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop, List<AbstractEdit> lineEdits = null, IReadOnlyCollection<BusStopUpgrade> upgrades = null)
     {
         this._wasPlacement = wasPlacement;
         this._budgetBefore = budgetBefore;
@@ -34,6 +35,7 @@ public partial class BusStopEdit : AbstractEdit
         this._nodeB = nodeB;
         this._stop = stop;
         this._lineEdits = lineEdits ?? [];
+        this._upgrades = upgrades;
     }
 
     /// <summary> 
@@ -157,6 +159,14 @@ public partial class BusStopEdit : AbstractEdit
     private void UndoRemoval()
     {
         if (!GodotObject.IsInstanceValid(_nodeA) || !GodotObject.IsInstanceValid(_nodeB)) return;
+
+        // The deletor logs no stop, so build a new one and restore its upgrades.
+        // A kept-alive stop still carries its own upgrades.
+        if (_stop == null || !GodotObject.IsInstanceValid(_stop))
+        {
+            _stop = GD.Load<PackedScene>(Path.BusStopScene).Instantiate<BusStop>();
+            if (_upgrades != null) _stop.SetUpgrades(_upgrades);
+        }
 
         LevelState.CurrentLevel.AddChild(_stop);
         LevelState.AllBusStops.Add(_stop);
