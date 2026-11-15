@@ -201,7 +201,8 @@ public partial class InformationPanel : Control
         {
             _currentLine.Delete();
             _currentType = InfoPanelType.None;
-        }else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
+        }
+        else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
         {
             //Bus Stop deletion will be handled here
             GD.Print("Bus stop - Delete button pressed");
