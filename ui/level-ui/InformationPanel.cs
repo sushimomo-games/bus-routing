@@ -46,6 +46,10 @@ public partial class InformationPanel : Control
         _currentType = InfoPanelType.None;
     }
 
+    /// <summary>
+    /// Allows for information panel's data to update automatically; no longer
+    /// requires user to click on specific elements to see changes in data.
+    /// </summary>
     public override void _Process(double delta)
     {
         switch (_currentType)
@@ -71,7 +75,7 @@ public partial class InformationPanel : Control
                 }
                 break;
             case InfoPanelType.BusStop:
-                if (_currentStop != null)
+                if (_currentStop != null && GodotObject.IsInstanceValid(_currentStop) && _currentStop.IsInsideTree())
                 {
                     int liveCount = _currentStop.GetHouseCount();
                     InfoText.Text = liveCount + " residents have access to this stop";
@@ -79,12 +83,16 @@ public partial class InformationPanel : Control
                 else
                 {
                     _currentType = InfoPanelType.None;
+                    _currentStop = null;
                     this.Visible = false;
                 }
                 break;
         }
     }
 
+    /// <summary>
+    /// Unsubscribes from the current bus line's events and refreshes the display.
+    /// </summary>
     private void UnsubscribeBusLineEvents()
     {
         if (_currentLine != null)
@@ -95,6 +103,10 @@ public partial class InformationPanel : Control
         RefreshBusLineDisplay();
     }
 
+    /// <summary>
+    /// If a bus line's path has been changed, will refresh display
+    /// so that bus line data is appropriately updated.
+    /// </summary>
     private void OnBusLinePathChanged()
     {
         if (_currentType == InfoPanelType.BusLine)
@@ -103,6 +115,10 @@ public partial class InformationPanel : Control
         }
     }
 
+    /// <summary>
+    /// If a bus line is deleted, no longer listens to its events, sets
+    /// _currentLine to null, and causes information panel to disappear.
+    /// </summary>
     private void OnBusLineDeleted()
     {
         UnsubscribeBusLineEvents();
@@ -111,16 +127,16 @@ public partial class InformationPanel : Control
         this.Visible = false;
     }
 
+    /// <summary>
+    /// Specifies selected line, listens to its events (deletion, path changes),
+    /// refreshes bus line display.
+    /// </summary>
     public void ShowBusLine(BusLine line)
     {
-        UnsubscribeBusLineEvents();
 
         SelectedBusLine = line;
         _currentType = InfoPanelType.BusLine;
         _currentLine = line;
-
-        _currentHouse = null;
-        _currentStop = null;
 
         if (_currentLine != null)
         {
@@ -131,6 +147,10 @@ public partial class InformationPanel : Control
         RefreshBusLineDisplay();
     }
 
+    /// <summary>
+    /// Displays appropriate bus line information including name, stop count, residents,
+    /// and time to complete.
+    /// </summary>
     private void RefreshBusLineDisplay()
     {
         if (_currentLine == null) return;
@@ -176,7 +196,7 @@ public partial class InformationPanel : Control
     public void _onDeleteBtnPressed()
     {
         this.Visible = false;
-        _currentLine.Delete();
+
         if (_currentType == InfoPanelType.BusLine && _currentLine != null)
         {
             _currentLine.Delete();
@@ -184,6 +204,7 @@ public partial class InformationPanel : Control
         }else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
         {
             //Bus Stop deletion will be handled here
+            GD.Print("Bus stop - Delete button pressed");
             _currentType = InfoPanelType.None;
         }
     }
@@ -203,7 +224,6 @@ public partial class InformationPanel : Control
 
         TitleLabel.Text = house.BuildingColor + " House";
         InfoText.Text = house.GetDisplayInfo();
-
     }
 
     public void ShowBusStop(BusStop stop, int count = 0)
@@ -213,10 +233,10 @@ public partial class InformationPanel : Control
         _currentType = InfoPanelType.BusStop;
         _currentStop = stop;
 
-        _currentLine = null;
-
-        //check, if count turns to 0, then maybe wait a few seconds before cutting off display?
         this.Visible = true;
+
+        //Delete button for bus stop currently non-functional; merely reads
+        //input signal at this point
         _deleteBtn.Visible = true;
         _editLineBtn.Visible = false;
 
