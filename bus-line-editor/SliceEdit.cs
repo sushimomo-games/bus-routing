@@ -12,9 +12,13 @@ public partial class SliceEdit : AbstractEdit
     /// </remarks>
     public SliceEdit() {}
 
-    public override void Revert()
-    {
-        
-    }
-    // public override void Apply () {}
+    /// <summary>
+    /// Not implemented yet. Nothing logs a <see cref="SliceEdit"/>.
+    /// </summary>
+    public override void Revert() { }
+
+    /// <summary>
+    /// Not implemented yet. Nothing logs a <see cref="SliceEdit"/>.
+    /// </summary>
+    public override void Apply() { }
 }
