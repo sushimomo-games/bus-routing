@@ -59,7 +59,8 @@ public partial class LevelState : Node
 
     /// <summary>
     /// Returns a route color back to the pool of available colors.
-    /// Call this when a route is deleted.
+    /// Call this when a route is deleted. The color goes to the front of the pool,
+    /// so the next new route reuses it and undoing a bus line brings back the same color.
     /// </summary>
     public static void ReturnBusLineColor(KeyValuePair<string, Color> colorInfo)
     {
@@ -67,7 +68,7 @@ public partial class LevelState : Node
         {
             return;
         }
-        _availableColors.Add(colorInfo);
+        _availableColors.Insert(0, colorInfo);
     }
 
     /// <summary>
