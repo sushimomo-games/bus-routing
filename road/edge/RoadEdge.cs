@@ -93,5 +93,8 @@ public partial class RoadEdge : Area2D
     public override void _ExitTree()
     {
         LevelState.AllRoadEdges.Remove(this);
+
+        if (NodeA is BusStop a && IsInstanceValid(a)) a.ConnectedEdges.Remove(this);
+        if (NodeB is BusStop b && IsInstanceValid(b)) b.ConnectedEdges.Remove(this);
     }
 }
