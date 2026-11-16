@@ -12,6 +12,11 @@ public partial class InformationPanel : Control
     private Button _endBusLineButton;
     private Label _lineEditorStatusLabel;
     private BusLine _currentLine;
+    private BusStop _currentStop;
+    private Label _upgradesLabel;
+    private Control _upgradesContainer;
+    private Label UpgradesLabel => _upgradesLabel ??= GetNode<Label>("VBoxContainer/UpgradesLabel");
+    private Control UpgradesContainer => _upgradesContainer ??= GetNode<Control>("VBoxContainer/UpgradesContainer");
 
 
     public override void _Ready()
@@ -31,9 +36,20 @@ public partial class InformationPanel : Control
 
     }
 
+    public override void _Process(double delta)
+    {
+        // Hide the panel if the shown stop was deleted.
+        if (_currentStop != null && !IsInstanceValid(_currentStop))
+        {
+            _currentStop = null;
+            this.Visible = false;
+        }
+    }
+
     public void ShowBusLine(BusLine line)
     {
         _currentLine = line;
+        _hideUpgrades();
 
         this.Visible = true; //makes the bus line information visible when the user clicks the line
         _editLineBtn.Visible = true;
@@ -83,6 +99,7 @@ public partial class InformationPanel : Control
     {
         this.Visible = true;
         _hideButtons();
+        _hideUpgrades();
 
         TitleLabel.Text = house.BuildingColor + " House";
         InfoText.Text = displayInfo;
@@ -95,12 +112,52 @@ public partial class InformationPanel : Control
 
         TitleLabel.Text = "Bus Stop";
         InfoText.Text = count + " residents have access to this stop";
+
+        SetCurrentStop(stop);
+        UpgradesLabel.Visible = true;
+        UpgradesContainer.Visible = true;
+        RefreshUpgradeTiles();
+    }
+
+    /// <summary>
+    /// Hides the upgrades section and stops listening to the current stop.
+    /// </summary>
+    private void _hideUpgrades()
+    {
+        SetCurrentStop(null);
+        UpgradesLabel.Visible = false;
+        UpgradesContainer.Visible = false;
+    }
+
+    /// <summary>
+    /// Moves the UpgradesChanged subscription to the given stop, so the tiles
+    /// refresh when an upgrade is bought or undone while the panel is open.
+    /// </summary>
+    private void SetCurrentStop(BusStop stop)
+    {
+        if (_currentStop != null && IsInstanceValid(_currentStop))
+        {
+            _currentStop.UpgradesChanged -= RefreshUpgradeTiles;
+        }
+        _currentStop = stop;
+        if (_currentStop != null)
+        {
+            _currentStop.UpgradesChanged += RefreshUpgradeTiles;
+        }
+    }
+
+    private void RefreshUpgradeTiles()
+    {
+        foreach (var tile in UpgradesContainer.GetChildren().OfType<UpgradeTile>())
+        {
+            tile.ShowStop(_currentStop);
+        }
     }
 
     private void _hideButtons()
     {
-        _editLineBtn.Visible = false;
-        _deleteLineBtn.Visible = false;
+        if (_editLineBtn != null) _editLineBtn.Visible = false;
+        if (_deleteLineBtn != null) _deleteLineBtn.Visible = false;
     }
 
 }

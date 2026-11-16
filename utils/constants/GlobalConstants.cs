@@ -90,6 +90,18 @@ public static class GlobalConstants
     public const float Midpoint = 0.67f;
 
     /// <summary>
+    /// How much a bench lowers disutility for residents boarding at its stop.
+    /// Raising this value makes a bench raise the chance of riding more.
+    /// </summary>
+    public const float BenchComfortBonus = 0.03f;
+
+    /// <summary>
+    /// How much a roof lowers disutility for residents boarding at its stop.
+    /// Raising this value makes a roof raise the chance of riding more.
+    /// </summary>
+    public const float RoofComfortBonus = 0.08f;
+
+    /// <summary>
     /// The exponent shared by both penalty curves. This is a fixed constant
     /// and should not be tuned. At 2, small walks and delays are mostly
     /// ignored, then the penalty rises quickly around its half-point.
