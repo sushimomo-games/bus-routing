@@ -121,7 +121,7 @@ public partial class InformationPanel : Control
         }
     }
 
-    
+
     /// <summary>
     /// If a bus line is deleted, no longer listens to its events, sets
     /// _currentLine to null, and causes information panel to disappear.
@@ -147,7 +147,7 @@ public partial class InformationPanel : Control
         _currentLine = line;
         _hideUpgrades();
 
-        if(line == null || !IsInstanceValid(line)) return;
+        if (line == null || !IsInstanceValid(line)) return;
 
         line.OnPathChanged += OnBusLinePathChanged;
         line.OnDeleted += OnBusLineDeleted;
@@ -173,7 +173,7 @@ public partial class InformationPanel : Control
 
     private void RefreshBusLineDisplay()
     {
-        if(_currentLine == null || !IsInstanceValid(_currentLine)) return;
+        if (_currentLine == null || !IsInstanceValid(_currentLine)) return;
 
         this.Visible = true;
         _editLineBtn.Visible = true;
@@ -184,7 +184,7 @@ public partial class InformationPanel : Control
         int stopCount = _currentLine.Path.OfType<BusStop>().Count();
 
         int totalResidents = 0;
-        foreach(BusStop stop in _currentLine.Path.OfType<BusStop>())
+        foreach (BusStop stop in _currentLine.Path.OfType<BusStop>())
         {
             totalResidents += stop.GetHouseCount();
         }
@@ -222,7 +222,8 @@ public partial class InformationPanel : Control
         {
             _currentLine.Delete();
             _currentType = InfoPanelType.None;
-        }else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
+        }
+        else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
         {
             GD.Print("Bus stop - Delete button pressed");
             _currentType = InfoPanelType.None;

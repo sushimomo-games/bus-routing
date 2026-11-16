@@ -1,4 +1,4 @@
-[gd_scene load_steps=18format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=18 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -63,7 +63,9 @@ theme_override_constants/separation = 5
 
 [node name="TitleLabel" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "No information"
+horizontal_alignment = 1
 
 [node name="ButtonsRect" type="HBoxContainer" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
@@ -71,6 +73,7 @@ layout_mode = 2
 [node name="InfoText" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
 text = "Select a house, bus line, or bus stop to view the information."
+horizontal_alignment = 1
 
 [node name="EditBtn" type="Button" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 custom_minimum_size = Vector2(100, 40)
@@ -89,6 +92,8 @@ text = "Delete"
 [node name="UpgradesLabel" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
 text = "Upgrades"
 
 [node name="UpgradesContainer" type="HBoxContainer" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
