@@ -28,11 +28,13 @@ public partial class BusStop : RoadNode
             .ToList();
     }
 
+    public int GetHouseCount() =>
+        LevelState.AllHouses.Count(house => house.ReachableBusStop == this);
+
     // Signals
     private void _on_bus_stop_area_mouse_entered()
     {
         _walkRadiusSprite.Visible = true;
-
     }
 
     private void _on_bus_stop_area_mouse_exited()
@@ -40,55 +42,9 @@ public partial class BusStop : RoadNode
         _walkRadiusSprite.Visible = false;
     }
 
-
-    /// <summary>
-    /// Counts how many houses are able to access bus stop.
-    /// Uses ReachableBusStop to check which houses are in radius of current Bus Stop.
-    /// Output is currently to terminal - will be hooked up with Information Panel.
-    /// </summary>
-    private void _on_bus_stop_clicked(Node viewport,
-        InputEvent @event,
-        long shapeIdx)
-    {
-
-        int _houseCount = 0;
-
-        foreach (House house in LevelState.AllHouses)
-        {
-            if (house.ReachableBusStop == this)
-            {
-                _houseCount++;
-            }
-        }
-
-        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
-        {
-            House.DeselectHouses();
-            LevelState.InformationPanel.ShowBusStop(this, _houseCount);
-        }
-
-    }
-    public int GetHouseCount() /// allows outside classes to use this method and logic of counting the houses. Done by Malachi
-    {
-        int houseCount = 0;
-
-        foreach (House house in LevelState.AllHouses)
-        {
-            if (house.ReachableBusStop == this)
-            {
-                houseCount++;
-            }
-        }
-
-        return houseCount;
-    }
-
     public override void _ExitTree()
     {
         LevelState.AllBusStops.Remove(this);
         LevelState.AllRoadNodes.Remove(this);
-        LevelState.Budget -= Cost.BusStopRemoval;
     }
-
-
 }

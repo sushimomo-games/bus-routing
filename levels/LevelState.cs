@@ -24,7 +24,7 @@ public partial class LevelState : Node
     public static List<House> AllHouses { get; set; } = [];
     public static List<Destination> AllDestinations { get; set; } = [];
     public static List<Node> AllBusStops { get; set; } = [];
-
+    
     /// <summary>
     /// All road nodes in the current level which includes bus stops and
     /// intersections. This is mostly for debugging purposes.
@@ -58,6 +58,19 @@ public partial class LevelState : Node
     }
 
     /// <summary>
+    /// Reserves a color for a restored or redone line.
+    /// </summary>
+    public static void ReserveBusLineColor(KeyValuePair<string, Color> colorInfo)
+    {
+        _availableColors.Remove(colorInfo);
+    }
+
+    public static void ResetAvailableColors()
+    {
+        _availableColors = new List<KeyValuePair<string, Color>>(BusLineColors.ColorList);
+    }
+
+    /// <summary>
     /// Returns a route color back to the pool of available colors.
     /// Call this when a route is deleted.
     /// </summary>
@@ -68,15 +81,6 @@ public partial class LevelState : Node
             return;
         }
         _availableColors.Add(colorInfo);
-    }
-
-    /// <summary>
-    /// Removes a specific route color from the pool of available colors.
-    /// Call this when a previously deleted route is restored (e.g. undo).
-    /// </summary>
-    public static void ReserveBusLineColor(KeyValuePair<string, Color> colorInfo)
-    {
-        _availableColors.Remove(colorInfo);
     }
 
     /// <summary>
@@ -96,7 +100,7 @@ public partial class LevelState : Node
     {
         return AllHouses.All(house => house.IsChecked);
     }
-
+    
     public static void UpdateAllHouseStatuses()
     {
         foreach (var house in AllHouses)
@@ -111,7 +115,7 @@ public partial class LevelState : Node
     public static float CalculateSegmentOffsetAmount(BusLine targetBusLine, RoadNode nodeA, RoadNode nodeB, float lineSpacing)
     {
         var busLinesOnSegment = GetBusLinesOnSegment(nodeA, nodeB);
-
+        
         if (busLinesOnSegment.Count <= 1)
         {
             return 0f;
@@ -123,7 +127,7 @@ public partial class LevelState : Node
         float totalWidth = (busLinesOnSegment.Count - 1) * lineSpacing;
         float baseOffset = -totalWidth / 2.0f + (slotIndex * lineSpacing);
 
-        bool isCanonical = IsCanonicalDirection(nodeA, nodeB);
+        bool isCanonical =IsCanonicalDirection(nodeA, nodeB);
         return isCanonical ? baseOffset : -baseOffset;
     }
 
@@ -134,7 +138,7 @@ public partial class LevelState : Node
     public static List<BusLine> GetBusLinesOnSegment(RoadNode nodeA, RoadNode nodeB)
     {
         var busLines = new List<BusLine>();
-
+        
         foreach (var busLine in AllBusLines)
         {
             if (BusLineContainsSegment(busLine, nodeA, nodeB))

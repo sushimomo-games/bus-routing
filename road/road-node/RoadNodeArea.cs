@@ -66,6 +66,14 @@ public partial class RoadNodeArea : Area2D
             {
                 BusLineEditor.StartBusLineCreation(selectedRoadNode);
             }
+            else if (CurrentBusLineCreationStep == AddingSubsequentStops
+                  || CurrentBusLineCreationStep == ContinuingEdit)
+            {
+                // Support click-to-click route construction as well as dragging
+                // across nodes. ContinueBusLineCreation ignores the active node,
+                // so a node already added by mouse movement won't be duplicated.
+                BusLineEditor.ContinueBusLineCreation(selectedRoadNode);
+            }
             else if (CurrentBusLineCreationStep == BeginningEdit)
             {
                 GD.Print($"Clicked on node: {selectedRoadNode.Name} during busLine edit. {SelectedBusLine.ColorName}");

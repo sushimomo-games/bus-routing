@@ -29,7 +29,7 @@ public partial class BusLineEditor : Node
     /// a portion of the bus line, allowing for flexible editing and
     /// visualization before finalizing the route.
     /// </summary>
-    public static List<DraftSegment> DraftLineSegments { get; set; } = [];
+    public static List<DraftSegment> DraftLineSegments { get; private set; } = [];
     private static bool _isEditingFromStart;
     public static bool IsEditingFromStart => _isEditingFromStart;
     private static Label _creatingNewLineLabel;
@@ -133,20 +133,18 @@ public partial class BusLineEditor : Node
             // Restore the correct active mode
             CurrentBusLineCreationStep = previousStep;
 
-            Record(() => StartNewSegment(nextNode));
+            StartNewSegment(nextNode);
             _isEditingFromStart = false;
             BeginMouseTrackingLineAt(nextNode, _busLineInProgress.Color);
             return;
         }
 
-        Record(() =>
-        {
-            if (_isEditingFromStart)
-                _activeSegment.Prepend(nextNode);
-            else
-                _activeSegment.Append(nextNode);
-            CheckAndMergeSegments();
-        });
+        if (_isEditingFromStart)
+            _activeSegment.Prepend(nextNode);
+        else
+            _activeSegment.Append(nextNode);
+
+        CheckAndMergeSegments();
 
         var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
         
@@ -192,8 +190,11 @@ public partial class BusLineEditor : Node
         else
         {
             LevelState.AllBusLines.Add(_busLineInProgress);
-            History.LogEdit(new FinalizeBusLineEdit(_busLineInProgress));
+            var routeList = CurrentLevel.GetNode<ItemList>(BusLineListNode);
+            routeList.AddItem(_busLineInProgress.ColorName + " line");
+            UpdateAllHouseStatuses();
             RefreshAllBusLineVisuals();
+            SaveGame.SaveCurrentLevel();
             
             ResetState();
         }
@@ -212,9 +213,6 @@ public partial class BusLineEditor : Node
             _busLineInProgress.ColorName,
             _busLineInProgress.Color
         );
-        foreach (var segment in DraftLineSegments)
-            segment.QueueFree();
-        DraftLineSegments.Clear();
         ReturnBusLineColor(busLineInProgressColor);
         _busLineInProgress.QueueFree();
         ResetState();
@@ -263,6 +261,38 @@ public partial class BusLineEditor : Node
         return false;
     }
 
+    public static void RestoreSegments(List<List<RoadNode>> snapshots)
+    {
+        if (_busLineInProgress == null)
+            return;
+
+        foreach (var segment in DraftLineSegments)
+            segment.QueueFree();
+        DraftLineSegments.Clear();
+
+        foreach (var nodes in snapshots.Where(segmentNodes => segmentNodes.Count > 0))
+        {
+            var segment = new DraftSegment(nodes[0], _busLineInProgress);
+            for (var index = 1; index < nodes.Count; index++)
+                segment.Append(nodes[index]);
+
+            _busLineInProgress.AddChild(segment);
+            DraftLineSegments.Add(segment);
+        }
+
+        _activeSegment = DraftLineSegments.LastOrDefault();
+        _mouseTrackingLine?.QueueFree();
+        _mouseTrackingLine = null;
+
+        if (_activeSegment != null
+            && (CurrentBusLineCreationStep == AddingSubsequentStops
+                || CurrentBusLineCreationStep == ContinuingEdit))
+        {
+            var activeNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
+            BeginMouseTrackingLineAt(activeNode, _busLineInProgress.Color);
+        }
+    }
+
     /// <summary>
     /// Starts a completely new disjointed segment while the editor is in a paused state.
     /// </summary>
@@ -281,7 +311,7 @@ public partial class BusLineEditor : Node
         CurrentBusLineCreationStep = AddingSubsequentStops;
         _isEditingFromStart = false; 
 
-        Record(() => StartNewSegment(startNode));
+        StartNewSegment(startNode);
         _activeSegment = DraftLineSegments.Last();
 
         BeginMouseTrackingLineAt(startNode, _busLineInProgress.Color);
@@ -289,16 +319,11 @@ public partial class BusLineEditor : Node
 
     public static void StartBusLineEdit(BusLine busLine, RoadNode clickedNode)
     {
-        DraftHistory.Clear();
         IsInEditingMode = true;
         CurrentBusLineCreationStep = ContinuingEdit;
         GD.Print($"Starting to edit busLine: {busLine.ColorName}");
 
-        _busLineInProgress = new BusLine
-        {
-            ColorName = busLine.ColorName,
-            Color = busLine.Color
-        };
+        _busLineInProgress = new BusLine(busLine.ID, busLine.ColorName, busLine.Color);
         CurrentLevel.AddChild(_busLineInProgress);
         
         // Push the existing path into a draft segment so it can be edited
@@ -317,6 +342,7 @@ public partial class BusLineEditor : Node
     public static void FinalizeBusLineEdit()
     {
         var editedBusLine = SelectedBusLine;
+        var editCommitted = false;
         ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
 
         if (DraftLineSegments.Count > 1)
@@ -344,6 +370,7 @@ public partial class BusLineEditor : Node
             GD.Print($"BusLine edit successful. New path: {string.Join(", ", _busLineInProgress.Path.Select(node => node.Name))}.");
             SelectedBusLine.SetPath(_busLineInProgress.Path);
             UpdateAllHouseStatuses();
+            editCommitted = true;
         }
         
         // Clean up the draft segments
@@ -353,6 +380,8 @@ public partial class BusLineEditor : Node
         LevelState.RefreshAllBusLineVisuals();
         _busLineInProgress.QueueFree(); // Clean up the temporary editing duplicate
         _busLineInProgress = null;
+        if (editCommitted)
+            SaveGame.SaveCurrentLevel();
         ResetState();
     }
 
@@ -373,7 +402,6 @@ public partial class BusLineEditor : Node
         _mouseTrackingLine = null;
         EditorState.ActiveTool = EditorTool.None;
         _isEditingFromStart = false;
-        DraftHistory.Clear();
     }
 
     /// <summary>
@@ -383,7 +411,6 @@ public partial class BusLineEditor : Node
     /// <param name="startNode">The node from which to start the bus line creation.</param>
     public static void StartBusLineCreation(RoadNode startNode)
     {
-        DraftHistory.Clear();
         _creatingNewLineLabel = CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode);
         CurrentBusLineCreationStep = AddingSubsequentStops;
         _isEditingFromStart = false; 
@@ -433,74 +460,4 @@ public partial class BusLineEditor : Node
             }
         }
     }
-
-    /// <summary>
-    /// Replaces the current draft segments with ones rebuilt from a snapshot,
-    /// then repairs the editor's cursor state so drawing can continue.
-    /// </summary>
-    /// <param name="snapshot">
-    /// The segments to restore, one list of road nodes per segment, as produced
-    /// by <see cref="LineEdit.Snapshot"/>. Empty lists are skipped.
-    /// </param>
-    /// <remarks>
-    /// Frees every existing draft segment and the mouse tracking line, then
-    /// creates new <see cref="DraftSegment"/> instances as children of the bus
-    /// line in progress. The last restored segment becomes the active segment,
-    /// editing direction is reset to the end of the segment, and the creation
-    /// step is set to <c>PausedCreation</c>. No mouse tracking line is started,
-    /// so nothing follows the cursor until the user clicks a segment endpoint.
-    /// </remarks>
-    public static void RestoreSegments(List<List<RoadNode>> snapshot)
-    {
-        if (_busLineInProgress == null) return;
-
-        foreach (var seg in DraftLineSegments)
-            seg.QueueFree();
-        DraftLineSegments.Clear();
-        _mouseTrackingLine?.QueueFree();
-        _mouseTrackingLine = null;
-
-        foreach (var nodes in snapshot)
-        {
-            if (nodes.Count == 0) continue;
-
-            var seg = new DraftSegment(nodes[0], _busLineInProgress);
-            _busLineInProgress.AddChild(seg);
-            for (int i = 1; i < nodes.Count; i++)
-                seg.Append(nodes[i]);
-            DraftLineSegments.Add(seg);
-        }
-
-        _activeSegment = DraftLineSegments.LastOrDefault();
-        _isEditingFromStart = false;
-        
-        if (_activeSegment != null)
-            CurrentBusLineCreationStep = PausedCreation;
-    }
-    
-    /// <summary>
-    /// Runs a change to the draft segments and logs it to the undo history as
-    /// a before and after snapshot.
-    /// </summary>
-    /// <param name="mutate">
-    /// The action that modifies <see cref="DraftLineSegments"/>. It runs exactly
-    /// once between the two snapshots.
-    /// </param>
-    /// <remarks>
-    /// All user-driven changes to the draft segments should go through this
-    /// method so that they can be undone. Setup code that creates the initial
-    /// segment, such as <see cref="StartBusLineCreation"/> and
-    /// <see cref="StartBusLineEdit"/>, deliberately does not, so the first
-    /// segment of a session is not undoable.
-    /// </remarks>
-    private static void Record(System.Action mutate)
-    {
-        var before = LineEdit.Snapshot(DraftLineSegments);
-        GD.Print("[DEBUG - Editor] Recording edit: " + before.Count + " segments before, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
-        mutate();
-        var after = LineEdit.Snapshot(DraftLineSegments);
-        GD.Print("[DEBUG - Editor] Recording edit: " + after.Count + " segments after, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
-        DraftHistory.LogEdit(new LineEdit(before, after));
-    }
-
 }

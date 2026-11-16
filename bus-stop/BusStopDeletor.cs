@@ -23,21 +23,9 @@ public partial class BusStopDeletor : Area2D
             return;
         }
 
-        var busStop = GetParent<BusStop>(); 
-        if (BusLineEditor.BusLineInProgress != null && BusLineEditor.DraftLineSegments.Any(segment => segment.Nodes.Contains(busStop)))
-        {
-            var errorMessage = GetTree().CurrentScene.GetNode<ErrorMessage> 
-            (
-                ErrorMessageNode
-            );
-            errorMessage.DisplayMessage("Cannot Remove bus stops on lines currently being edited");
-            return; 
-        }
+        Budget -= Cost.BusStopRemoval;
 
-        var budgetBefore = Budget;
-
-        var position = busStop.GlobalPosition;
-
+        var busStop = GetParent<BusStop>();
 
         var affectedRoutes = AllBusLines.Where(busLine => busLine.ContainsNode(busStop)).ToList();
         foreach (var busLine in affectedRoutes)
@@ -46,8 +34,7 @@ public partial class BusStopDeletor : Area2D
             if (busLine.Path.OfType<BusStop>().Count() <= 1)
             {
                 var busLineList = GetTree().CurrentScene.GetNode<BusLineList>(BusLineListNode);
-                busLineList.DeleteBusLine(busLine);
-                busLine.Delete();
+                busLineList.DeleteBusLine(busLine, save: false);
             }
         }
 
@@ -55,10 +42,10 @@ public partial class BusStopDeletor : Area2D
         var B = busStop.Neighbors[1];
         A.AddNeighbor(B);
         B.AddNeighbor(A);
-
+        
         A.RemoveNeighbor(busStop);
         B.RemoveNeighbor(busStop);
-
+        
         for (int i = busStop.ConnectedEdges.Count - 1; i >= 0; i--)
         {
             busStop.ConnectedEdges[i]?.QueueFree();
@@ -72,8 +59,6 @@ public partial class BusStopDeletor : Area2D
         edge.SetEndpoints(A, B);
 
         UpdateAllHouseStatuses();
-
-        if (affectedRoutes.Count == 0)
-            EditorState.History.LogEdit(new BusStopEdit(false, budgetBefore, position, A, B, null));
+        SaveGame.SaveCurrentLevel();
     }
 }

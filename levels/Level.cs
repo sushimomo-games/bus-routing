@@ -12,6 +12,8 @@ using static EditorState;
 /// </summary>
 public partial class Level : Node2D
 {
+    private const double AutoSaveIntervalSeconds = 30.0;
+
     public override void _Ready()
     {
         _ = new LevelState();
@@ -20,8 +22,21 @@ public partial class Level : Node2D
         DrawRoadEdges();
 
         Budget = Cost.InitialBudget;
-        History.Clear();
-        DraftHistory.Clear();
+        SaveGame.LoadCurrentLevel(this);
+
+        var autoSaveTimer = new Timer
+        {
+            WaitTime = AutoSaveIntervalSeconds,
+            OneShot = false,
+            Autostart = true
+        };
+        autoSaveTimer.Timeout += OnAutoSaveTimeout;
+        AddChild(autoSaveTimer);
+    }
+
+    private void OnAutoSaveTimeout()
+    {
+        SaveGame.SaveCurrentLevel();
     }
 
     public override void _Process(double delta)
@@ -31,6 +46,16 @@ public partial class Level : Node2D
         {
             DrawMouseTrackingLine(GetGlobalMousePosition());
         }
+    }
+
+    public async void RefreshDerivedStateAfterLoad()
+    {
+        await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+        if (!IsInsideTree())
+            return;
+
+        LevelState.UpdateAllHouseStatuses();
+        LevelState.RefreshAllBusLineVisuals();
     }
 
 
@@ -44,7 +69,7 @@ public partial class Level : Node2D
         }
 
         var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
-
+        
         foreach (Node node in intersectionNodes)
         {
             if (node is IntersectionNode intersectionNode)
