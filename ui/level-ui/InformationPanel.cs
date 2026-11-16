@@ -153,6 +153,8 @@ public partial class InformationPanel : Control
     /// </summary>
     private void RefreshBusLineDisplay()
     {
+        ClearSelectedStop();
+        
         if (_currentLine == null) return;
 
         this.Visible = true;
@@ -213,6 +215,7 @@ public partial class InformationPanel : Control
     public void ShowHouse(House house, String displayInfo = null)
     {
         UnsubscribeBusLineEvents();
+        ClearSelectedStop();
 
         _currentType = InfoPanelType.House;
         _currentHouse = house;
@@ -231,20 +234,33 @@ public partial class InformationPanel : Control
     {
         UnsubscribeBusLineEvents();
 
+        ClearSelectedStop();
+
         _currentType = InfoPanelType.BusStop;
         _currentStop = stop;
+        _currentStop.SetWalkRadiusPersistence(true);
 
         this.Visible = true;
-
         //Delete button for bus stop currently non-functional; merely reads
         //input signal at this point
         _deleteBtn.Visible = true;
         _editLineBtn.Visible = false;
 
+        stop.WalkRadius.Visible = true;
+
         int liveCount = stop.GetHouseCount();
 
         TitleLabel.Text = "Bus Stop";
         InfoText.Text = liveCount + " residents have access to this stop";
+    }
+
+    public void ClearSelectedStop()
+    {
+        if (_currentStop != null)
+        {
+            _currentStop.SetWalkRadiusPersistence(false);
+            _currentStop = null;
+        }
     }
 
     private void _hideButtons()
