@@ -17,4 +17,15 @@ public partial class UndoButton : TextureButton
             EditorState.History.Undo();
         }
     }
+
+    public override void _Process(double delta)
+    {
+        // It chooses draft stack while drawing a line, main stack otherwise.
+        var history = BusLineEditor.BusLineInProgress != null
+            ? EditorState.DraftHistory
+            : EditorState.History;
+
+        Disabled = !history.CanUndo;
+        Modulate = Disabled ? new Color(0.2f, 0.2f, 0.2f, 0.25f) : Colors.White;
+    }
 }
