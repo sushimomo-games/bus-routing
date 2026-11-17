@@ -20,7 +20,11 @@ public enum BusLineCreationStep
     AddingSubsequentStops,
     PausedCreation,
     BeginningEdit,
-    ContinuingEdit
+    ContinuingEdit,
+    /// <summary>
+    /// The slice tool is on. Clicking a road on the draft line removes it.
+    /// </summary>
+    Slicing
 }
 
 /// <summary>

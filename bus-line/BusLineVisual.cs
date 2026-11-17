@@ -271,6 +271,9 @@ public partial class BusLineVisual : Node2D
     /// This is what makes the buslines actually clickable 
     public override void _UnhandledInput(InputEvent @event)
     {
+        // DraftSegment handles clicks in slice mode.
+        if (EditorState.CurrentBusLineCreationStep == BusLineCreationStep.Slicing) return;
+
         if (@event is InputEventMouseButton mouse &&
             mouse.Pressed &&
             mouse.ButtonIndex == MouseButton.Left)

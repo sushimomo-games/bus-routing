@@ -37,6 +37,12 @@ public partial class BusLineEditor : Node
     public static bool IsInEditingMode { get; private set; }
 
     /// <summary>
+    /// The finished line being edited. Its visual is hidden during the edit, so it
+    /// doesn't show through where the draft has been sliced.
+    /// </summary>
+    private static BusLine _editedBusLine;
+
+    /// <summary>
     /// Obtains the road node to begin the the mouse tracking from, and what
     /// color the line should be drawn in.
     /// </summary>
@@ -301,6 +307,9 @@ public partial class BusLineEditor : Node
         };
         CurrentLevel.AddChild(_busLineInProgress);
 
+        _editedBusLine = busLine;
+        if (busLine.Visual != null) busLine.Visual.Visible = false;
+
         // Push the existing path into a draft segment so it can be edited
         StartNewSegment(busLine.Path[0]);
         for (int i = 1; i < busLine.Path.Count; i++)
@@ -322,6 +331,16 @@ public partial class BusLineEditor : Node
         if (DraftLineSegments.Count > 1)
         {
             errorMessage.DisplayMessage("Connect all route segments before finalizing edit.");
+            return;
+        }
+
+        // Slicing every road leaves no segments. Treat that as a line that is too short.
+        if (DraftLineSegments.Count == 0)
+        {
+            errorMessage.DisplayMessage("BusLine must have at least 2 stops");
+            _busLineInProgress.QueueFree();
+            _busLineInProgress = null;
+            ResetState();
             return;
         }
 
@@ -364,6 +383,10 @@ public partial class BusLineEditor : Node
     /// </summary>
     public static void ResetState()
     {
+        if (GodotObject.IsInstanceValid(_editedBusLine) && _editedBusLine.Visual != null)
+            _editedBusLine.Visual.Visible = true;
+        _editedBusLine = null;
+
         IsInEditingMode = false;
         CurrentLevel.GetNode<Label>(LineEditorStatusLabelNode).Visible = false;
         CurrentLevel.GetNode<Button>(EndBusLineButtonNode).Visible = false;
@@ -435,6 +458,87 @@ public partial class BusLineEditor : Node
     }
 
     /// <summary>
+    /// Turns slice mode on or off while a bus line is being edited.
+    /// If Edit was clicked but no end stop yet, this starts the edit first.
+    /// </summary>
+    /// <remarks>
+    /// Turning it on stops drawing and removes the mouse tracking line. Turning it off
+    /// pauses the edit, so the player clicks a segment endpoint to keep drawing.
+    /// </remarks>
+    public static void ToggleSlicing()
+    {
+        // After Edit is clicked, the edit only starts once an end stop is clicked. Start it here instead.
+        if (!IsInEditingMode && CurrentBusLineCreationStep == BeginningEdit
+            && GodotObject.IsInstanceValid(SelectedBusLine) && SelectedBusLine.Path.Count > 0)
+        {
+            StartBusLineEdit(SelectedBusLine, SelectedBusLine.Path[0]);
+        }
+
+        if (!IsInEditingMode)
+        {
+            CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode)
+                .DisplayMessage("Edit a bus line before slicing it.");
+            return;
+        }
+
+        if (CurrentBusLineCreationStep == Slicing)
+        {
+            CurrentBusLineCreationStep = PausedCreation;
+            return;
+        }
+
+        FinalizeDraftSegment();
+        CurrentBusLineCreationStep = Slicing;
+    }
+
+    /// <summary>
+    /// Removes one road from a draft segment and logs a <see cref="SliceEdit"/>.
+    /// </summary>
+    /// <param name="segment">The segment the player clicked.</param>
+    /// <param name="road">The road from segment.Nodes[road] to segment.Nodes[road + 1].</param>
+    /// <remarks>
+    /// The segment splits into the part before the road and the part after it.
+    /// A part with only one node has no roads left, so it is dropped.
+    /// </remarks>
+    public static void SliceDraftSegment(DraftSegment segment, int road)
+    {
+        if (CurrentBusLineCreationStep != Slicing) return;
+
+        int position = DraftLineSegments.IndexOf(segment);
+        if (position < 0 || road < 0 || road >= segment.Nodes.Count - 1) return;
+
+        Record(() =>
+        {
+            var nodes = segment.Nodes;
+            var parts = new[]
+            {
+                nodes.GetRange(0, road + 1),
+                nodes.GetRange(road + 1, nodes.Count - road - 1)
+            };
+
+            segment.QueueFree();
+            DraftLineSegments.RemoveAt(position);
+            DraftLineSegments.InsertRange(position,
+                parts.Where(part => part.Count >= 2).Select(CreateSegment));
+
+            if (_activeSegment == segment) _activeSegment = DraftLineSegments.LastOrDefault();
+        }, (before, after) => new SliceEdit(before, after));
+    }
+
+    /// <summary>
+    /// Creates a draft segment through the given nodes, as a child of the bus line in progress.
+    /// It is not added to <see cref="DraftLineSegments"/>.
+    /// </summary>
+    private static DraftSegment CreateSegment(List<RoadNode> nodes)
+    {
+        var segment = new DraftSegment(nodes[0], _busLineInProgress);
+        _busLineInProgress.AddChild(segment);
+        for (int i = 1; i < nodes.Count; i++)
+            segment.Append(nodes[i]);
+        return segment;
+    }
+
+    /// <summary>
     /// Replaces the current draft segments with ones rebuilt from a snapshot,
     /// then repairs the editor's cursor state so drawing can continue.
     /// </summary>
@@ -447,8 +551,9 @@ public partial class BusLineEditor : Node
     /// creates new <see cref="DraftSegment"/> instances as children of the bus
     /// line in progress. The last restored segment becomes the active segment,
     /// editing direction is reset to the end of the segment, and the creation
-    /// step is set to <c>PausedCreation</c>. No mouse tracking line is started,
-    /// so nothing follows the cursor until the user clicks a segment endpoint.
+    /// step is set to <c>PausedCreation</c> unless slice mode is on. No mouse
+    /// tracking line is started, so nothing follows the cursor until the user
+    /// clicks a segment endpoint.
     /// </remarks>
     public static void RestoreSegments(List<List<RoadNode>> snapshot)
     {
@@ -463,18 +568,14 @@ public partial class BusLineEditor : Node
         foreach (var nodes in snapshot)
         {
             if (nodes.Count == 0) continue;
-
-            var seg = new DraftSegment(nodes[0], _busLineInProgress);
-            _busLineInProgress.AddChild(seg);
-            for (int i = 1; i < nodes.Count; i++)
-                seg.Append(nodes[i]);
-            DraftLineSegments.Add(seg);
+            DraftLineSegments.Add(CreateSegment(nodes));
         }
 
         _activeSegment = DraftLineSegments.LastOrDefault();
         _isEditingFromStart = false;
 
-        if (_activeSegment != null)
+        // Undoing a slice keeps slice mode on.
+        if (_activeSegment != null && CurrentBusLineCreationStep != Slicing)
             CurrentBusLineCreationStep = PausedCreation;
     }
 
@@ -493,14 +594,19 @@ public partial class BusLineEditor : Node
     /// <see cref="StartBusLineEdit"/>, deliberately does not, so the first
     /// segment of a session is not undoable.
     /// </remarks>
-    private static void Record(System.Action mutate)
+    /// <param name="makeEdit">
+    /// Builds the edit from the before and after snapshots. Defaults to a <see cref="LineEdit"/>.
+    /// </param>
+    private static void Record(
+        System.Action mutate,
+        System.Func<List<List<RoadNode>>, List<List<RoadNode>>, LineEdit> makeEdit = null)
     {
         var before = LineEdit.Snapshot(DraftLineSegments);
         GD.Print("[DEBUG - Editor] Recording edit: " + before.Count + " segments before, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
         mutate();
         var after = LineEdit.Snapshot(DraftLineSegments);
         GD.Print("[DEBUG - Editor] Recording edit: " + after.Count + " segments after, " + DraftLineSegments.Sum(s => s.Nodes.Count) + " nodes total.");
-        DraftHistory.LogEdit(new LineEdit(before, after));
+        DraftHistory.LogEdit(makeEdit?.Invoke(before, after) ?? new LineEdit(before, after));
     }
 
 }
