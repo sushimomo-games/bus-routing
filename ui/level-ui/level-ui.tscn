@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
-[ext_resource type="Script" path="res://ui/level-ui/bus-line-list/BusLineList.cs" id="12_busline"]
+[ext_resource type="Script" uid="uid://81xn8ckdt0nr" path="res://ui/level-ui/bus-line-list/BusLineList.cs" id="12_busline"]
 
 [sub_resource type="Gradient" id="Gradient_hn6xl"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -80,6 +80,7 @@ offset_bottom = 23.0
 script = ExtResource("6_07au4")
 
 [node name="BusLinesListContainer" type="PanelContainer" parent="."]
+layout_mode = 0
 offset_left = 12.0
 offset_top = 48.0
 offset_right = 190.0
@@ -175,5 +176,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
+[node name="ResetButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Reset"
+
 [connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
+[connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
+[connection signal="pressed" from="HBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]

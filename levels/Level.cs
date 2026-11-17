@@ -12,79 +12,79 @@ using static EditorState;
 /// </summary>
 public partial class Level : Node2D
 {
-    private const double AutoSaveIntervalSeconds = 30.0;
+	private const double AutoSaveIntervalSeconds = 30.0;
 
-    public override void _Ready()
-    {
-        _ = new LevelState();
-        LevelState.CurrentLevel = this;
+	public override void _Ready()
+	{
+		_ = new LevelState();
+		LevelState.CurrentLevel = this;
 
-        DrawRoadEdges();
+		DrawRoadEdges();
 
-        Budget = Cost.InitialBudget;
-        SaveGame.LoadCurrentLevel(this);
+		Budget = Cost.InitialBudget;
+		SaveGame.LoadCurrentLevel(this);
 
-        var autoSaveTimer = new Timer
-        {
-            WaitTime = AutoSaveIntervalSeconds,
-            OneShot = false,
-            Autostart = true
-        };
-        autoSaveTimer.Timeout += OnAutoSaveTimeout;
-        AddChild(autoSaveTimer);
-    }
+		var autoSaveTimer = new Timer
+		{
+			WaitTime = AutoSaveIntervalSeconds,
+			OneShot = false,
+			Autostart = true
+		};
+		autoSaveTimer.Timeout += OnAutoSaveTimeout;
+		AddChild(autoSaveTimer);
+	}
 
-    private void OnAutoSaveTimeout()
-    {
-        SaveGame.SaveCurrentLevel();
-    }
+	private void OnAutoSaveTimeout()
+	{
+		SaveGame.SaveCurrentLevel();
+	}
 
-    public override void _Process(double delta)
-    {
-        if (CurrentBusLineCreationStep == AddingSubsequentStops
-         || CurrentBusLineCreationStep == ContinuingEdit)
-        {
-            DrawMouseTrackingLine(GetGlobalMousePosition());
-        }
-    }
+	public override void _Process(double delta)
+	{
+		if (CurrentBusLineCreationStep == AddingSubsequentStops
+		 || CurrentBusLineCreationStep == ContinuingEdit)
+		{
+			DrawMouseTrackingLine(GetGlobalMousePosition());
+		}
+	}
 
-    public async void RefreshDerivedStateAfterLoad()
-    {
-        await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
-        if (!IsInsideTree())
-            return;
+	public async void RefreshDerivedStateAfterLoad()
+	{
+		await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+		if (!IsInsideTree())
+			return;
 
-        LevelState.UpdateAllHouseStatuses();
-        LevelState.RefreshAllBusLineVisuals();
-    }
+		LevelState.UpdateAllHouseStatuses();
+		LevelState.RefreshAllBusLineVisuals();
+	}
 
 
-    private void DrawRoadEdges()
-    {
-        var intersectionNodes = GetNode("IntersectionNodes").GetChildren();
-        if (intersectionNodes == null)
-        {
-            GD.PrintErr("No RoadNodes found. Check if RoadNodes Node exists.");
-            return;
-        }
+	private void DrawRoadEdges()
+	{
+		var intersectionNodes = GetNode("IntersectionNodes").GetChildren();
+		if (intersectionNodes == null)
+		{
+			GD.PrintErr("No RoadNodes found. Check if RoadNodes Node exists.");
+			return;
+		}
 
-        var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
-        
-        foreach (Node node in intersectionNodes)
-        {
-            if (node is IntersectionNode intersectionNode)
-            {
-                foreach (IntersectionNode neighbor in intersectionNode.Neighbors)
-                {
-                    if (intersectionNode.GetInstanceId() < neighbor.GetInstanceId()) // Only draw edge once per pair (avoid duplicates)
-                    {
-                        var edge = roadEdgeScene.Instantiate<RoadEdge>();
-                        AddChild(edge);
-                        edge.SetEndpoints(intersectionNode, neighbor);
-                    }
-                }
-            }
-        }
-    }
+		var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
+		
+		foreach (Node node in intersectionNodes)
+		{
+			if (node is IntersectionNode intersectionNode)
+			{
+				foreach (IntersectionNode neighbor in intersectionNode.Neighbors)
+				{
+					if (intersectionNode.GetInstanceId() < neighbor.GetInstanceId()) // Only draw edge once per pair (avoid duplicates)
+					{
+						var edge = roadEdgeScene.Instantiate<RoadEdge>();
+						AddChild(edge);
+						edge.SetEndpoints(intersectionNode, neighbor);
+					}
+				}
+			}
+		}
+	}
 
 }

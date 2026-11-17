@@ -4,47 +4,47 @@ using System.Linq;
 
 public partial class BusStop : RoadNode
 {
-    [Export] public Godot.Collections.Array<RoadEdge> ConnectedEdges = [];
-    public Area2D BusStopArea => GetNode<Area2D>("BusStopArea");
-    public Area2D WalkRadius => GetNode<Area2D>("WalkRadius");
-    private Sprite2D _walkRadiusSprite => WalkRadius.GetNode<Sprite2D>("WalkRadiusSprite");
+	[Export] public Godot.Collections.Array<RoadEdge> ConnectedEdges = [];
+	public Area2D BusStopArea => GetNode<Area2D>("BusStopArea");
+	public Area2D WalkRadius => GetNode<Area2D>("WalkRadius");
+	private Sprite2D _walkRadiusSprite => WalkRadius.GetNode<Sprite2D>("WalkRadiusSprite");
 
-    public override void _Ready()
-    {
-        base._Ready();
-        LevelState.AllBusStops.Add(this);
-    }
+	public override void _Ready()
+	{
+		base._Ready();
+		LevelState.AllBusStops.Add(this);
+	}
 
-    /// <summary>
-    /// Returns all bus stops that are within walking distance of this bus stop.
-    /// Uses the WalkRadius Area2D to detect nearby BusStopArea collisions.
-    /// </summary>
-    public List<BusStop> GetNearbyBusStops()
-    {
-        return WalkRadius.GetOverlappingAreas()
-            .Select(area => area.GetParent())
-            .OfType<BusStop>()
-            .Where(stop => stop != this)
-            .ToList();
-    }
+	/// <summary>
+	/// Returns all bus stops that are within walking distance of this bus stop.
+	/// Uses the WalkRadius Area2D to detect nearby BusStopArea collisions.
+	/// </summary>
+	public List<BusStop> GetNearbyBusStops()
+	{
+		return WalkRadius.GetOverlappingAreas()
+			.Select(area => area.GetParent())
+			.OfType<BusStop>()
+			.Where(stop => stop != this)
+			.ToList();
+	}
 
-    public int GetHouseCount() =>
-        LevelState.AllHouses.Count(house => house.ReachableBusStop == this);
+	public int GetHouseCount() =>
+		LevelState.AllHouses.Count(house => house.ReachableBusStop == this);
 
-    // Signals
-    private void _on_bus_stop_area_mouse_entered()
-    {
-        _walkRadiusSprite.Visible = true;
-    }
+	// Signals
+	private void _on_bus_stop_area_mouse_entered()
+	{
+		_walkRadiusSprite.Visible = true;
+	}
 
-    private void _on_bus_stop_area_mouse_exited()
-    {
-        _walkRadiusSprite.Visible = false;
-    }
+	private void _on_bus_stop_area_mouse_exited()
+	{
+		_walkRadiusSprite.Visible = false;
+	}
 
-    public override void _ExitTree()
-    {
-        LevelState.AllBusStops.Remove(this);
-        LevelState.AllRoadNodes.Remove(this);
-    }
+	public override void _ExitTree()
+	{
+		LevelState.AllBusStops.Remove(this);
+		LevelState.AllRoadNodes.Remove(this);
+	}
 }
