@@ -24,7 +24,7 @@ public partial class BusLineList : ItemList
     /// delete can be undone. If false (e.g. the line was invalidated by deleting a bus stop) the
     /// line is freed immediately.
     /// </param>
-    public void DeleteBusLine(BusLine busLine, bool undoable = false)
+    public void DeleteBusLine(BusLine busLine, bool undoable = false, bool save = true)
     {
         GD.Print($"Deleting busLine: {busLine.ColorName}");
 
@@ -35,6 +35,17 @@ public partial class BusLineList : ItemList
         }
 
         busLine.DeleteFromLevel(undoable);
+        SelectedBusLine = null;
+        LevelState.UpdateAllHouseStatuses();
+        if (save)
+            SaveGame.SaveCurrentLevel();
+    }
+
+    public void RebuildFromState()
+    {
+        Clear();
+        foreach (var busLine in LevelState.AllBusLines)
+            AddItem(busLine.ColorName + " line");
         SelectedBusLine = null;
     }
 

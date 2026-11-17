@@ -1,4 +1,4 @@
-[gd_scene load_steps=18format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=16 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://jf2a1v8x5v1v" path="res://ui/buttons/undo-button.tscn" id="9_itewi"]
 [ext_resource type="PackedScene" uid="uid://be8cl7jr4j0gc" path="res://ui/buttons/redo-button.tscn" id="10_gwjw8"]
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
+[ext_resource type="Script" uid="uid://81xn8ckdt0nr" path="res://ui/level-ui/bus-line-list/BusLineList.cs" id="12_busline"]
 [ext_resource type="PackedScene" uid="uid://jofckxx88jrf" path="res://ui/settings-menu/settings-menu.tscn" id="12_settings"]
 [ext_resource type="PackedScene" path="res://ui/level-ui/upgrade-tile/upgrade-tile.tscn" id="13_tile"]
 
@@ -118,6 +119,19 @@ offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("6_07au4")
 
+[node name="BusLinesListContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 48.0
+offset_right = 190.0
+offset_bottom = 288.0
+
+[node name="BusLineList" type="ItemList" parent="BusLinesListContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("12_busline")
+
 [node name="LineEditorStatusLabel" type="Label" parent="."]
 visible = false
 layout_mode = 1
@@ -202,6 +216,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
+[node name="ResetButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Reset"
+
+[connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
 [node name="SettingsMenu" parent="." instance=ExtResource("12_settings")]
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
+[connection signal="pressed" from="HBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]

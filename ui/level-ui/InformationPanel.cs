@@ -59,16 +59,16 @@ public partial class InformationPanel : Control
         TitleLabel.AddThemeColorOverride("font_color", line.Color);
         int stopCount = line.Path.OfType<BusStop>().Count();
 
-        int totalResidents = 0;
-        foreach (BusStop stop in line.Path.OfType<BusStop>())
-        {
-            totalResidents += stop.GetHouseCount();
-        }
-        InfoText.Text =
-        $"Number of stops: {stopCount}\n\n" +
-        $"Residents served: {totalResidents}\n\n" +
-        $"Time to complete: {line.TimeToComplete:F2} minutes";
-    }
+		int totalResidents = 0;
+		foreach (BusStop stop in line.Path.OfType<BusStop>())
+		{
+			totalResidents += stop.GetHouseCount();
+		}
+		InfoText.Text =
+		$"Number of stops: {stopCount}\n\n" +
+		$"Residents served: {totalResidents}\n\n" +
+		$"Time to complete: {line.TimeToComplete:F2} minutes";
+	}
 
     /// <summary>
     /// Allows user to edit bus line from the information panel. Indicates to user

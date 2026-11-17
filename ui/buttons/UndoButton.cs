@@ -15,6 +15,7 @@ public partial class UndoButton : TextureButton
         {
             GD.Print($"[DEBUG - Undo] Undo pressed (main). CanUndo = {EditorState.History.CanUndo}");
             EditorState.History.Undo();
+            SaveGame.SaveCurrentLevel();
         }
     }
 }
