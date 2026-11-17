@@ -152,23 +152,7 @@ public partial class InformationPanel : Control
         line.OnPathChanged += OnBusLinePathChanged;
         line.OnDeleted += OnBusLineDeleted;
 
-        this.Visible = true; //makes the bus line information visible when the user clicks the line
-        _editLineBtn.Visible = true;
-        _deleteBtn.Visible = true;
-
-        TitleLabel.Text = line.ColorName + " " + "busline"; //changes the color of the busline name
-        TitleLabel.AddThemeColorOverride("font_color", line.Color);
-        int stopCount = line.Path.OfType<BusStop>().Count();
-
-        int totalResidents = 0;
-        foreach (BusStop stop in line.Path.OfType<BusStop>())
-        {
-            totalResidents += stop.GetHouseCount();
-        }
-        InfoText.Text =
-        $"Number of stops: {stopCount}\n\n" +
-        $"Residents served: {totalResidents}\n\n" +
-        $"Time to complete: {line.TimeToComplete:F2} minutes";
+        RefreshBusLineDisplay();
     }
 
     private void RefreshBusLineDisplay()
