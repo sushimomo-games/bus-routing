@@ -23,7 +23,20 @@ public partial class BusStopDeletor : Area2D
             return;
         }
 
-        Budget -= Cost.BusStopRemoval;
+        var busStop = GetParent<BusStop>();
+        if (BusLineEditor.BusLineInProgress != null && BusLineEditor.DraftLineSegments.Any(segment => segment.Nodes.Contains(busStop)))
+        {
+            var errorMessage = GetTree().CurrentScene.GetNode<ErrorMessage>
+            (
+                ErrorMessageNode
+            );
+            errorMessage.DisplayMessage("Cannot Remove bus stops on lines currently being edited");
+            return;
+        }
+
+        var budgetBefore = Budget;
+
+        var position = busStop.GlobalPosition;
 
         var busStop = GetParent<BusStop>();
 
@@ -60,5 +73,8 @@ public partial class BusStopDeletor : Area2D
 
         UpdateAllHouseStatuses();
         SaveGame.SaveCurrentLevel();
+
+        if (affectedRoutes.Count == 0)
+            EditorState.History.LogEdit(new BusStopEdit(false, budgetBefore, position, A, B, null, upgrades: busStop.PurchasedUpgrades.ToList()));
     }
 }

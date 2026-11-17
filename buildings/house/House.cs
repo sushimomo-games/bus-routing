@@ -216,11 +216,29 @@ public partial class House : Building
     {
         prevMat.SetShaderParameter("line_thickness", 4.0f);
         prevMat.SetShaderParameter("line_color", Colors.Black);
+
+        if (_houseSelected.CurrentItinerary != null)
+        {
+            ResetRouteHighlight();
+        }
+    }
+
+    /// <summary>
+    /// Resets the route to its original color should the user click on another house,
+    /// bus stop, or bus line.
+    /// </summary>
+    public static void ResetRouteHighlight()
+    {
+        foreach (var segment in _houseSelected.CurrentItinerary.Itinerary.OfType<RideSegment>())
+        {
+            segment.Line.Visual.ClearHighlight();
+        }
     }
 
     /// <summary>
     /// Called by BusStop.cs, BusLine.cs when a bus stop or bus line is selected.
-    /// Deselects houses so as to remove outlines, now that it is no longer selected.
+    /// Deselects houses so as to remove outlines and route highlight, now that it
+    /// is no longer selected.
     /// </summary>
     public static void DeselectHouses()
     {
@@ -230,6 +248,10 @@ public partial class House : Building
             if (_houseSelected._houseSprite?.Material is ShaderMaterial deselectMat)
             {
                 ResetHouseOutline(deselectMat);
+                if (_houseSelected.CurrentItinerary != null)
+                {
+                    ResetRouteHighlight();
+                }
             }
             _houseSelected = null;
         }

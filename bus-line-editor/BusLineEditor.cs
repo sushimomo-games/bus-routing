@@ -71,7 +71,7 @@ public partial class BusLineEditor : Node
         {
             if (DraftLineSegments.DoesEdgeExistBetween(activeNode, HoveredNode) || !activeNode.Neighbors.Contains(HoveredNode))
             {
-                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f); 
+                targetColor = new Color(1.0f, 0.0f, 0.0f, 0.5f);
             }
         }
 
@@ -92,10 +92,10 @@ public partial class BusLineEditor : Node
     public static void StartNewSegment(RoadNode startNode)
     {
         if (startNode == null || _busLineInProgress == null) return;
-        
+
         var newSegment = new DraftSegment(startNode, _busLineInProgress);
         _busLineInProgress.AddChild(newSegment); // Keeps it grouped visually under the bus line node
-        
+
         DraftLineSegments.Add(newSegment);
         _activeSegment = newSegment;
     }
@@ -119,7 +119,7 @@ public partial class BusLineEditor : Node
             GD.Print("Invalid route: Cannot traverse the same road twice.");
             ErrorMessage errorMessage = CurrentLevel.GetNode<ErrorMessage>(ErrorMessageNode);
             errorMessage.DisplayMessage("Cannot route a bus over the same road twice.");
-            return; 
+            return;
         }
 
         if (!activeNode.Neighbors.Contains(nextNode))
@@ -128,7 +128,7 @@ public partial class BusLineEditor : Node
             var previousStep = CurrentBusLineCreationStep;
 
             // This safely terminates the line visual, but overrides state to PausedCreation
-            FinalizeDraftSegment(); 
+            FinalizeDraftSegment();
 
             // Restore the correct active mode
             CurrentBusLineCreationStep = previousStep;
@@ -147,7 +147,7 @@ public partial class BusLineEditor : Node
         CheckAndMergeSegments();
 
         var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
-        
+
         _mouseTrackingLine?.QueueFree();
         BeginMouseTrackingLineAt(newActiveNode, _busLineInProgress.Color);
     }
