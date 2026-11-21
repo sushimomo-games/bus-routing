@@ -12,6 +12,9 @@ public partial class BusStop : RoadNode
 
     private readonly HashSet<BusStopUpgrade> _purchasedUpgrades = [];
 
+    private bool _isHovered = false;
+    private bool _isPersistent = false;
+
     /// <summary>
     /// The upgrades that have been purchased for this bus stop.
     /// </summary>
@@ -36,6 +39,27 @@ public partial class BusStop : RoadNode
     {
         base._Ready();
         LevelState.AllBusStops.Add(this);
+    }
+
+    /// <summary>
+    /// Determines if the walk radius should persist, depending on whether
+    /// it has been selected by the user or not. Also slightly deepens the color
+    /// so as to indicate which stop is selected while other stops may be
+    /// hovered over.
+    /// </summary>
+    public void SetWalkRadiusPersistence(bool persistent)
+    {
+        _isPersistent = persistent;
+        if (_isPersistent)
+        {
+            WalkRadius.Modulate = new Color(0.35686275f, 1, 2, 1);
+        }
+        else
+        {
+            WalkRadius.Modulate = new Color(0.35686275f, 1f, 1, 0.3529412f);
+        }
+
+        _walkRadiusSprite.Visible = _isHovered || _isPersistent;
     }
 
     /// <summary>
@@ -113,13 +137,17 @@ public partial class BusStop : RoadNode
     // Signals
     private void _on_bus_stop_area_mouse_entered()
     {
+        _isHovered = true;
         _walkRadiusSprite.Visible = true;
-
     }
 
     private void _on_bus_stop_area_mouse_exited()
     {
-        _walkRadiusSprite.Visible = false;
+        _isHovered = false;
+        if (!_isPersistent)
+        {
+            _walkRadiusSprite.Visible = false;
+        }
     }
 
 
