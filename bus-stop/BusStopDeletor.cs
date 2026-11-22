@@ -33,15 +33,29 @@ public partial class BusStopDeletor : Area2D
         var budgetBefore = Budget;
         var position = busStop.GlobalPosition;
 
-        var affectedRoutes = AllBusLines.Where(busLine => busLine.ContainsNode(busStop)).ToList();
+        // var affectedRoutes = AllBusLines.Where(busLine => busLine.ContainsNode(busStop)).ToList();
+        // foreach (var busLine in affectedRoutes)
+        // {
+        //     busLine.RemoveExcessLineSegments(busStop);
+
+        //     if (busLine.Path.OfType<BusStop>().Count() <= 1)
+        //     {
+        //         busLine.Delete();
+        //     }
+        // }
+
+        var affectedRoutes = AllBusLines
+            .Where(busLine => busLine.ContainsNode(busStop))
+            .ToList();
+
+        var linePathsBefore = affectedRoutes.ToDictionary(
+            line => line,
+            line => new List<RoadNode>(line.Path)
+        );
+
         foreach (var busLine in affectedRoutes)
         {
             busLine.RemoveExcessLineSegments(busStop);
-
-            if (busLine.Path.OfType<BusStop>().Count() <= 1)
-            {
-                busLine.Delete();
-            }
         }
 
         var A = busStop.Neighbors[0];
@@ -75,10 +89,16 @@ public partial class BusStopDeletor : Area2D
 
         UpdateAllHouseStatuses();
 
-        if (affectedRoutes.Count == 0)
-        {
-            EditorState.History.LogEdit(new BusStopEdit(false, budgetBefore, position, A, B, null, upgrades: busStop.PurchasedUpgrades.ToList()));
-        }
+        EditorState.History.LogEdit(new BusStopEdit(
+            false,
+            budgetBefore,
+            position,
+            A,
+            B,
+            busStop,
+            linePathsBefore: linePathsBefore,
+            upgrades: busStop.PurchasedUpgrades.ToList()
+        ));
 
     }
 }

@@ -70,7 +70,9 @@ public partial class InformationPanel : Control
             case InfoPanelType.House:
                 if (_currentHouse != null && IsInstanceValid(_currentHouse))
                 {
+                    _currentHouse.UpdateCheckStatus();
                     InfoText.Text = _currentHouse.GetDisplayInfo();
+                    _currentHouse.RefreshRouteHighlight();
                 }
                 else
                 {
@@ -106,7 +108,7 @@ public partial class InformationPanel : Control
             _currentLine.OnPathChanged -= OnBusLinePathChanged;
             _currentLine.OnDeleted -= OnBusLineDeleted;
         }
-        // RefreshBusLineDisplay();
+        RefreshBusLineDisplay();
     }
 
     /// <summary>

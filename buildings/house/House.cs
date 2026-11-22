@@ -243,10 +243,26 @@ public partial class House : Building
     /// </summary>
     public static void ResetRouteHighlight()
     {
+        if (_houseSelected?.CurrentItinerary == null) return;
         foreach (var segment in _houseSelected.CurrentItinerary.Itinerary.OfType<RideSegment>())
         {
             segment.Line.Visual.ClearHighlight();
         }
+    }
+
+    public void RefreshRouteHighlight()
+    {
+        if (CurrentItinerary == null) return;
+
+        foreach (var segment in CurrentItinerary.Itinerary.OfType<RideSegment>())
+        {
+            segment.Line.Visual.HighlightPath(segment.GetPathNodes());
+        }
+    }
+
+    public static void RefreshSelectedRouteHighlight()
+    {
+        _houseSelected?.RefreshRouteHighlight();
     }
 
     /// <summary>

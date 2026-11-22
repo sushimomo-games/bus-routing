@@ -25,7 +25,11 @@ public partial class BusStopEdit : AbstractEdit
     private readonly List<AbstractEdit> _lineEdits;
     private readonly IReadOnlyCollection<BusStopUpgrade> _upgrades;
 
-    public BusStopEdit(bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop, List<AbstractEdit> lineEdits = null, IReadOnlyCollection<BusStopUpgrade> upgrades = null)
+    private readonly BusStop _deletedStop;
+    private readonly Dictionary<BusLine, List<RoadNode>> _linePathsBefore;
+    private readonly Dictionary<BusLine, List<RoadNode>> _linePathsAfter;
+
+    public BusStopEdit(bool wasPlacement, uint budgetBefore, Vector2 position, RoadNode nodeA, RoadNode nodeB, BusStop stop, List<AbstractEdit> lineEdits = null, IReadOnlyCollection<BusStopUpgrade> upgrades = null, Dictionary<BusLine, List<RoadNode>> linePathsBefore = null)
     {
         this._wasPlacement = wasPlacement;
         this._budgetBefore = budgetBefore;
@@ -36,6 +40,13 @@ public partial class BusStopEdit : AbstractEdit
         this._stop = stop;
         this._lineEdits = lineEdits ?? [];
         this._upgrades = upgrades;
+
+        _deletedStop = stop;
+        _linePathsBefore = linePathsBefore ?? [];
+        _linePathsAfter = _linePathsBefore.Keys.ToDictionary(
+            line => line,
+            line => new List<RoadNode>(line.Path)
+        );
     }
 
     /// <summary> 
@@ -74,8 +85,10 @@ public partial class BusStopEdit : AbstractEdit
     private static void Finish(uint budget)
     {
         LevelState.Budget = budget;
+        House.ResetRouteHighlight();
         LevelState.UpdateAllHouseStatuses();
         LevelState.RefreshAllBusLineVisuals();
+        House.RefreshSelectedRouteHighlight();
     }
 
     /// <summary> 
@@ -142,6 +155,13 @@ public partial class BusStopEdit : AbstractEdit
 
         _stop.GetParent()?.RemoveChild(_stop);
         LevelState.AllBusStops.RemoveAll(s => s == _stop);
+
+        foreach (var (line, path) in _linePathsAfter)
+        {
+            if (!GodotObject.IsInstanceValid(line)) continue;
+            line.SetPath(path);
+        }
+
     }
 
     public override void OnDiscarded()
@@ -191,6 +211,15 @@ public partial class BusStopEdit : AbstractEdit
 
         _stop.AddNeighbor(_nodeB);
         _nodeB.AddNeighbor(_stop);
+
+        foreach (var (line, path) in _linePathsBefore)
+        {
+            if (!GodotObject.IsInstanceValid(line)) continue;
+
+            line.SetPath(path.Select(node =>
+                node == _deletedStop ? _stop : node
+            ).ToList());
+        }
     }
 
 
