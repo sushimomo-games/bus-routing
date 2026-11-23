@@ -11,10 +11,11 @@ public partial class SoundManager : Node
     /// <summary>
     /// The default sound effects to use for UI interactions, such as button presses.
     /// </summary>
-    [Export] public SoundEffectSet DefaultSounds = new SoundEffectSet
+    [Export]
+    public SoundEffectSet DefaultSounds = new SoundEffectSet
     {
         MouseDown = GD.Load<AudioStream>("res://assets/audio/mouse-down.wav"),
-        MouseUp   = GD.Load<AudioStream>("res://assets/audio/mouse-up.wav")
+        MouseUp = GD.Load<AudioStream>("res://assets/audio/mouse-up.wav")
     };
 
     /// <summary>
