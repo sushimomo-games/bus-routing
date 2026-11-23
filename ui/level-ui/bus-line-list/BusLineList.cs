@@ -29,21 +29,12 @@ public partial class BusLineList : ItemList
         GD.Print($"Deleting busLine: {busLine.ColorName}");
 
         int itemIndex = LevelState.AllBusLines.IndexOf(busLine);
-        if (itemIndex != -1)
+        if (itemIndex >= 0 && itemIndex < ItemCount)
         {
             RemoveItem(itemIndex);
         }
 
-        if (undoable)
-        {
-            busLine.Detach();
-            History.LogEdit(new DeleteBusLineEdit(busLine, itemIndex));
-        }
-        else
-        {
-            busLine.Delete();
-        }
-
+        busLine.DeleteFromLevel(undoable);
         SelectedBusLine = null;
         LevelState.UpdateAllHouseStatuses();
         if (save)

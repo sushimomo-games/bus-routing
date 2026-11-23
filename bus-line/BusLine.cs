@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static LevelState;
 
+
 /// <summary>
 /// Represents a finalized bus line running in the simulation.
 /// </summary>
@@ -98,40 +99,80 @@ public partial class BusLine : Node
 	/// Detaches a line for undo while returning its color to the available pool.
 	/// The line node remains alive so the history entry can restore it.
 	/// </summary>
+	
+
+/// <summary>
+/// Represents a finalized bus line running in the simulation.
+/// </summary>
+
+	
+	
+
+	
+	public void RemoveNode(RoadNode node)
+	{
+		if (ContainsNode(node))
+		{
+			var newPath = Path.Where(n => n != node).ToList();
+			SetPath(newPath);
+		}
+	}
+
+	/// <summary>
+	/// Removes the busLine from the level and returns its color to the pool,
+	/// but keeps the node alive (detached from the scene tree) so the removal
+	/// can be undone.
+	/// </summary>
 	public void Detach()
 	{
 		LevelState.AllBusLines.Remove(this);
 		LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
 		GetParent()?.RemoveChild(this);
-		LevelState.UpdateAllHouseStatuses();
-		LevelState.RefreshAllBusLineVisuals();
+		UpdateAllHouseStatuses();
+
+		OnDeleted?.Invoke();
 	}
 
 	/// <summary>
-	/// Removes a node from the busLine's path and updates the visual line.
-    /// </summary>
-    /// <param name="node">The RoadNode to remove from the path.</param>
-    public void RemoveNode(RoadNode node)
-    {
-        if (ContainsNode(node))
-        {
-            var newPath = Path.Where(n => n != node).ToList();
-            SetPath(newPath);
-        }
-    }
+	/// Removes the bus line from the level as a player action.
+	/// </summary>
+	/// <param name="undoable">
+	/// If true, the line is detached and a <see cref="DeleteBusLineEdit"/> is logged so the delete can be undone.
+	/// If false, the line is freed immediately, for example when deleting a bus stop invalidates it.
+	/// </param>
+	public void DeleteFromLevel(bool undoable = false)
+	{
+		int index = LevelState.AllBusLines.IndexOf(this);
 
-    /// <summary>
-    /// Use this instead of QueueFree() directly on the bus line to properly clean
-    /// up the busLine and return its color to the pool.
-    /// </summary>
-    public void Delete()
-    {
-        LevelState.AllBusLines.Remove(this);
-        LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
-        Visual?.QueueFree();
-        UpdateAllHouseStatuses(); 
-        
-        OnDeleted?.Invoke();
-        QueueFree();
-    }
+		if (undoable)
+		{
+			Detach();
+			EditorState.History.LogEdit(new DeleteBusLineEdit(this, index));
+		}
+		else
+		{
+			Delete();
+		}
+
+		if (EditorState.SelectedBusLine == this) EditorState.SelectedBusLine = null;
+		UpdateAllHouseStatuses();
+	}
+
+	/// <summary>
+	/// Use this instead of QueueFree() directly on the bus line to properly clean
+	/// up the busLine and return its color to the pool.
+	/// </summary>
+	
+	public void Delete()
+	{
+		LevelState.AllBusLines.Remove(this);
+		LevelState.ReturnBusLineColor(new KeyValuePair<string, Color>(ColorName, Color));
+		Visual?.QueueFree();
+		UpdateAllHouseStatuses(); 
+		
+		OnDeleted?.Invoke();
+		QueueFree();
+	}
 }
+
+	

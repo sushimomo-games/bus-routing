@@ -34,6 +34,14 @@ public partial class LineEdit : AbstractEdit
     /// which replaces the current draft segments with ones rebuilt from it.
     /// </remarks>
     public override void Revert() => BusLineEditor.RestoreSegments(_before);
+    /// <summary>
+    /// Redoes this edit by restoring the bus line segments to how they were after it.
+    /// </summary>
+    /// <remarks>
+    /// Passes the "after" snapshot to <see cref="BusLineEditor.RestoreSegments"/>,
+    /// which replaces the current draft segments with ones rebuilt from it.
+    /// </remarks>
+    public override void Apply() => BusLineEditor.RestoreSegments(_after);
 
     /// <summary>
     /// Takes a snapshot of the given draft segments as plain lists of road nodes.

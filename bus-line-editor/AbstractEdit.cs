@@ -11,10 +11,12 @@ public abstract partial class AbstractEdit
     /// Name is derived from the class name of the implementing class at runtime. 
     /// For example, if a class named "BusStopEdit" implements AbstractEdit, the Name property will return "BusStopEdit".
     /// </remarks>
-    private string Name { 
-        get{
+    private string Name
+    {
+        get
+        {
             return GetType().Name;
-        } 
+        }
     }
     /// <summary>
     /// Reverts the last player action in the undo history.
@@ -30,8 +32,8 @@ public abstract partial class AbstractEdit
     /// </summary>
     /// <remarks>
     /// This method is called when the player wants to redo an action that was previously undone.
+    /// Applies the last player undo in the redo history
     /// </remarks>
-    
-    
-    // public abstract void Apply();
+    public abstract void Apply();
+
 }

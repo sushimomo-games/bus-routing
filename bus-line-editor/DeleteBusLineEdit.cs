@@ -1,5 +1,3 @@
-using Godot;
-
 /// <summary>
 /// A state object for a finalized bus line deleted from the bus line list.
 /// </summary>
@@ -17,19 +15,12 @@ public partial class DeleteBusLineEdit : FinalizeBusLineEdit
     }
 
     /// <summary>
-    /// Re-adds the deleted bus line to the level, the bus line list, and the color pool.
+    /// Undoes the delete: puts the bus line back in the level and takes its color from the pool.
     /// </summary>
     public override void Revert() => Restore();
 
     /// <summary>
-    /// Frees the detached bus lines once the delete can no longer be undone.
+    /// Redoes the delete: detaches the bus line again and returns its color to the pool.
     /// </summary>
-    public override void OnDiscarded()
-    {
-        foreach (var line in _group)
-        {
-            if (GodotObject.IsInstanceValid(line) && !LevelState.AllBusLines.Contains(line))
-                line.QueueFree();
-        }
-    }
+    public override void Apply() => Remove();
 }

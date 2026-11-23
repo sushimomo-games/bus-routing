@@ -29,10 +29,10 @@ public enum BusLineCreationStep
 public partial class EditorState : Node
 {
     private static BusLineCreationStep? _currentBusLineCreationStep = BusLineCreationStep.NotCreating;
-    public static BusLineCreationStep? CurrentBusLineCreationStep 
-    { 
-        get => _currentBusLineCreationStep; 
-        set => _currentBusLineCreationStep = value; 
+    public static BusLineCreationStep? CurrentBusLineCreationStep
+    {
+        get => _currentBusLineCreationStep;
+        set => _currentBusLineCreationStep = value;
     }
 
     private static EditorTool _activeTool = EditorTool.None;

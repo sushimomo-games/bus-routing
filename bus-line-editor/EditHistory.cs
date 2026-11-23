@@ -2,49 +2,70 @@ using Godot;
 using System.Collections.Generic;
 
 /// <summary>
-/// A tracking system for edits made via the bus line editor tool.
+/// Undo and redo history for edits made with the bus line editor.
 /// </summary>
 /// <remarks>
-/// The edit history tracks edits through a linked list with additions/removals at the tail and the head.
+/// Two stacks, both stored as linked lists so the oldest undo entry can be trimmed from the front.
+/// <see cref="Undo"/> moves the newest undo entry to the redo stack, and <see cref="Redo"/> moves it back.
+/// <see cref="LogEdit"/> clears the redo stack because a new action replaces the undone ones.
 /// </remarks>
 public partial class EditHistory
 {
     /// <summary>
-    /// The maximum amount of edits that will be tracked.
+    /// The maximum number of edits kept for undo.
     /// </summary>
     private const int MaxHistory = 50;
 
     /// <summary>
-    /// A read only stack for storing the descendants of the AbstractEdit class.
+    /// Edits that can be undone. The newest edit is last.
     /// </summary>
     private readonly LinkedList<AbstractEdit> _undo = new();
 
     /// <summary>
-    /// Gets a value indicating whether there are any actions available in the history stack to undo.
+    /// Edits that were undone and can be redone. The most recently undone edit is last.
     /// </summary>
-    /// <value>
-    /// <c>true</c> if the history stack contains at least one item; otherwise, <c>false</c>.
-    /// </value>
+    private readonly LinkedList<AbstractEdit> _redo = new();
+
+    /// <summary>
+    /// True if there is an edit to undo.
+    /// </summary>
     public bool CanUndo => _undo.Count > 0;
 
     /// <summary>
-    /// Calls the Clear() method on the linked list
+    /// True if there is an undone edit to redo.
+    /// </summary>
+    public bool CanRedo => _redo.Count > 0;
+
     /// <summary>
+    /// Empties both stacks and lets each edit free what it kept alive.
+    /// </summary>
     public void Clear()
     {
         foreach (var edit in _undo) edit.OnDiscarded();
+        foreach (var edit in _redo) edit.OnDiscarded();
         _undo.Clear();
+        _redo.Clear();
     }
 
     /// <summary>
-    /// LogEdit adds an edit at the end of the linked list.
+    /// Records a new edit and discards the redo stack.
+    /// </summary>
+    /// <param name="edit">The edit the player just made.</param>
+    public void LogEdit(AbstractEdit edit)
+    {
+        foreach (var undone in _redo) undone.OnDiscarded();
+        _redo.Clear();
+
+        PushUndo(edit);
+    }
+
+    /// <summary>
+    /// Adds an edit to the undo stack and drops the oldest edit past <see cref="MaxHistory"/>.
     /// </summary>
     /// <remarks>
-    /// If the size of the linked list is greater than 50 after adding the most recent edit,
-    /// it removes the oldest element in the list.
+    /// <see cref="Redo"/> calls this instead of <see cref="LogEdit"/> so redoing one edit keeps the rest of the redo stack.
     /// </remarks>
-    /// <param name="edit"></param>
-    public void LogEdit(AbstractEdit edit)
+    private void PushUndo(AbstractEdit edit)
     {
         _undo.AddLast(edit);
 
@@ -52,23 +73,16 @@ public partial class EditHistory
         {
             _undo.First.Value.OnDiscarded();
             _undo.RemoveFirst();
-
-            foreach (var e in _undo)
-            {
-                GD.Print("[DEBUG - Editor] Edit in history: " + e.GetType().Name);
-            }
-            GD.Print("[DEBUG - Editor] number of edits in history: " + _undo.Count);
         }
+        GD.Print("[DEBUG - Editor] number of edits in history: " + _undo.Count);
     }
-    
+
     /// <summary>
-    /// Reverts the last player action in the undo history.
+    /// Undoes the newest edit and moves it to the redo stack.
     /// </summary>
     /// <remarks>
-    /// This method checks <see cref="CanUndo"/> before proceeding.
-    /// If there are no changes to revert, the method returns.
-    /// Takes the last value, removes it from the list,
-    /// then calls its <see cref="AbstractEdit.Revert()"/> 
+    /// Does nothing if there is no edit to undo, or if the edit is a bus stop change while a line is being drawn.
+    /// A skipped edit stays on its stack.
     /// </remarks>
     public void Undo()
     {
@@ -76,12 +90,33 @@ public partial class EditHistory
 
         AbstractEdit edit = _undo.Last.Value;
 
-        // Don't revert a stop while a line is being drawn: the draft segments may reference it.
+        // The draft segments may reference the stop, so leave it alone while a line is open.
         if (edit is BusStopEdit && BusLineEditor.BusLineInProgress != null) { return; }
 
         _undo.RemoveLast();
         edit.Revert();
+        _redo.AddLast(edit);
         GD.Print("[DEBUG - Editor] Undoing edit: " + edit.GetType().Name);
         GD.Print("[DEBUG - Editor] number of edits in history: " + _undo.Count);
+    }
+
+    /// <summary>
+    /// Redoes the most recently undone edit and moves it back to the undo stack.
+    /// </summary>
+    /// <remarks>
+    /// Follows the same skip rules as <see cref="Undo"/>.
+    /// </remarks>
+    public void Redo()
+    {
+        if (!CanRedo) { return; }
+
+        AbstractEdit edit = _redo.Last.Value;
+
+        if (edit is BusStopEdit && BusLineEditor.BusLineInProgress != null) { return; }
+
+        _redo.RemoveLast();
+        edit.Apply();
+        PushUndo(edit);
+        GD.Print("[DEBUG - Editor] Redoing edit: " + edit.GetType().Name);
     }
 }
