@@ -36,6 +36,7 @@ public partial class BusStop : RoadNode
 	{
 		base._Ready();
 		LevelState.AllBusStops.Add(this);
+		GD.Print($"Bus stops tracked: {LevelState.AllBusStops.Count}");
 	}
 
 	/// <summary>
@@ -83,94 +84,123 @@ public partial class BusStop : RoadNode
 
 	/// <summary>
 	/// Replaces this stop's upgrades without charging or logging an edit.
-    /// Used by undo to restore a deleted stop.
-    /// </summary>
-    internal void SetUpgrades(IEnumerable<BusStopUpgrade> upgrades)
-    {
-        _purchasedUpgrades.Clear();
-        _purchasedUpgrades.UnionWith(upgrades);
-        UpgradesChanged?.Invoke();
-    }
+	/// Used by undo to restore a deleted stop.
+	/// </summary>
+	internal void SetUpgrades(IEnumerable<BusStopUpgrade> upgrades)
+	{
+		_purchasedUpgrades.Clear();
+		_purchasedUpgrades.UnionWith(upgrades);
+		UpgradesChanged?.Invoke();
+	}
 
-    /// <summary>
-    /// Adds an upgrade without charging or logging an edit.
-    /// Used by redo.
-    /// </summary>
-    internal void AddUpgrade(BusStopUpgrade upgrade)
-    {
-        if (_purchasedUpgrades.Add(upgrade)) UpgradesChanged?.Invoke();
-    }
+	/// <summary>
+	/// Adds an upgrade without charging or logging an edit.
+	/// Used by redo.
+	/// </summary>
+	internal void AddUpgrade(BusStopUpgrade upgrade)
+	{
+		if (_purchasedUpgrades.Add(upgrade)) UpgradesChanged?.Invoke();
+	}
 
-    /// <summary>
-    /// Removes an upgrade without refunding or logging an edit.
-    /// Used by undo.
-    /// </summary>
-    internal void RemoveUpgrade(BusStopUpgrade upgrade)
-    {
-        if (_purchasedUpgrades.Remove(upgrade)) UpgradesChanged?.Invoke();
-    }
+	/// <summary>
+	/// Removes an upgrade without refunding or logging an edit.
+	/// Used by undo.
+	/// </summary>
+	internal void RemoveUpgrade(BusStopUpgrade upgrade)
+	{
+		if (_purchasedUpgrades.Remove(upgrade)) UpgradesChanged?.Invoke();
+	}
 
-    // Signals
-    private void _on_bus_stop_area_mouse_entered()
-    {
-        _walkRadiusSprite.Visible = true;
+	// Signals
+	private void _on_bus_stop_area_mouse_entered()
+	{
+		_walkRadiusSprite.Visible = true;
 
-    }
+	}
 
-    private void _on_bus_stop_area_mouse_exited()
-    {
-        _walkRadiusSprite.Visible = false;
-    }
+	private void _on_bus_stop_area_mouse_exited()
+	{
+		_walkRadiusSprite.Visible = false;
+	}
 
 
-    /// <summary>
-    /// Counts how many houses are able to access bus stop.
-    /// Uses ReachableBusStop to check which houses are in radius of current Bus Stop.
-    /// Output is currently to terminal - will be hooked up with Information Panel.
-    /// </summary>
-    private void _on_bus_stop_clicked(Node viewport,
-        InputEvent @event,
-        long shapeIdx)
-    {
+	/// <summary>
+	/// Counts how many houses are able to access bus stop.
+	/// Uses ReachableBusStop to check which houses are in radius of current Bus Stop.
+	/// Output is currently to terminal - will be hooked up with Information Panel.
+	/// </summary>
+	private void _on_bus_stop_clicked(Node viewport,
+		InputEvent @event,
+		long shapeIdx)
+	{
 
-        int _houseCount = 0;
+		int _houseCount = 0;
 
-        foreach (House house in LevelState.AllHouses)
-        {
-            if (house.ReachableBusStop == this)
-            {
-                _houseCount++;
-            }
-        }
+		foreach (House house in LevelState.AllHouses)
+		{
+			if (house.ReachableBusStop == this)
+			{
+				_houseCount++;
+			}
+		}
 
-        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
-        {
-            House.DeselectHouses();
-            LevelState.InformationPanel.ShowBusStop(this, _houseCount);
-        }
+		if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+		{
+			House.DeselectHouses();
+			LevelState.InformationPanel.ShowBusStop(this, _houseCount);
+		}
 
-    }
-    public int GetHouseCount() /// allows outside classes to use this method and logic of counting the houses. Done by Malachi
-    {
-        int houseCount = 0;
+	}
+	public int GetHouseCount() /// allows outside classes to use this method and logic of counting the houses. Done by Malachi
+	{
+		int houseCount = 0;
 
-        foreach (House house in LevelState.AllHouses)
-        {
-            if (house.ReachableBusStop == this)
-            {
-                houseCount++;
-            }
-        }
+		foreach (House house in LevelState.AllHouses)
+		{
+			if (house.ReachableBusStop == this)
+			{
+				houseCount++;
+			}
+		}
 
-        return houseCount;
-    }
+		return houseCount;
+	}
+	public void DeleteAndRestoreRoad()
+{
+	var A = Neighbors[0];
+	var B = Neighbors[1];
 
-    public override void _ExitTree()
-    {
-        LevelState.AllBusStops.Remove(this);
-        LevelState.AllRoadNodes.Remove(this);
-        LevelState.Budget -= Cost.BusStopRemoval;
-    }
+	// reconnect the original road graph
+	A.AddNeighbor(B);
+	B.AddNeighbor(A);
+
+	A.RemoveNeighbor(this);
+	B.RemoveNeighbor(this);
+
+	// remove the split road segments
+	for (int i = ConnectedEdges.Count - 1; i >= 0; i--)
+	{
+		ConnectedEdges[i]?.QueueFree();
+	}
+
+	// recreate the original road edge
+	var roadEdgeScene = GD.Load<PackedScene>(Path.RoadEdgeScene);
+
+	var edge = roadEdgeScene.Instantiate<RoadEdge>();
+
+	LevelState.CurrentLevel.AddChild(edge);
+
+	edge.SetEndpoints(A, B);
+
+	QueueFree();
+}
+
+	public override void _ExitTree()
+	{
+		LevelState.AllBusStops.Remove(this);
+		LevelState.AllRoadNodes.Remove(this);
+		LevelState.Budget -= Cost.BusStopRemoval;
+	}
 
 
 }

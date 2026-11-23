@@ -185,7 +185,7 @@ public partial class LevelUI : Control
 		Vector2 projectedPoint = Geometry2D.GetClosestPointToSegment(mousePosition, p1, p2);
 
 		CurrentLevel.AddChild(busStop);
-		LevelState.AllBusStops.Add(busStop);
+		
 		busStop.GlobalPosition = projectedPoint;
 
 

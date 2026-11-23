@@ -312,6 +312,9 @@ public static class SaveGame
 	
 	public static void ResetGame()
 {
+	GD.Print($"Stops before reset: {LevelState.AllBusStops.Count}");
+	
+	GD.Print($"Bus lines before reset: {LevelState.AllBusLines.Count}");
 	// Delete save file
 	if (FileAccess.FileExists(SaveFilePath))
 	{
@@ -325,7 +328,16 @@ public static class SaveGame
 	{
 		line.Delete();
 	}
+	// Delete all bus stops and restore roads
+foreach (BusStop stop in LevelState.AllBusStops.ToArray())
+{
+	GD.Print($"Deleting stop: {stop.Name}");
 
+	stop.DeleteAndRestoreRoad();
+
+	GD.Print($"Deleted stop: {stop.Name}");
+}
+	LevelState.AllBusStops.Clear();
 	LevelState.AllBusLines.Clear();
 
 	// Reset route colors
@@ -338,8 +350,14 @@ public static class SaveGame
 
 	// Restore budget
 	LevelState.Budget = Cost.InitialBudget;
-
+	GD.Print($"Budget after reset: {LevelState.Budget}");
 	LevelState.RefreshAllBusLineVisuals();
+	
+	BusLineEditor.ResetState();
+	
+	
+	GD.Print($"Bus lines after reset: {LevelState.AllBusLines.Count}");
+	
 
 	GD.Print("Game Reset");
 }
