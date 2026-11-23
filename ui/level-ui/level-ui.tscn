@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=19 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -220,8 +220,8 @@ size_flags_vertical = 4
 layout_mode = 2
 text = "Reset"
 
-[connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
 [node name="SettingsMenu" parent="." instance=ExtResource("12_settings")]
 
+[connection signal="item_selected" from="BusLinesListContainer/BusLineList" to="BusLinesListContainer/BusLineList" method="_on_item_selected"]
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]
 [connection signal="pressed" from="HBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
