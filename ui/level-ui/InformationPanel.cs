@@ -70,7 +70,9 @@ public partial class InformationPanel : Control
             case InfoPanelType.House:
                 if (_currentHouse != null && IsInstanceValid(_currentHouse))
                 {
+                    _currentHouse.UpdateCheckStatus();
                     InfoText.Text = _currentHouse.GetDisplayInfo();
+                    _currentHouse.RefreshRouteHighlight();
                 }
                 else
                 {
@@ -106,7 +108,7 @@ public partial class InformationPanel : Control
             _currentLine.OnPathChanged -= OnBusLinePathChanged;
             _currentLine.OnDeleted -= OnBusLineDeleted;
         }
-        // RefreshBusLineDisplay();
+        RefreshBusLineDisplay();
     }
 
     /// <summary>
@@ -142,6 +144,8 @@ public partial class InformationPanel : Control
     public void ShowBusLine(BusLine line)
     {
         UnsubscribeBusLineEvents();
+        ClearSelectedStop();
+
         SelectedBusLine = line;
         _currentType = InfoPanelType.BusLine;
         _currentLine = line;
@@ -200,7 +204,6 @@ public partial class InformationPanel : Control
     public void _onDeleteBtnPressed()
     {
         this.Visible = false;
-        // _currentLine.Delete();
 
         if (_currentType == InfoPanelType.BusLine && _currentLine != null)
         {
@@ -209,7 +212,9 @@ public partial class InformationPanel : Control
         }
         else if (_currentType == InfoPanelType.BusStop && _currentStop != null)
         {
-            GD.Print("Bus stop - Delete button pressed");
+            var deletor = _currentStop.GetNodeOrNull<BusStopDeletor>("Deletor");
+            deletor?.DeleteBusStop();
+            _currentStop = null;
             _currentType = InfoPanelType.None;
         }
     }
@@ -217,6 +222,7 @@ public partial class InformationPanel : Control
     public void ShowHouse(House house, String displayInfo = null)
     {
         UnsubscribeBusLineEvents();
+        ClearSelectedStop();
 
         _currentType = InfoPanelType.House;
         _currentHouse = house;
@@ -235,14 +241,14 @@ public partial class InformationPanel : Control
     public void ShowBusStop(BusStop stop, int count = 0)
     {
         UnsubscribeBusLineEvents();
+        ClearSelectedStop();
 
         _currentType = InfoPanelType.BusStop;
         _currentStop = stop;
+        _currentStop.SetWalkRadiusPersistence(true);
 
         this.Visible = true;
 
-        //Delete button for bus stop currently non-functional; merely reads
-        //input signal at this point
         _deleteBtn.Visible = true;
         _editLineBtn.Visible = false;
 
@@ -255,6 +261,15 @@ public partial class InformationPanel : Control
         UpgradesLabel.Visible = true;
         UpgradesContainer.Visible = true;
         RefreshUpgradeTiles();
+    }
+
+    public void ClearSelectedStop()
+    {
+        if (_currentStop != null)
+        {
+            _currentStop.SetWalkRadiusPersistence(false);
+            _currentStop = null;
+        }
     }
 
     /// <summary>
