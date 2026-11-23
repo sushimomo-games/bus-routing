@@ -18,6 +18,10 @@ config/name="bus-routing"
 run/main_scene="uid://c8x7p2l5nak1"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 
+[autoload]
+
+SoundManager="*res://sound/SoundManager.cs"
+
 [dotnet]
 
 project/assembly_name="bus-routing"

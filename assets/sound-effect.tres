@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SoundEffect" load_steps=3 format=3 uid="uid://bxqhk4u677elf"]
+
+[ext_resource type="AudioStream" uid="uid://cxw23kn4mn722" path="res://assets/audio/mouse-down.wav" id="1_udsxl"]
+[ext_resource type="Script" uid="uid://jtnonssffpvk" path="res://sound/SoundEffect.cs" id="2_vqd03"]
+
+[resource]
+script = ExtResource("2_vqd03")
+MouseDown = ExtResource("1_udsxl")
+metadata/_custom_type_script = "uid://jtnonssffpvk"
