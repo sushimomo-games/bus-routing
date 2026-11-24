@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="SoundEffect" load_steps=3 format=3 uid="uid://bxqhk4u677elf"]
+[gd_resource type="Resource" script_class="SoundEffectSet" load_steps=4 format=3 uid="uid://bxqhk4u677elf"]
 
 [ext_resource type="AudioStream" uid="uid://cxw23kn4mn722" path="res://assets/audio/mouse-down.wav" id="1_udsxl"]
-[ext_resource type="Script" uid="uid://jtnonssffpvk" path="res://sound/SoundEffect.cs" id="2_vqd03"]
+[ext_resource type="AudioStream" uid="uid://c4y2lwdsdlm21" path="res://assets/audio/mouse-up.wav" id="2_udsxl"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="3_htrjt"]
 
 [resource]
-script = ExtResource("2_vqd03")
+script = ExtResource("3_htrjt")
 MouseDown = ExtResource("1_udsxl")
-metadata/_custom_type_script = "uid://jtnonssffpvk"
+MouseUp = ExtResource("2_udsxl")

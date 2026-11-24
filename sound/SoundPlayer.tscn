@@ -1,7 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://dxl0fqnpxc21c"]
+[gd_scene load_steps=4 format=3 uid="uid://dxl0fqnpxc21c"]
 
 [ext_resource type="Script" uid="uid://da3osd43fr1et" path="res://sound/SoundPlayer.cs" id="1_amsdl"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="2_cttk2"]
+
+[sub_resource type="Resource" id="Resource_34qim"]
+resource_local_to_scene = true
+script = ExtResource("2_cttk2")
+metadata/_custom_type_script = "uid://dwjomtorm0q25"
 
 [node name="SoundPlayer" type="Node"]
 editor_description = "Attach this node to a Control to have it play relevant sound effects."
 script = ExtResource("1_amsdl")
+SoundSet = SubResource("Resource_34qim")
