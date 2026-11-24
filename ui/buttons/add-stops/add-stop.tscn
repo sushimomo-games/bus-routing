@@ -1,9 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://dkglf58b8n1vu"]
+[gd_scene load_steps=9 format=3 uid="uid://dkglf58b8n1vu"]
 
 [ext_resource type="Script" uid="uid://7r3ra74yrcan" path="res://ui/buttons/add-stops/AddStop.cs" id="1_dmrtr"]
 [ext_resource type="Texture2D" uid="uid://uhvh86snav6" path="res://assets/bus-stop.svg" id="2_bu5c6"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_bu5c6"]
 [ext_resource type="PackedScene" uid="uid://dxl0fqnpxc21c" path="res://sound/SoundPlayer.tscn" id="4_rjsxg"]
+[ext_resource type="AudioStream" uid="uid://bht2005gq7c66" path="res://assets/audio/drop-success.wav" id="5_2bjcp"]
+[ext_resource type="AudioStream" uid="uid://cxw23kn4mn722" path="res://assets/audio/mouse-down.wav" id="5_6n6ur"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="5_dsp7y"]
+
+[sub_resource type="Resource" id="Resource_6n6ur"]
+script = ExtResource("5_dsp7y")
+MouseDown = ExtResource("5_6n6ur")
+DropSuccess = ExtResource("5_2bjcp")
+metadata/_custom_type_script = "uid://dwjomtorm0q25"
 
 [node name="AddStop" type="Control"]
 layout_mode = 3
@@ -23,6 +32,7 @@ texture = ExtResource("2_bu5c6")
 editor_description = "Attach this node to a Control to have it play relevant sound effects.
 
 The sounds played can be overwritten through the Sounds attribute. Otherwise, the default sounds will be played."
+SoundSet = SubResource("Resource_6n6ur")
 
 [connection signal="mouse_entered" from="TextureRect" to="." method="_on_texture_rect_mouse_entered"]
 [connection signal="mouse_exited" from="TextureRect" to="." method="_on_texture_rect_mouse_exited"]

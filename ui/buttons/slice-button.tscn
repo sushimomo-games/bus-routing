@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://boeq5c2p8isiw"]
+[gd_scene load_steps=9 format=3 uid="uid://boeq5c2p8isiw"]
 
 [ext_resource type="Texture2D" uid="uid://duemgd3xvq2rv" path="res://assets/slice.svg" id="1_wv0hv"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="2_1dejv"]
 [ext_resource type="PackedScene" uid="uid://dxl0fqnpxc21c" path="res://sound/SoundPlayer.tscn" id="3_01n23"]
+[ext_resource type="AudioStream" uid="uid://ywu83ocxv31m" path="res://assets/audio/button-up.wav" id="4_cd00c"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="5_amojv"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_1dejv"]
 device = -1
@@ -12,6 +14,12 @@ unicode = 120
 
 [sub_resource type="Shortcut" id="Shortcut_01n23"]
 events = [SubResource("InputEventKey_1dejv")]
+
+[sub_resource type="Resource" id="Resource_nwpw1"]
+resource_local_to_scene = true
+script = ExtResource("5_amojv")
+MouseUp = ExtResource("4_cd00c")
+metadata/_custom_type_script = "uid://dwjomtorm0q25"
 
 [node name="SliceButton" type="Control"]
 layout_mode = 3
@@ -30,3 +38,4 @@ stretch_mode = 0
 [node name="HoverScaler" parent="TextureButton" instance=ExtResource("2_1dejv")]
 
 [node name="SoundPlayer" parent="TextureButton" instance=ExtResource("3_01n23")]
+SoundSet = SubResource("Resource_nwpw1")

@@ -9,16 +9,6 @@ public partial class SoundManager : Node
     public static SoundManager Instance { get; private set; }
 
     /// <summary>
-    /// The default sound effects to use for UI interactions, such as button presses.
-    /// </summary>
-    [Export]
-    public SoundEffectSet DefaultSounds = new SoundEffectSet
-    {
-        MouseDown = GD.Load<AudioStream>("res://assets/audio/mouse-down.wav"),
-        MouseUp = GD.Load<AudioStream>("res://assets/audio/mouse-up.wav")
-    };
-
-    /// <summary>
     /// The name of the audio bus that this sound manager will use to play sounds.
     /// </summary>
     [Export] public StringName BusName { get; set; } = "UI"; // falls back to Master if missing

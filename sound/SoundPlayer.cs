@@ -10,7 +10,7 @@ public partial class SoundPlayer : Node
     /// The sound effects to play on mouse down and mouse up.
     /// If null, the default sounds from SoundManager will be used.
     /// </summary>
-    [Export] public SoundEffectSet Sounds { get; set; }
+    [Export] public SoundEffectSet SoundSet { get; set; }
 
     public override void _Ready()
     {
@@ -41,7 +41,31 @@ public partial class SoundPlayer : Node
     /// <param name="down">True to play the mouse down sound, false for mouse up.</param>
     private void PlaySound(bool down)
     {
-        var set = Sounds ?? SoundManager.Instance.DefaultSounds;
+        var set = SoundSet;
         SoundManager.Instance.Play(down ? set?.MouseDown : set?.MouseUp);
+    }
+
+    /// <summary>
+    /// The number of bus stops that existed when the current drag began, or -1 if the
+    /// current drag is not a bus stop drag.
+    /// </summary>
+    private int _busStopCountAtDragStart = -1;
+
+    public override void _Notification(int what)
+    {
+        if (what == Control.NotificationDragBegin)
+        {
+            var isBusStopDrag = GetViewport().GuiGetDragData().AsString() == "BusStop";
+            _busStopCountAtDragStart = isBusStopDrag ? LevelState.AllBusStops.Count : -1;
+        }
+        else if (what == Control.NotificationDragEnd)
+        {
+            if (_busStopCountAtDragStart < 0)
+                return;
+
+            var placed = LevelState.AllBusStops.Count > _busStopCountAtDragStart;
+            SoundManager.Instance.Play(placed ? SoundSet?.DropSuccess : SoundSet?.DropFail);
+            _busStopCountAtDragStart = -1;
+        }
     }
 }

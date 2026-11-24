@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://jf2a1v8x5v1v"]
+[gd_scene load_steps=10 format=3 uid="uid://jf2a1v8x5v1v"]
 
 [ext_resource type="Texture2D" uid="uid://bb8l1lhcq5tgr" path="res://assets/arrow.svg" id="1_t5wrp"]
 [ext_resource type="Script" uid="uid://lt4aivqbvex3" path="res://ui/buttons/UndoButton.cs" id="2_4rvkd"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_4rvkd"]
 [ext_resource type="PackedScene" uid="uid://dxl0fqnpxc21c" path="res://sound/SoundPlayer.tscn" id="3_e3oev"]
+[ext_resource type="AudioStream" uid="uid://ywu83ocxv31m" path="res://assets/audio/button-up.wav" id="4_1ll0f"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="5_monet"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_nwxmw"]
 device = -1
@@ -13,6 +15,12 @@ unicode = 122
 
 [sub_resource type="Shortcut" id="Shortcut_4rvkd"]
 events = [SubResource("InputEventKey_nwxmw")]
+
+[sub_resource type="Resource" id="Resource_je250"]
+resource_local_to_scene = true
+script = ExtResource("5_monet")
+MouseUp = ExtResource("4_1ll0f")
+metadata/_custom_type_script = "uid://dwjomtorm0q25"
 
 [node name="UndoButton" type="Control"]
 layout_mode = 3
@@ -32,6 +40,7 @@ stretch_mode = 0
 script = ExtResource("2_4rvkd")
 
 [node name="SoundPlayer" parent="TextureButton" instance=ExtResource("3_e3oev")]
+SoundSet = SubResource("Resource_je250")
 
 [node name="HoverScaler" parent="TextureButton" instance=ExtResource("3_4rvkd")]
 

@@ -1,9 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://dc2ns6w7uxuiu"]
+[gd_scene load_steps=8 format=3 uid="uid://dc2ns6w7uxuiu"]
 
 [ext_resource type="Script" uid="uid://cc6jt12y5aelv" path="res://ui/buttons/add-line/AddLineButton.cs" id="1_mk4gp"]
 [ext_resource type="Texture2D" uid="uid://cf2hb2eygxr8p" path="res://assets/new-line.svg" id="1_ocwtk"]
 [ext_resource type="PackedScene" uid="uid://d0bvpeqqj8t5" path="res://ui/hover-scaler/hover-scaler.tscn" id="3_6x80l"]
 [ext_resource type="PackedScene" uid="uid://dxl0fqnpxc21c" path="res://sound/SoundPlayer.tscn" id="4_bvqha"]
+[ext_resource type="AudioStream" uid="uid://ywu83ocxv31m" path="res://assets/audio/button-up.wav" id="5_hvsh5"]
+[ext_resource type="Script" uid="uid://dwjomtorm0q25" path="res://sound/SoundEffectSet.cs" id="6_yjs1j"]
+
+[sub_resource type="Resource" id="Resource_tv4ob"]
+resource_local_to_scene = true
+script = ExtResource("6_yjs1j")
+MouseUp = ExtResource("5_hvsh5")
+metadata/_custom_type_script = "uid://dwjomtorm0q25"
 
 [node name="AddLineButton" type="Control"]
 layout_mode = 3
@@ -22,5 +30,6 @@ script = ExtResource("1_mk4gp")
 [node name="HoverScaler" parent="Button" instance=ExtResource("3_6x80l")]
 
 [node name="SoundPlayer" parent="Button" instance=ExtResource("4_bvqha")]
+SoundSet = SubResource("Resource_tv4ob")
 
 [connection signal="pressed" from="Button" to="Button" method="_on_pressed"]
