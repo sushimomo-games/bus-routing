@@ -65,7 +65,7 @@ public partial class Commute
     /// </summary>
     public float AmenityPenalty => BusUsageModel.CalculateAmenityPenalty(BoardingStops);
 
-    public int TransferCount =>Itinerary.OfType<WalkSegment>().Count() - 1;
+    public int TransferCount => Itinerary.OfType<WalkSegment>().Count() - 1;
 
     public Commute(List<CommuteSegment> segments)
     {
