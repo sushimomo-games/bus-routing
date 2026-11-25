@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dc2wfu8lyap4i"]
+[gd_scene load_steps=19 format=3 uid="uid://dc2wfu8lyap4i"]
 
 [ext_resource type="Script" uid="uid://cuau4qy5dcr7l" path="res://ui/level-ui/LevelUI.cs" id="1_1jth6"]
 [ext_resource type="PackedScene" uid="uid://dkglf58b8n1vu" path="res://ui/buttons/add-stops/add-stop.tscn" id="2_2q8no"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://boeq5c2p8isiw" path="res://ui/buttons/slice-button.tscn" id="11_hn6xl"]
 [ext_resource type="PackedScene" uid="uid://jofckxx88jrf" path="res://ui/settings-menu/settings-menu.tscn" id="12_settings"]
 [ext_resource type="PackedScene" path="res://ui/level-ui/upgrade-tile/upgrade-tile.tscn" id="13_tile"]
+[ext_resource type="Script" uid="uid://c4ufugavr6gi7" path="res://ui/level-ui/SatisfactionProgressBar.cs" id="14_36y1v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v72kp"]
 content_margin_left = 2.0
@@ -72,6 +73,7 @@ layout_mode = 2
 
 [node name="InfoText" type="Label" parent="InfoPanelContainer/informationPanel/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "Select a house, bus line, or bus stop to view the information."
 horizontal_alignment = 1
 
@@ -115,13 +117,6 @@ anchor_right = 0.5
 offset_left = -180.0
 offset_top = 10.0
 grow_horizontal = 2
-
-[node name="BudgetLabel" type="Label" parent="."]
-modulate = Color(0.11858138, 0.11858138, 0.11858138, 1)
-layout_mode = 1
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("6_07au4")
 
 [node name="LineEditorStatusLabel" type="Label" parent="."]
 visible = false
@@ -208,5 +203,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 
 [node name="SettingsMenu" parent="." instance=ExtResource("12_settings")]
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_right = 265.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+
+[node name="BudgetLabel" type="Label" parent="HBoxContainer2"]
+modulate = Color(0.11858138, 0.11858138, 0.11858138, 1)
+layout_mode = 2
+script = ExtResource("6_07au4")
+
+[node name="SatisfactionLabel" type="Label" parent="HBoxContainer2"]
+modulate = Color(0.11858138, 0.11858138, 0.11858138, 1)
+layout_mode = 2
+text = "City Satisfaction:"
+
+[node name="SatisfactionProgressBar" type="ProgressBar" parent="HBoxContainer2"]
+modulate = Color(0.30692267, 0.3069227, 0.3069227, 1)
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("14_36y1v")
 
 [connection signal="pressed" from="EndBusLineButton" to="EndBusLineButton" method="_on_pressed"]

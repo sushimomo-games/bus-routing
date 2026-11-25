@@ -7,8 +7,11 @@ public partial class BusLineVisual : Node2D
 {
     private BusLine _busLine;
     private Line2D _line;
-    private Line2D _highlightLine;
-    private Tween _highlightTween;
+    // private Line2D _highlightLine;
+    // private Tween _highlightTween;
+
+    private readonly List<Line2D> _highlightLines = new();
+    private readonly List<Tween> _highlightTweens = new();
 
     public float LineWidth { get; set; } = 8.0f;
     public float LineSpacing { get; set; } = 8.0f;
@@ -26,17 +29,17 @@ public partial class BusLineVisual : Node2D
         };
         AddChild(_line);
 
-        _highlightLine = new Line2D
-        {
-            Width = LineWidth + 4.0f,
-            DefaultColor = busLine.Color.Lightened(0.4f),
-            ZIndex = 0,
-            Modulate = new Color(1, 1, 1, 0),
-            BeginCapMode = Line2D.LineCapMode.Round,
-            EndCapMode = Line2D.LineCapMode.Round,
-            JointMode = Line2D.LineJointMode.Round
-        };
-        AddChild(_highlightLine);
+        // _highlightLine = new Line2D
+        // {
+        //     Width = LineWidth + 4.0f,
+        //     DefaultColor = busLine.Color.Lightened(0.4f),
+        //     ZIndex = 0,
+        //     Modulate = new Color(1, 1, 1, 0),
+        //     BeginCapMode = Line2D.LineCapMode.Round,
+        //     EndCapMode = Line2D.LineCapMode.Round,
+        //     JointMode = Line2D.LineJointMode.Round
+        // };
+        // AddChild(_highlightLine);
     }
 
     public override void _Ready()
@@ -138,24 +141,26 @@ public partial class BusLineVisual : Node2D
     /// </summary>
     public void HighlightSegment(RoadNode nodeA, RoadNode nodeB)
     {
-        _highlightLine.ClearPoints();
 
-        Vector2 posA = nodeA.GlobalPosition;
-        Vector2 posB = nodeB.GlobalPosition;
+        HighlightPath(new List<RoadNode> { nodeA, nodeB });
+        // _highlightLine.ClearPoints();
 
-        Vector2 dir = (posB - posA).Normalized();
-        Vector2 perp = new Vector2(-dir.Y, dir.X);
-        float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, nodeA, nodeB, LineSpacing);
+        // Vector2 posA = nodeA.GlobalPosition;
+        // Vector2 posB = nodeB.GlobalPosition;
 
-        _highlightLine.AddPoint(posA + perp * offset);
-        _highlightLine.AddPoint(posB + perp * offset);
+        // Vector2 dir = (posB - posA).Normalized();
+        // Vector2 perp = new Vector2(-dir.Y, dir.X);
+        // float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, nodeA, nodeB, LineSpacing);
 
-        _highlightTween?.Kill();
-        _highlightTween = CreateTween();
-        // Fade in alpha
-        _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 1), 0.2f)
-                       .SetTrans(Tween.TransitionType.Sine)
-                       .SetEase(Tween.EaseType.Out);
+        // _highlightLine.AddPoint(posA + perp * offset);
+        // _highlightLine.AddPoint(posB + perp * offset);
+
+        // _highlightTween?.Kill();
+        // _highlightTween = CreateTween();
+        // // Fade in alpha
+        // _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 1), 0.2f)
+        //                .SetTrans(Tween.TransitionType.Sine)
+        //                .SetEase(Tween.EaseType.Out);
     }
 
     /// <summary>
@@ -165,7 +170,19 @@ public partial class BusLineVisual : Node2D
     {
         if (pathNodes == null || pathNodes.Count < 2) return;
 
-        _highlightLine.ClearPoints();
+        Line2D highlightLine = new Line2D
+        {
+            Width = LineWidth + 4.0f,
+            DefaultColor = _busLine.Color.Lightened(0.4f),
+            ZIndex = 0,
+            Modulate = new Color(1, 1, 1, 0),
+            BeginCapMode = Line2D.LineCapMode.Round,
+            EndCapMode = Line2D.LineCapMode.Round,
+            JointMode = Line2D.LineJointMode.Round
+        };
+
+        AddChild(highlightLine);
+        _highlightLines.Add(highlightLine);
 
         for (int i = 0; i < pathNodes.Count; i++)
         {
@@ -176,29 +193,42 @@ public partial class BusLineVisual : Node2D
                 Vector2 dir = (pathNodes[1].GlobalPosition - currentPos).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
                 float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, pathNodes[0], pathNodes[1], LineSpacing);
-                _highlightLine.AddPoint(currentPos + perp * offset);
+                highlightLine.AddPoint(currentPos + perp * offset);
             }
             else if (i == pathNodes.Count - 1)
             {
                 Vector2 dir = (currentPos - pathNodes[i - 1].GlobalPosition).Normalized();
                 Vector2 perp = new Vector2(-dir.Y, dir.X);
                 float offset = LevelState.CalculateSegmentOffsetAmount(_busLine, pathNodes[i - 1], pathNodes[i], LineSpacing);
-                _highlightLine.AddPoint(currentPos + perp * offset);
+                highlightLine.AddPoint(currentPos + perp * offset);
             }
             else
             {
-                AddPointsAtIntersectionForHighlight(i, pathNodes);
+                AddPointsAtIntersectionForHighlight(i, pathNodes, highlightLine);
             }
         }
 
-        _highlightTween?.Kill();
-        _highlightTween = CreateTween();
-        _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 1), 0.2f)
-                       .SetTrans(Tween.TransitionType.Sine)
-                       .SetEase(Tween.EaseType.Out);
+        Tween tween = CreateTween();
+
+        tween.TweenProperty(
+            highlightLine,
+            "modulate",
+            new Color(1, 1, 1, 1),
+            0.2f
+        )
+        .SetTrans(Tween.TransitionType.Sine)
+        .SetEase(Tween.EaseType.Out);
+
+        _highlightTweens.Add(tween);
+
+        // _highlightTween?.Kill();
+        // _highlightTween = CreateTween();
+        // _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 1), 0.2f)
+        //                .SetTrans(Tween.TransitionType.Sine)
+        //                .SetEase(Tween.EaseType.Out);
     }
 
-    private void AddPointsAtIntersectionForHighlight(int nodeIndex, List<RoadNode> path)
+    private void AddPointsAtIntersectionForHighlight(int nodeIndex, List<RoadNode> path, Line2D highlightLine)
     {
         Vector2 currentPos = path[nodeIndex].GlobalPosition;
 
@@ -221,18 +251,18 @@ public partial class BusLineVisual : Node2D
         {
             if (sameOffset)
             {
-                _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
+                highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
             }
             else
             {
-                _highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
-                _highlightLine.AddPoint(currentPos + perpAfter * offsetAfter);
+                highlightLine.AddPoint(currentPos + perpBefore * offsetBefore);
+                highlightLine.AddPoint(currentPos + perpAfter * offsetAfter);
             }
         }
         else
         {
             Vector2 intersection = CalculateIntersection(prevPos, dirBefore, offsetBefore, currentPos, dirAfter, offsetAfter, currentPos);
-            _highlightLine.AddPoint(intersection);
+            highlightLine.AddPoint(intersection);
         }
     }
 
@@ -241,14 +271,42 @@ public partial class BusLineVisual : Node2D
     /// </summary>
     public void ClearHighlight()
     {
-        if (_highlightLine.Points.Length == 0) return;
+        for (int i = 0; i < _highlightLines.Count; i++)
+        {
+            Line2D highlightLine = _highlightLines[i];
 
-        _highlightTween?.Kill();
-        _highlightTween = CreateTween();
-        _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 0), 0.2f)
-                       .SetTrans(Tween.TransitionType.Sine)
-                       .SetEase(Tween.EaseType.Out);
-        _highlightTween.TweenCallback(Callable.From(_highlightLine.ClearPoints));
+            if (!IsInstanceValid(highlightLine)) continue;
+
+            Tween tween = CreateTween();
+
+            tween.TweenProperty(
+                highlightLine,
+                "modulate",
+                new Color(1, 1, 1, 0),
+                0.2f
+            )
+            .SetTrans(Tween.TransitionType.Sine)
+            .SetEase(Tween.EaseType.Out);
+
+            tween.TweenCallback(
+                Callable.From(() =>
+                {
+                    if (IsInstanceValid(highlightLine)) highlightLine.QueueFree();
+                })
+            );
+        }
+
+        _highlightLines.Clear();
+        _highlightTweens.Clear();
+
+        // if (_highlightLine.Points.Length == 0) return;
+
+        // _highlightTween?.Kill();
+        // _highlightTween = CreateTween();
+        // _highlightTween.TweenProperty(_highlightLine, "modulate", new Color(1, 1, 1, 0), 0.2f)
+        //                .SetTrans(Tween.TransitionType.Sine)
+        //                .SetEase(Tween.EaseType.Out);
+        // _highlightTween.TweenCallback(Callable.From(_highlightLine.ClearPoints));
     }
     /* public override void _UnhandledInput(InputEvent @event)
  {

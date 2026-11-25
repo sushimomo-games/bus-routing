@@ -107,4 +107,70 @@ public static class GlobalConstants
     /// ignored, then the penalty rises quickly around its half-point.
     /// </summary>
     public const float PenaltySteepness = 2f;
+
+    /// <summary>
+    /// A resident is very dissatisfied with their commute if (1 - Disutility)
+    /// is between 0.00-0.20
+    /// </summary>
+    public const float VeryDissatisfiedMin = 0.00f;
+    public const float VeryDissatisfiedMax = 0.20f;
+
+    /// <summary>
+    /// A resident is dissatisfied with their commute if (1 - Disutility)
+    /// is between 0.21-0.40
+    /// </summary>
+    public const float DissatisfiedMin = 0.21f;
+    public const float DissatisfiedMax = 0.40f;
+
+    /// <summary>
+    /// A resident is neutral toward their commute if (1 - Disutility)
+    /// is between 0.41-0.60
+    /// </summary>
+    public const float NeutralMin = 0.41f;
+    public const float NeutralMax = 0.60f;
+
+    /// <summary>
+    /// A resident is satisfied with their commute if (1 - Disutility)
+    /// is between 0.61-0.80
+    /// </summary>
+    public const float SatisfiedMin = 0.61f;
+    public const float SatisfiedMax = 0.80f;
+
+    /// <summary>
+    /// A resident is very satisfied with their commute if (1 - Disutility)
+    /// is between 0.81-1.00
+    /// </summary>
+    public const float VerySatisfiedMin = 0.81f;
+    public const float VerySatisfiedMax = 1.00f;
+
+    /// <summary>
+    /// If a resident is very dissatisfied with their commute, the
+    /// information panel will display the 😠 emoji
+    /// </summary>
+    public const string VeryDissatisfiedEmoji = "😠";
+
+    /// <summary>
+    /// If a resident is dissatisfied with their commute, the
+    /// information panel will display the 🙁 emoji
+    /// </summary>
+    public const string DissatisfiedEmoji = "🙁";
+
+    /// <summary>
+    /// If a resident is neutral toward their commute, the
+    /// information panel will display the 😐 emoji
+    /// </summary>
+    public const string NeutralEmoji = "😐";
+
+    /// <summary>
+    /// If a resident is satisfied with their commute, the
+    /// information panel will display the 🙂 emoji
+    /// </summary>
+    public const string SatisfiedEmoji = "🙂";
+
+    /// <summary>
+    /// If a resident is very satisfied with their commute, the
+    /// information panel will display the 😄 emoji
+    /// </summary>
+    public const string VerySatisfiedEmoji = "😄";
+
 }
