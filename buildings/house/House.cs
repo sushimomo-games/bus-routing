@@ -13,7 +13,7 @@ public partial class House : Building
     private static House _houseSelected;
     public Color _outlineColor;
     private float _newOutlineWeight = 7.0f;
-    private float _residentSatisfaction = 0.0f;
+    public float _residentSatisfaction = 0.0f;
     // private PackedScene _infoPopupScene = GD.Load<PackedScene>(Path.InfoPopupScene);   //Info Pop-Up no longer in use
     // private Control _infoPopup;
 
@@ -87,7 +87,15 @@ public partial class House : Building
         CurrentItinerary = FindCommute();
         IsChecked = CurrentItinerary != null;
         BusUsageProbability = BusUsageModel.CalculateProbability(CurrentItinerary);
-        if (CurrentItinerary != null) _residentSatisfaction = 1 - BusUsageModel.CalculateDisutility(CurrentItinerary.MilesWalked, CurrentItinerary.BusMinutes, CurrentItinerary.CarMinutes); GD.Print("ResSat: " + _residentSatisfaction);
+
+        if (CurrentItinerary != null)
+        {
+            _residentSatisfaction = 1 - BusUsageModel.CalculateDisutility(CurrentItinerary.MilesWalked, CurrentItinerary.BusMinutes, CurrentItinerary.CarMinutes);
+        }
+        else
+        {
+            _residentSatisfaction = 0;
+        }
     }
 
     /// <summary>
@@ -276,32 +284,36 @@ public partial class House : Building
     public String GetDisplayInfo()
     {
         string commuteDetails = CurrentItinerary != null
-        ? $"Bus Usage Probability: {BusUsageProbability:P1}\nSatisfaction: {GetResidentSatisfaction()}\nItinerary:\nTotal Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
+        ? $"Bus Usage Probability: {BusUsageProbability:P1}\nSatisfaction: {GetResidentSatisfactionDisplay()}\nItinerary:\nTotal Time: {CurrentItinerary.TotalTimeMinutes:F1} min\n{string.Join("\n", CurrentItinerary.GetDirections())}"
         : "No commute available";
 
         return commuteDetails;
     }
 
-    private String GetResidentSatisfaction()
+    private String GetResidentSatisfactionDisplay()
     {
-        string emojiDisplay = "";
+        string emojiDisplay = GlobalConstants.VeryDissatisfiedEmoji; //Emoji is "very dissatisfied" by default
+
         if (_residentSatisfaction >= GlobalConstants.VeryDissatisfiedMin && _residentSatisfaction <= GlobalConstants.VeryDissatisfiedMax)
         {
             emojiDisplay = GlobalConstants.VeryDissatisfiedEmoji;
-        }else if (_residentSatisfaction >= GlobalConstants.DissatisfiedMin && _residentSatisfaction <= GlobalConstants.DissatisfiedMax){
+        }
+        else if (_residentSatisfaction >= GlobalConstants.DissatisfiedMin && _residentSatisfaction <= GlobalConstants.DissatisfiedMax)
+        {
             emojiDisplay = GlobalConstants.DissatisfiedEmoji;
-        }else if (_residentSatisfaction >= GlobalConstants.NeutralMin && _residentSatisfaction <= GlobalConstants.NeutralMax)
+        }
+        else if (_residentSatisfaction >= GlobalConstants.NeutralMin && _residentSatisfaction <= GlobalConstants.NeutralMax)
         {
             emojiDisplay = GlobalConstants.NeutralEmoji;
         }
         else if (_residentSatisfaction >= GlobalConstants.SatisfiedMin && _residentSatisfaction <= GlobalConstants.SatisfiedMax)
         {
             emojiDisplay = GlobalConstants.SatisfiedEmoji;
-        }else if (_residentSatisfaction >= GlobalConstants.VerySatisfiedMin && _residentSatisfaction <= GlobalConstants.VerySatisfiedMax)
+        }
+        else if (_residentSatisfaction >= GlobalConstants.VerySatisfiedMin && _residentSatisfaction <= GlobalConstants.VerySatisfiedMax)
         {
             emojiDisplay = GlobalConstants.VerySatisfiedEmoji;
         }
-
         return emojiDisplay;
     }
 
