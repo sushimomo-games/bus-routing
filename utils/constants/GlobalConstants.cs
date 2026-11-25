@@ -62,17 +62,45 @@ public static class GlobalConstants
     public const float ToleranceFraction = 0.5f;
 
     /// <summary>
+    /// The amenity penalty of a boarding stop with no bench and no roof.
+    /// Keep it between 0 and 1.
+    /// </summary>
+    public const float BaseAmenityPenalty = 1.0f;
+
+    /// <summary>
+    /// The fraction of BaseAmenityPenalty removed by a bench.
+    /// BenchRelief + RoofRelief should not exceed 1 so the penalty never goes
+    /// negative.
+    /// </summary>
+    public const float BenchRelief = 0.3f;
+
+    /// <summary>
+    /// The fraction of BaseAmenityPenalty removed by a roof.
+    /// BenchRelief + RoofRelief should not exceed 1 so the penalty never goes
+    /// negative.
+    /// </summary>
+    public const float RoofRelief = 0.4f;
+
+    /// <summary>
     /// How much the walk penalty matters in the disutility, from 0 to 1.
     /// Raising this value makes walking matter more and extra travel time
     /// matter less.
     /// </summary>
-    public const float WalkWeight = 0.4f;
+    public const float WalkWeight = 0.35f;
+
+    /// <summary>
+    /// How much stop amenities (bench, roof) matter in the disutility, from
+    /// 0 to 1. Raising this value makes amenities matter more and extra
+    /// travel time matter less.
+    /// </summary>
+    public const float AmenityWeight = 0.15f;
 
     /// <summary>
     /// How much the time penalty matters in the disutility. This is not set
-    /// independently, so that it always adds up to 1 with WalkWeight.
+    /// independently, so that it always adds up to 1 with WalkWeight and
+    /// AmenityWeight.
     /// </summary>
-    public const float TimeWeight = 1f - WalkWeight;
+    public const float TimeWeight = 1f - WalkWeight - AmenityWeight;
 
     /// <summary>
     /// The steepness of the sigmoid. Raising this value makes the probability
@@ -85,21 +113,12 @@ public static class GlobalConstants
     /// The disutility at which the probability is exactly 0.5.
     /// Raising this value makes residents more willing to ride overall.
     /// Tuned from the suggested 0.4 so that the median Middletown house is
-    /// near 45% when its stops are a short walk from the nearest road.
+    /// near 45% when its stops are a short walk from the nearest road. Raised
+    /// from 0.67 when the amenity penalty was added, so that houses boarding
+    /// at stops with no bench or roof keep about the same probability as
+    /// before (Middletown average change under 1 percentage point).
     /// </summary>
-    public const float Midpoint = 0.67f;
-
-    /// <summary>
-    /// How much a bench lowers disutility for residents boarding at its stop.
-    /// Raising this value makes a bench raise the chance of riding more.
-    /// </summary>
-    public const float BenchComfortBonus = 0.03f;
-
-    /// <summary>
-    /// How much a roof lowers disutility for residents boarding at its stop.
-    /// Raising this value makes a roof raise the chance of riding more.
-    /// </summary>
-    public const float RoofComfortBonus = 0.08f;
+    public const float Midpoint = 0.71f;
 
     /// <summary>
     /// The exponent shared by both penalty curves. This is a fixed constant

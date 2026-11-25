@@ -140,7 +140,7 @@ public class BusUsageModelTests
         // than the car are calculated.
         float walkPenalty = BusUsageModel.CalculateWalkPenalty(50f);
         float timePenalty = BusUsageModel.CalculateTimePenalty(1010f, 10f);
-        float disutility = BusUsageModel.CalculateDisutility(50f, 1010f, 10f);
+        float disutility = BusUsageModel.CalculateDisutility(50f, 1010f, 10f, BaseAmenityPenalty);
 
         // THEN: The penalties approach 1 without exceeding it, so the
         // disutility never exceeds 1.
@@ -151,33 +151,37 @@ public class BusUsageModelTests
         AssertFloat(disutility).IsLessEqual(1f);
     }
 
-    // SCENARIO: Disutility combines the walk and time penalties.
+    // SCENARIO: Disutility combines the walk, time, and amenity penalties.
     [TestCase]
     public void GivenCommuteValues_WhenDisutilityCalculated_ThenPenaltiesAreWeighted()
     {
-        // GIVEN: A 0.3 mile walk, a 25 minute bus trip, and a 10 minute car trip.
+        // GIVEN: A 0.3 mile walk, a 25 minute bus trip, a 10 minute car trip,
+        // and an amenity penalty of 0.6.
         float milesWalked = 0.3f;
         float busMinutes = 25f;
         float carMinutes = 10f;
+        float amenityPenalty = 0.6f;
 
         // WHEN: The disutility is calculated.
-        float disutility = BusUsageModel.CalculateDisutility(milesWalked, busMinutes, carMinutes);
+        float disutility = BusUsageModel.CalculateDisutility(milesWalked, busMinutes, carMinutes, amenityPenalty);
 
-        // THEN: The disutility is the weighted sum of both penalties.
+        // THEN: The disutility is the weighted sum of all three penalties,
+        // and the weights add up to 1.
         float expected = WalkWeight * BusUsageModel.CalculateWalkPenalty(milesWalked)
-            + TimeWeight * BusUsageModel.CalculateTimePenalty(busMinutes, carMinutes);
+            + TimeWeight * BusUsageModel.CalculateTimePenalty(busMinutes, carMinutes)
+            + AmenityWeight * amenityPenalty;
         AssertFloat(disutility).IsEqualApprox(expected, Tolerance);
-        AssertFloat(WalkWeight + TimeWeight).IsEqualApprox(1f, Tolerance);
+        AssertFloat(WalkWeight + TimeWeight + AmenityWeight).IsEqualApprox(1f, Tolerance);
     }
 
-    // SCENARIO: A commute with no walking and a bus as fast as the car has no
-    // friction at all.
+    // SCENARIO: A commute with no walking, a bus as fast as the car, and no
+    // amenity penalty has no friction at all.
     [TestCase]
     public void GivenNoFriction_WhenDisutilityCalculated_ThenDisutilityIsZero()
     {
-        // WHEN: The disutility of a commute with no walking and equal bus and
-        // car times is calculated.
-        float disutility = BusUsageModel.CalculateDisutility(0f, 10f, 10f);
+        // WHEN: The disutility of a commute with no walking, equal bus and
+        // car times, and no amenity penalty is calculated.
+        float disutility = BusUsageModel.CalculateDisutility(0f, 10f, 10f, 0f);
 
         // THEN: The disutility is 0.
         AssertFloat(disutility).IsEqual(0f);
@@ -188,8 +192,8 @@ public class BusUsageModelTests
     public void GivenLongerWalk_WhenProbabilityCalculated_ThenProbabilityIsLower()
     {
         // GIVEN: Walks of 0.2 and 0.8 miles with the same bus and car times.
-        float shortWalkDisutility = BusUsageModel.CalculateDisutility(0.2f, 20f, 10f);
-        float longWalkDisutility = BusUsageModel.CalculateDisutility(0.8f, 20f, 10f);
+        float shortWalkDisutility = BusUsageModel.CalculateDisutility(0.2f, 20f, 10f, BaseAmenityPenalty);
+        float longWalkDisutility = BusUsageModel.CalculateDisutility(0.8f, 20f, 10f, BaseAmenityPenalty);
 
         // WHEN: The probability of each is calculated.
         float shortWalkProbability = BusUsageModel.CalculateProbability(shortWalkDisutility);
@@ -205,8 +209,8 @@ public class BusUsageModelTests
     public void GivenSlowerBus_WhenProbabilityCalculated_ThenProbabilityIsLower()
     {
         // GIVEN: Bus trips of 15 and 30 minutes with the same walk and car time.
-        float fastBusDisutility = BusUsageModel.CalculateDisutility(0.3f, 15f, 10f);
-        float slowBusDisutility = BusUsageModel.CalculateDisutility(0.3f, 30f, 10f);
+        float fastBusDisutility = BusUsageModel.CalculateDisutility(0.3f, 15f, 10f, BaseAmenityPenalty);
+        float slowBusDisutility = BusUsageModel.CalculateDisutility(0.3f, 30f, 10f, BaseAmenityPenalty);
 
         // WHEN: The probability of each is calculated.
         float fastBusProbability = BusUsageModel.CalculateProbability(fastBusDisutility);
@@ -249,10 +253,68 @@ public class BusUsageModelTests
         float probability = BusUsageModel.CalculateProbability(commute);
 
         // THEN: The probability comes from the commute's miles walked, bus
-        // time, and car time.
-        float disutility = BusUsageModel.CalculateDisutility(commute.MilesWalked, commute.BusMinutes, commute.CarMinutes);
+        // time, car time, and amenity penalty.
+        float disutility = BusUsageModel.CalculateDisutility(commute.MilesWalked, commute.BusMinutes, commute.CarMinutes, commute.AmenityPenalty);
         AssertFloat(probability).IsEqualApprox(BusUsageModel.CalculateProbability(disutility), Tolerance);
         AssertFloat(commute.MilesWalked).IsEqualApprox((30f + 70f) / PixelsPerMile, Tolerance);
+        AssertFloat(commute.AmenityPenalty).IsEqualApprox(BaseAmenityPenalty, Tolerance);
+    }
+
+    // SCENARIO: Bus stops have different combinations of amenities.
+    [TestCase]
+    public void GivenStopAmenities_WhenBusStopAmenityPenaltyCalculated_ThenEachAmenityRemovesItsRelief()
+    {
+        // WHEN: The amenity penalty of a stop with each combination of
+        // amenities is calculated.
+        float none = BusUsageModel.CalculateBusStopAmenityPenalty(false, false);
+        float bench = BusUsageModel.CalculateBusStopAmenityPenalty(true, false);
+        float roof = BusUsageModel.CalculateBusStopAmenityPenalty(false, true);
+        float both = BusUsageModel.CalculateBusStopAmenityPenalty(true, true);
+
+        // THEN: Each amenity removes its fraction of the base penalty, and the
+        // penalty never goes negative.
+        AssertFloat(none).IsEqualApprox(BaseAmenityPenalty, Tolerance);
+        AssertFloat(bench).IsEqualApprox(BaseAmenityPenalty * (1f - BenchRelief), Tolerance);
+        AssertFloat(roof).IsEqualApprox(BaseAmenityPenalty * (1f - RoofRelief), Tolerance);
+        AssertFloat(both).IsEqualApprox(BaseAmenityPenalty * (1f - BenchRelief - RoofRelief), Tolerance);
+        AssertFloat(both).IsGreaterEqual(0f);
+    }
+
+    // SCENARIO: A resident transfers between two buses, boarding at one stop
+    // with a roof and one stop with nothing.
+    [TestCase]
+    public void GivenTwoBoardingStops_WhenAmenityPenaltyCalculated_ThenPenaltiesAreAveraged()
+    {
+        // GIVEN: A stop with a roof and a stop with no amenities.
+        var roofedStop = CreateBusStop(new Vector2(0, 0));
+        roofedStop.AddUpgrade(BusStopUpgrade.Roof);
+        var bareStop = CreateBusStop(new Vector2(100, 0));
+
+        // WHEN: The amenity penalty over both boarding stops is calculated.
+        float amenityPenalty = BusUsageModel.CalculateAmenityPenalty([roofedStop, bareStop]);
+
+        // THEN: It is the average of the two stops' penalties.
+        float expected = (BaseAmenityPenalty * (1f - RoofRelief) + BaseAmenityPenalty) / 2f;
+        AssertFloat(amenityPenalty).IsEqualApprox(expected, Tolerance);
+    }
+
+    // SCENARIO: Two residents have the same trip, but one boards at a stop
+    // with a bench and a roof.
+    [TestCase]
+    public void GivenBetterAmenities_WhenProbabilityCalculated_ThenProbabilityIsHigher()
+    {
+        // GIVEN: The same trip with a bare stop and a fully upgraded stop.
+        float bareDisutility = BusUsageModel.CalculateDisutility(0.3f, 20f, 10f,
+            BusUsageModel.CalculateBusStopAmenityPenalty(false, false));
+        float upgradedDisutility = BusUsageModel.CalculateDisutility(0.3f, 20f, 10f,
+            BusUsageModel.CalculateBusStopAmenityPenalty(true, true));
+
+        // WHEN: The probability of each is calculated.
+        float bareProbability = BusUsageModel.CalculateProbability(bareDisutility);
+        float upgradedProbability = BusUsageModel.CalculateProbability(upgradedDisutility);
+
+        // THEN: The resident at the upgraded stop is more likely to ride.
+        AssertFloat(upgradedProbability).IsGreater(bareProbability);
     }
 
     /// <summary>

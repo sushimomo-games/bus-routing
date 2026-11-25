@@ -90,7 +90,7 @@ public partial class House : Building
 
         if (CurrentItinerary != null)
         {
-            _residentSatisfaction = 1 - BusUsageModel.CalculateDisutility(CurrentItinerary.MilesWalked, CurrentItinerary.BusMinutes, CurrentItinerary.CarMinutes);
+            _residentSatisfaction = 1 - BusUsageModel.CalculateDisutility(CurrentItinerary);
         }
         else
         {
