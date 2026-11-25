@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using static GlobalConstants;
 
 /// <summary>
 /// Calculates the probability that a resident uses the bus for their commute,
-/// based on how far they walk and how much longer the bus takes than a car.
+/// based on how far they walk, how much longer the bus takes than a car, and
+/// the amenities (bench, roof) at the stops where they board.
 /// All tunable values live in GlobalConstants.
 /// </summary>
 public static class BusUsageModel
@@ -45,16 +48,52 @@ public static class BusUsageModel
     }
 
     /// <summary>
+    /// Calculates the amenity penalty of a single boarding stop. It starts at
+    /// BaseAmenityPenalty and is reduced by a bench and/or a roof.
+    /// </summary>
+    /// <param name="hasBench">Whether the stop has a bench.</param>
+    /// <param name="hasRoof">Whether the stop has a roof.</param>
+    /// <returns>The stop's amenity penalty, from 0 to BaseAmenityPenalty.</returns>
+    public static float CalculateBusStopAmenityPenalty(bool hasBench, bool hasRoof)
+    {
+        float relief = (hasBench ? BenchRelief : 0f) + (hasRoof ? RoofRelief : 0f);
+        return BaseAmenityPenalty * (1f - relief);
+    }
+
+    /// <summary>
+    /// Calculates the average amenity penalty over a commute's boarding stops.
+    /// </summary>
+    /// <param name="boardingStops">The stops where the resident gets on a bus.</param>
+    /// <returns>The average amenity penalty, or 0 if there are no boarding stops.</returns>
+    public static float CalculateAmenityPenalty(IEnumerable<BusStop> boardingStops)
+    {
+        var penalties = boardingStops.Select(stop => stop.AmenityPenalty).ToList();
+        return penalties.Count == 0 ? 0f : penalties.Average();
+    }
+
+    /// <summary>
     /// Calculates the weighted total friction of a commute.
     /// </summary>
     /// <param name="milesWalked">The total miles walked during the commute.</param>
     /// <param name="busMinutes">The time in minutes the trip takes by bus.</param>
     /// <param name="carMinutes">The time in minutes the trip takes by car.</param>
+    /// <param name="amenityPenalty">The average amenity penalty of the commute's boarding stops.</param>
     /// <returns>The disutility, from 0 (no friction) to just under 1.</returns>
-    public static float CalculateDisutility(float milesWalked, float busMinutes, float carMinutes)
+    public static float CalculateDisutility(float milesWalked, float busMinutes, float carMinutes, float amenityPenalty)
     {
         return WalkWeight * CalculateWalkPenalty(milesWalked)
-            + TimeWeight * CalculateTimePenalty(busMinutes, carMinutes);
+            + TimeWeight * CalculateTimePenalty(busMinutes, carMinutes)
+            + AmenityWeight * amenityPenalty;
+    }
+
+    /// <summary>
+    /// Calculates the weighted total friction of the given commute.
+    /// </summary>
+    /// <param name="commute">The resident's commute.</param>
+    /// <returns>The disutility, from 0 (no friction) to just under 1.</returns>
+    public static float CalculateDisutility(Commute commute)
+    {
+        return CalculateDisutility(commute.MilesWalked, commute.BusMinutes, commute.CarMinutes, commute.AmenityPenalty);
     }
 
     /// <summary>
@@ -82,7 +121,7 @@ public static class BusUsageModel
             return 0f;
         }
 
-        return CalculateProbability(CalculateDisutility(commute.MilesWalked, commute.BusMinutes, commute.CarMinutes));
+        return CalculateProbability(CalculateDisutility(commute));
     }
 
     /// <summary>

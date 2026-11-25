@@ -21,7 +21,9 @@ public enum UpgradePurchaseResult
 }
 
 /// <summary>
-/// Looks up the price, comfort bonus, and display name of each upgrade.
+/// Looks up the price and display name of each upgrade. How much each
+/// upgrade lowers the amenity penalty is calculated in
+/// <see cref="BusUsageModel.CalculateBusStopAmenityPenalty"/>.
 /// </summary>
 public static class BusStopUpgradeInfo
 {
@@ -32,17 +34,6 @@ public static class BusStopUpgradeInfo
     {
         BusStopUpgrade.Bench => Cost.BenchUpgrade,
         BusStopUpgrade.Roof => Cost.RoofUpgrade,
-        _ => throw new ArgumentOutOfRangeException(nameof(upgrade), upgrade, null)
-    };
-
-    /// <summary>
-    /// Returns how much an upgrade lowers disutility for residents boarding
-    /// at the stop, taken from <see cref="GlobalConstants"/>.
-    /// </summary>
-    public static float GetComfortBonus(BusStopUpgrade upgrade) => upgrade switch
-    {
-        BusStopUpgrade.Bench => GlobalConstants.BenchComfortBonus,
-        BusStopUpgrade.Roof => GlobalConstants.RoofComfortBonus,
         _ => throw new ArgumentOutOfRangeException(nameof(upgrade), upgrade, null)
     };
 

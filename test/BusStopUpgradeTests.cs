@@ -108,24 +108,25 @@ public class BusStopUpgradeTests
         AssertThat(LevelState.Budget).IsEqual(50u - Cost.BenchUpgrade);
     }
 
-    // SCENARIO: The comfort bonus of a stop depends on its upgrades.
+    // SCENARIO: The amenity penalty of a stop depends on its upgrades.
     [TestCase]
-    public void GivenStopUpgrades_WhenReadComfortBonus_ThenSumOfPurchasedBonuses()
+    public void GivenStopUpgrades_WhenReadAmenityPenalty_ThenPurchasedReliefsAreRemoved()
     {
         // GIVEN: A stop on a line with no upgrades.
         var stop = CreateStopOnLine();
         LevelState.Budget = 50;
 
-        // WHEN / THEN: With no upgrades the bonus is 0.
-        AssertFloat(stop.ComfortBonus).IsEqual(0f);
+        // WHEN / THEN: With no upgrades the penalty is the base penalty.
+        AssertFloat(stop.AmenityPenalty).IsEqualApprox(GlobalConstants.BaseAmenityPenalty, Tolerance);
 
         // WHEN: The player buys both upgrades.
         stop.TryPurchaseUpgrade(BusStopUpgrade.Bench);
         stop.TryPurchaseUpgrade(BusStopUpgrade.Roof);
 
-        // THEN: The bonus is the sum of both bonuses.
-        AssertFloat(stop.ComfortBonus).IsEqualApprox(
-            GlobalConstants.BenchComfortBonus + GlobalConstants.RoofComfortBonus, Tolerance);
+        // THEN: Both reliefs are removed from the base penalty.
+        AssertFloat(stop.AmenityPenalty).IsEqualApprox(
+            GlobalConstants.BaseAmenityPenalty * (1f - GlobalConstants.BenchRelief - GlobalConstants.RoofRelief),
+            Tolerance);
     }
 
     // SCENARIO: The player undoes an upgrade purchase.

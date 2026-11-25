@@ -53,6 +53,18 @@ public partial class Commute
     /// </summary>
     public float MilesWalked => Itinerary.OfType<WalkSegment>().Sum(segment => segment.DistanceMiles);
 
+    /// <summary>
+    /// The stops where the resident gets on a bus during the commute. A
+    /// commute with transfers has one boarding stop per bus taken.
+    /// </summary>
+    public IEnumerable<BusStop> BoardingStops => Itinerary.OfType<RideSegment>().Select(segment => segment.BoardingStop);
+
+    /// <summary>
+    /// The average amenity penalty of the commute's boarding stops, from 0 to
+    /// BaseAmenityPenalty.
+    /// </summary>
+    public float AmenityPenalty => BusUsageModel.CalculateAmenityPenalty(BoardingStops);
+
     public int TransferCount => Itinerary.OfType<WalkSegment>().Count() - 1;
 
     public Commute(List<CommuteSegment> segments)

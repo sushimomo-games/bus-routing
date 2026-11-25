@@ -26,9 +26,12 @@ public partial class BusStop : RoadNode
     public bool IsInUse => LevelState.AllBusLines.Any(line => line.ContainsNode(this));
 
     /// <summary>
-    /// The sum of the comfort bonuses of the purchased upgrades.
+    /// The amenity penalty for residents boarding at this stop. It starts at
+    /// BaseAmenityPenalty and each purchased upgrade removes its relief:
+    /// BaseAmenityPenalty × (1 − BenchRelief × hasBench − RoofRelief × hasRoof).
     /// </summary>
-    public float ComfortBonus => _purchasedUpgrades.Sum(BusStopUpgradeInfo.GetComfortBonus);
+    public float AmenityPenalty => BusUsageModel.CalculateBusStopAmenityPenalty(
+        HasUpgrade(BusStopUpgrade.Bench), HasUpgrade(BusStopUpgrade.Roof));
 
     /// <summary>
     /// Fired whenever upgrades are added to or removed from this stop.
