@@ -9,6 +9,8 @@ using static BusLineCreationStep;
 
 public partial class BusLineEditor : Node
 {
+    private static readonly AudioStream IntersectionReachedSound = GD.Load<AudioStream>(DropSuccessSound);
+
     private static Line2D _mouseTrackingLine { get; set; }
     public static Line2D MouseTrackingLine => _mouseTrackingLine;
 
@@ -147,6 +149,9 @@ public partial class BusLineEditor : Node
                 _activeSegment.Append(nextNode);
             CheckAndMergeSegments();
         });
+
+        if (nextNode is IntersectionNode)
+            SoundManager.Instance.Play(IntersectionReachedSound);
 
         var newActiveNode = _isEditingFromStart ? _activeSegment.FirstNode : _activeSegment.LastNode;
 

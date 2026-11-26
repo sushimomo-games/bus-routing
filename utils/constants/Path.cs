@@ -20,4 +20,7 @@ public static class Path
     public const string BusLineListNode = "CanvasLayer/LevelUI/BusLinesListContainer/BusLineList";
     public const string LineEditorStatusLabelNode = "CanvasLayer/LevelUI/LineEditorStatusLabel";
     public const string EndBusLineButtonNode = "CanvasLayer/LevelUI/EndBusLineButton";
+
+    // Assets
+    public const string DropSuccessSound = "res://assets/audio/drop-success.wav"; 
 }
