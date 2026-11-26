@@ -1,17 +1,15 @@
 using Godot;
 using System.Collections.Generic;
+using static Godot.Node.ProcessModeEnum;
 
 /// <summary>
 /// Singleton (autoload) that manages sound effects and music in the game.
+/// Allows for multiple sound effects to be played simultaneously without
+/// cutting each other off.
 /// </summary>
 public partial class SoundManager : Node
 {
     public static SoundManager Instance { get; private set; }
-
-    /// <summary>
-    /// The name of the audio bus that this sound manager will use to play sounds.
-    /// </summary>
-    [Export] public StringName BusName { get; set; } = "UI"; // falls back to Master if missing
 
     /// <summary>
     /// The number of audio players to keep in the pool. This allows for multiple
@@ -33,10 +31,13 @@ public partial class SoundManager : Node
     public override void _Ready()
     {
         Instance = this;
-        ProcessMode = ProcessModeEnum.Always; // keeps working while the game is paused
         for (int i = 0; i < PoolSize; i++)
         {
-            var player = new AudioStreamPlayer { Bus = BusName };
+            var player = new AudioStreamPlayer
+            {
+                Bus = "UI", // refers to an audio bus, not city bus lmao
+                ProcessMode = Always, // keeps working while the game is paused
+            };
             AddChild(player);
             _pool.Add(player);
         }
